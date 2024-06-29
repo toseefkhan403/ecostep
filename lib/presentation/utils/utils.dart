@@ -1,10 +1,10 @@
-
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 bool isMobileScreen(BuildContext context) {
   final size = MediaQuery.of(context).size;
-  final aspectRatio = size.width / size.height;
-  final isSmallDevice = size.shortestSide < 600;
+  return size.width < 600;
+  // final aspectRatio = size.width / size.height;
+  // final isSmallDevice = size.shortestSide < 600;
 
-  return isSmallDevice && aspectRatio < 1.8;
+  // return isSmallDevice && aspectRatio < 1.8;
 }

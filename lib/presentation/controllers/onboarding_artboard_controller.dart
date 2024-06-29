@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rive/rive.dart';
 
@@ -28,6 +28,16 @@ class OnboardingArtboardController extends StateNotifier<Artboard?> {
     state = artboard;
     Future.delayed(
         const Duration(seconds: 3), () => _showTapText?.value = true);
+  }
+
+  Future<void> animateToNextPage({bool isSmallScreen = false}) {
+    pageNo++;
+    next?.value = true;
+    return Future.delayed(const Duration(milliseconds: 800), () {
+      loadRiveFile(
+        isSmallScreen: isSmallScreen,
+      );
+    });
   }
 }
 

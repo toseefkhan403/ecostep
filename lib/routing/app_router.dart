@@ -2,7 +2,7 @@ import 'package:ecostep/presentation/pages/home_screen.dart';
 import 'package:ecostep/presentation/pages/onboarding_page.dart';
 import 'package:ecostep/presentation/pages/unknown_page.dart';
 import 'package:ecostep/routing/app_routes.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -22,9 +22,22 @@ GoRouter goRouter(GoRouterRef ref) {
       GoRoute(
         path: '/home',
         name: AppRoute.home.name,
-        builder: (context, state) {
-
-          return const HomeScreen();
+        pageBuilder: (context, state) {
+          return CustomTransitionPage(
+            key: state.pageKey,
+            child: const HomeScreen(),
+            transitionDuration: const Duration(milliseconds: 1000),
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              return SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(0.0, 1.0),
+                  end: Offset.zero,
+                ).animate(animation),
+                child: child,
+              );
+            },
+          );
         },
       ),
       GoRoute(

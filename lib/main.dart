@@ -4,9 +4,10 @@ import 'package:ecostep/routing/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 // 6 weeks to finish - lead with web
-// week 1(24 June) - complete onboarding - rive design, animation, text, coding
+// week 1(24 June) - complete onboarding - rive design, animation, text, coding - done
 // week 2(1 July) - questionnaire, user auth, firebase setup, leaderboard and profile page
 // week 3(8 July) - daily tasks feature - ai gen, parse and display, scoring system, and verification feature
 // week 4(15 July) - marketplace feature - upload stuff, list it, buy it, transactions, your orders in settings
@@ -15,6 +16,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   AdaptivePolicy.init();
+  setUrlStrategy(PathUrlStrategy());
   runApp(const ProviderScope(child: GreenLoopApp()));
 }
 
