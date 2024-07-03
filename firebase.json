@@ -1,0 +1,52 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "greenloop-a67da",
+          "appId": "1:145061817209:android:ef4ec749d3f0c24aa65da8",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "greenloop-a67da",
+          "configurations": {
+            "android": "1:145061817209:android:ef4ec749d3f0c24aa65da8",
+            "ios": "1:145061817209:ios:09dcab62fa99ed01a65da8",
+            "macos": "1:145061817209:ios:09dcab62fa99ed01a65da8",
+            "web": "1:145061817209:web:6daca8682521b2b5a65da8",
+            "windows": "1:145061817209:web:d010bdd28d2d6aada65da8"
+          }
+        }
+      }
+    }
+  },
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "hosting": {
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  },
+  "storage": {
+    "rules": "storage.rules"
+  },
+  "emulators": {
+    "firestore": {
+      "port": 8080
+    },
+    "storage": {
+      "port": 9199
+    },
+    "ui": {
+      "enabled": true
+    },
+    "singleProjectMode": true
+  }
+}

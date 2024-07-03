@@ -6,6 +6,7 @@ class OnboardingArtboardController extends StateNotifier<Artboard?> {
   OnboardingArtboardController(this.pageNo) : super(null);
 
   SMITrigger? next;
+  SMITrigger? end;
   SMITrigger? _showTapText;
   int pageNo;
 
@@ -23,6 +24,7 @@ class OnboardingArtboardController extends StateNotifier<Artboard?> {
     if (controller != null) {
       artboard.addController(controller);
       next = controller.getTriggerInput('continue');
+      end = controller.getTriggerInput('end');
       _showTapText = controller.getTriggerInput('showTapToContinue');
     }
     state = artboard;
@@ -38,6 +40,10 @@ class OnboardingArtboardController extends StateNotifier<Artboard?> {
         isSmallScreen: isSmallScreen,
       );
     });
+  }
+
+  void getStarted() {
+    end?.value = true;
   }
 }
 

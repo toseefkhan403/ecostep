@@ -1,10 +1,13 @@
+import 'package:ecostep/firebase_options.dart';
 import 'package:ecostep/presentation/utils/adaptive_policy.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/routing/app_router.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+import 'package:ecostep/configure_nonweb.dart'
+    if (dart.library.html) 'configure_web.dart';
 
 // 6 weeks to finish - lead with web
 // week 1(24 June) - complete onboarding - rive design, animation, text, coding - done
@@ -13,10 +16,13 @@ import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 // week 4(15 July) - marketplace feature - upload stuff, list it, buy it, transactions, your orders in settings
 // week 5(22 July) - slick video, sound fx and apple account setup(if needed)
 // week 6(29 July) - responsiveness and release
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   AdaptivePolicy.init();
-  setUrlStrategy(PathUrlStrategy());
+  configureApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const ProviderScope(child: GreenLoopApp()));
 }
 
@@ -36,11 +42,11 @@ class GreenLoopApp extends ConsumerWidget {
           routerConfig: goRouter,
           title: 'GreenLoop',
           theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(
-                seedColor: AppColors.primaryColor,
-              ),
-              useMaterial3: true,
-              fontFamily: 'Poppins',
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: AppColors.primaryColor,
+            ),
+            useMaterial3: true,
+            fontFamily: 'Poppins',
           ),
           debugShowCheckedModeBanner: false,
         );

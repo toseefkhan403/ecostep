@@ -1,7 +1,9 @@
+import 'package:ecostep/application/firebase_auth_service.dart';
 import 'package:ecostep/presentation/pages/home_screen.dart';
 import 'package:ecostep/presentation/pages/onboarding_page.dart';
 import 'package:ecostep/presentation/pages/unknown_page.dart';
 import 'package:ecostep/routing/app_routes.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -10,7 +12,19 @@ part 'app_router.g.dart';
 
 @Riverpod(keepAlive: true)
 GoRouter goRouter(GoRouterRef ref) {
+// ref.read(firebaseAuthServiceProvider).signOut();
   return GoRouter(
+    initialLocation: '/',
+    redirect: (context, GoRouterState state) async {
+      final authState = ref.watch(authStateProvider);
+
+      final isLoggedIn = authState.asData?.value != null;
+      print('isLogged in: $isLoggedIn');
+      final isLoggingIn = state.matchedLocation == '/';
+      if (!isLoggedIn && !isLoggingIn) return '/';
+      if (isLoggedIn && isLoggingIn) return '/home';
+      return null;
+    },
     routes: <GoRoute>[
       GoRoute(
         path: '/',
@@ -47,10 +61,9 @@ GoRouter goRouter(GoRouterRef ref) {
       ),
     ],
     errorBuilder: (context, state) => const UnknownPage(),
-    initialLocation: '/',
     debugLogDiagnostics: true,
     observers: [
-      // FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
+      FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance),
     ],
   );
 }

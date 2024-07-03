@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "145061817209",
+    "project_id": "greenloop-a67da",
+    "storage_bucket": "greenloop-a67da.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:145061817209:android:ef4ec749d3f0c24aa65da8",
+        "android_client_info": {
+          "package_name": "com.ecostep.greenloop"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "145061817209-j8hlqc902hllfu2k07fk5itvtsvauu3d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTtn-lHf_B2PPsdWlh_n7FUvIiDOeZq1Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "145061817209-j8hlqc902hllfu2k07fk5itvtsvauu3d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

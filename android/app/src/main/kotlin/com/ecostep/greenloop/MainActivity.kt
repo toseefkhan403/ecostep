@@ -1,4 +1,4 @@
-package com.example.ecostep
+package com.ecostep.greenloop
 
 import io.flutter.embedding.android.FlutterActivity
 

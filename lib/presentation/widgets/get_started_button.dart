@@ -1,19 +1,22 @@
+import 'package:ecostep/application/firebase_auth_service.dart';
+import 'package:ecostep/presentation/controllers/onboarding_artboard_controller.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:neopop/neopop.dart';
 
-class GetStartedButton extends StatefulWidget {
+class GetStartedButton extends ConsumerStatefulWidget {
   const GetStartedButton({super.key});
 
   @override
-  State createState() => _GetStartedButtonState();
+  ConsumerState createState() => _GetStartedButtonState();
 }
 
-class _GetStartedButtonState extends State<GetStartedButton>
+class _GetStartedButtonState extends ConsumerState<GetStartedButton>
     with TickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
-    duration: const Duration(seconds: 6),
+    duration: const Duration(seconds: 4),
+    reverseDuration: const Duration(seconds: 1),
     vsync: this,
   );
   late final Animation<double> _animation = CurvedAnimation(
@@ -21,6 +24,7 @@ class _GetStartedButtonState extends State<GetStartedButton>
     curve: Curves.fastOutSlowIn,
   );
   bool _isVisible = false;
+  bool _showLoginButtons = false;
 
   @override
   void initState() {
@@ -36,6 +40,7 @@ class _GetStartedButtonState extends State<GetStartedButton>
 
   @override
   Widget build(BuildContext context) {
+    final controller = ref.read(onboardingArtboardControllerProvider.notifier);
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
@@ -46,26 +51,35 @@ class _GetStartedButtonState extends State<GetStartedButton>
           child: Opacity(
             opacity: _isVisible ? 1.0 : 0.0,
             child: Center(
-              child: NeoPopButton(
-                color: AppColors.primaryColor,
-                onTapUp: () {
-                  context.go('/home');
-                },
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 80.0,
-                    vertical: 15,
-                  ),
-                  child: Text(
-                    'Get Started',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
+              child: _showLoginButtons
+                  ? loginButtons()
+                  : NeoPopButton(
+                      color: AppColors.primaryColor,
+                      onTapUp: () {
+                        _controller.reverse().then((_) {
+                          controller.getStarted();
+                          setState(() {
+                            _showLoginButtons = true;
+                          });
+                          _controller.reset();
+                          _controller.forward();
+                        });
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 80.0,
+                          vertical: 15,
+                        ),
+                        child: Text(
+                          'Get Started',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
             ),
           ),
         );
@@ -77,5 +91,54 @@ class _GetStartedButtonState extends State<GetStartedButton>
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  Widget loginButtons() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        NeoPopButton(
+          color: AppColors.primaryColor,
+          onTapUp: () {
+            ref.read(firebaseAuthServiceProvider).signInWithGoogle();
+          },
+          child: const Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: 80.0,
+              vertical: 15,
+            ),
+            child: Text(
+              'Sign in with Google',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+        NeoPopButton(
+          color: AppColors.primaryColor,
+          onTapUp: () {
+            ref.read(firebaseAuthServiceProvider).signInAnonymously();
+          },
+          child: const Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: 80.0,
+              vertical: 15,
+            ),
+            child: Text(
+              ' Sign in as a Guest  ',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

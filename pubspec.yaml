@@ -29,6 +29,9 @@ dependencies:
   cloud_firestore: ^4.17.0
   firebase_analytics: ^10.10.7
   neopop: ^1.0.2
+  firebase_auth: ^4.20.0
+  firebase_core: ^2.32.0
+  google_sign_in: ^6.2.1
 
 dev_dependencies:
   flutter_test:
@@ -37,6 +40,8 @@ dev_dependencies:
   flutter_lints: ^3.0.0
   build_runner: ^2.4.11
   riverpod_generator: ^2.4.0
+  change_app_package_name: ^1.1.0
+
 
 flutter:
 
