@@ -1,3 +1,4 @@
+import 'package:ecostep/presentation/utils/adaptive_policy.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -15,7 +16,16 @@ class FirebaseAuthService {
   }
 
   Future<User?> signInWithGoogle() async {
+    if (AdaptivePolicy.currentPlatform == Platform.web) {
+      final GoogleAuthProvider provider = GoogleAuthProvider()
+          .setCustomParameters({'prompt': 'select_account'});
+      final res = await _firebaseAuth.signInWithPopup(provider);
+
+      return res.user;
+    }
+
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    print('does it work?');
     if (googleUser == null) {
       // The user canceled the sign-in
       return null;

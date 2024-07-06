@@ -16,7 +16,7 @@ class CustomBottomNavigationBar extends StatefulWidget {
 
 class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar>
     with TickerProviderStateMixin {
-  int _selectedIndex = 1;
+  int _selectedIndex = 0;
   late final AnimationController _controller;
 
   @override

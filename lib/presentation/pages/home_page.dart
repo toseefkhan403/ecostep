@@ -1,4 +1,7 @@
+import 'package:ecostep/application/firebase_auth_service.dart';
+import 'package:ecostep/presentation/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 
@@ -18,52 +21,62 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: EdgeInsets.all(12.w),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _dateHeading(),
-                const Spacer(),
-                _iconButton(),
-                SizedBox(
-                  width: 8.w,
-                ),
-                _iconButton(),
-              ],
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: !isMobileScreen(context) ? width * 0.25 : 10,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.all(12.w),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _dateHeading(),
+                  const Spacer(),
+                  _iconButton(),
+                  SizedBox(
+                    width: 8.w,
+                  ),
+                  _iconButton(),
+                ],
+              ),
             ),
-          ),
-          WeekWidget(today),
-          actionWidget(),
-        ],
+            WeekWidget(today),
+            actionWidget(),
+          ],
+        ),
       ),
     );
   }
 
   _iconButton() {
-    return InkWell(
-      onTap: () {},
-      child: Row(
-        children: [
-          Icon(
-            Icons.fire_extinguisher,
-            color: AppColors.primaryColor,
-            size: 32.w,
-          ),
-          Text(
-            '4',
-            style: TextStyle(
-                color: AppColors.textColor,
-                fontSize: 22.sp,
-                fontWeight: FontWeight.w700),
-          ),
-        ],
-      ),
-    );
+    return Consumer(builder: (context, ref, child) {
+      return InkWell(
+        onTap: () {
+          ref.read(firebaseAuthServiceProvider).signOut();
+        },
+        child: Row(
+          children: [
+            Icon(
+              Icons.fire_extinguisher,
+              color: AppColors.primaryColor,
+              size: 32.w,
+            ),
+            Text(
+              '4',
+              style: TextStyle(
+                  color: AppColors.textColor,
+                  fontSize: 22.sp,
+                  fontWeight: FontWeight.w700),
+            ),
+          ],
+        ),
+      );
+    });
   }
 
   _dateHeading() => Text.rich(

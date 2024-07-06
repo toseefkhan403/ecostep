@@ -12,19 +12,18 @@ part 'app_router.g.dart';
 
 @Riverpod(keepAlive: true)
 GoRouter goRouter(GoRouterRef ref) {
-// ref.read(firebaseAuthServiceProvider).signOut();
   return GoRouter(
-    initialLocation: '/',
-    redirect: (context, GoRouterState state) async {
-      final authState = ref.watch(authStateProvider);
+    initialLocation: '/home',
+    // redirect: (context, GoRouterState state) async {
+    //   final authState = ref.watch(authStateProvider);
 
-      final isLoggedIn = authState.asData?.value != null;
-      print('isLogged in: $isLoggedIn');
-      final isLoggingIn = state.matchedLocation == '/';
-      if (!isLoggedIn && !isLoggingIn) return '/';
-      if (isLoggedIn && isLoggingIn) return '/home';
-      return null;
-    },
+    //   final isLoggedIn = authState.asData?.value != null;
+    //   print('isLogged in: $isLoggedIn');
+    //   final isLoggingIn = state.matchedLocation == '/';
+    //   if (!isLoggedIn && !isLoggingIn) return '/';
+    //   if (isLoggedIn && isLoggingIn) return '/home';
+    //   return null;
+    // },
     routes: <GoRoute>[
       GoRoute(
         path: '/',

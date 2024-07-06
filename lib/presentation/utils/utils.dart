@@ -8,3 +8,27 @@ bool isMobileScreen(BuildContext context) {
 
   // return isSmallDevice && aspectRatio < 1.8;
 }
+
+BoxDecoration roundedContainerDecoration({
+  Color color = Colors.white,
+  double borderRadius = 22.0,
+  double elevation = 5.0,
+  double blurRadius = 5.0,
+  bool darkShadow = false,
+}) =>
+    BoxDecoration(
+      color: color,
+      borderRadius: BorderRadius.circular(borderRadius),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(darkShadow ? 0.7 : 0.4),
+          spreadRadius: 1,
+          blurRadius: blurRadius,
+          offset: Offset(0, elevation),
+        ),
+      ],
+      border: Border.all(
+        color: Colors.black,
+        width: 1.0,
+      ),
+    );

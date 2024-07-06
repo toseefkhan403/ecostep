@@ -41,7 +41,7 @@ dev_dependencies:
   build_runner: ^2.4.11
   riverpod_generator: ^2.4.0
   change_app_package_name: ^1.1.0
-
+  json_serializable: ^6.7.1
 
 flutter:
 
