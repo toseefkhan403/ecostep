@@ -1,4 +1,3 @@
-import 'package:ecostep/application/firebase_auth_service.dart';
 import 'package:ecostep/presentation/pages/home_screen.dart';
 import 'package:ecostep/presentation/pages/onboarding_page.dart';
 import 'package:ecostep/presentation/pages/unknown_page.dart';
@@ -44,7 +43,7 @@ GoRouter goRouter(GoRouterRef ref) {
                 (context, animation, secondaryAnimation, child) {
               return SlideTransition(
                 position: Tween<Offset>(
-                  begin: const Offset(0.0, 1.0),
+                  begin: const Offset(0, 1),
                   end: Offset.zero,
                 ).animate(animation),
                 child: child,

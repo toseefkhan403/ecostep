@@ -1,13 +1,11 @@
+import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 
-import '../utils/app_colors.dart';
-
 class CustomNavigationRail extends StatefulWidget {
-  final PageController pageController;
-
   const CustomNavigationRail(this.pageController, {super.key});
+  final PageController pageController;
 
   @override
   State<CustomNavigationRail> createState() => _CustomNavigationRailState();
@@ -70,7 +68,7 @@ class _CustomNavigationRailState extends State<CustomNavigationRail>
     );
   }
 
-  _bottomNavigationItem(int i) => Padding(
+  Widget _bottomNavigationItem(int i) => Padding(
         padding: const EdgeInsets.all(10),
         child: InkWell(
           onTap: () {
@@ -101,10 +99,11 @@ class _CustomNavigationRailState extends State<CustomNavigationRail>
                     milliseconds: 500,
                   ),
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(6.h)),
-                      color: _selectedIndex == i
-                          ? Colors.white
-                          : AppColors.primaryColor),
+                    borderRadius: BorderRadius.all(Radius.circular(6.h)),
+                    color: _selectedIndex == i
+                        ? Colors.white
+                        : AppColors.primaryColor,
+                  ),
                 ),
               ],
             ),

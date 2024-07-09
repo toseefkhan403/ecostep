@@ -2,28 +2,28 @@ import 'package:ecostep/presentation/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 class CircularElevatedButton extends StatelessWidget {
-  final VoidCallback onPressed;
-  final Widget child;
-  final Color color;
-  final double width;
-  final double height;
-  final double borderRadius;
-  final double blurRadius;
-  final double elevation;
-  final bool darkShadow;
-
   const CircularElevatedButton({
-    super.key,
     required this.onPressed,
     required this.child,
     this.color = Colors.white,
     this.width = 150.0,
-    this.height = 50.0,
+    this.height,
     this.borderRadius = 22.0,
     this.blurRadius = 5.0,
     this.elevation = 5.0,
     this.darkShadow = false,
+    super.key,
   });
+
+  final VoidCallback onPressed;
+  final Widget child;
+  final Color color;
+  final double width;
+  final double? height;
+  final double borderRadius;
+  final double blurRadius;
+  final double elevation;
+  final bool darkShadow;
 
   @override
   Widget build(BuildContext context) {

@@ -1,13 +1,16 @@
+// ignore_for_file: lines_longer_than_80_chars
+
 import 'package:ecostep/application/firebase_auth_service.dart';
+import 'package:ecostep/presentation/utils/app_colors.dart';
+import 'package:ecostep/presentation/utils/date_utils.dart';
 import 'package:ecostep/presentation/utils/utils.dart';
+import 'package:ecostep/presentation/widgets/circular_elevated_button.dart';
+import 'package:ecostep/presentation/widgets/week_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
-
-import '../utils/app_colors.dart';
-import '../utils/date_utils.dart';
-import '../widgets/week_widget.dart';
+import 'package:neopop/neopop.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -38,11 +41,26 @@ class _HomePageState extends State<HomePage> {
                   _dateHeading(),
                   const Spacer(),
                   _iconButton(),
-                  SizedBox(
-                    width: 8.w,
-                  ),
+                  SizedBox(width: 8.w),
                   _iconButton(),
                 ],
+              ),
+            ),
+            // personalization reminder: show only if personalization is false
+            Padding(
+              padding: EdgeInsets.only(bottom: 30.h),
+              child: CircularElevatedButton(
+                onPressed: () {},
+                width: double.infinity,
+                color: AppColors.backgroundColor,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8.w),
+                  child: const Text(
+                    '''Your AI generated sustainable actions are not currently personalized. Click here to fill more information about your lifestyle to enable personalized actions.''',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                ),
               ),
             ),
             WeekWidget(today),
@@ -53,49 +71,54 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  _iconButton() {
-    return Consumer(builder: (context, ref, child) {
-      return InkWell(
-        onTap: () {
-          ref.read(firebaseAuthServiceProvider).signOut();
-        },
-        child: Row(
-          children: [
-            Icon(
-              Icons.fire_extinguisher,
-              color: AppColors.primaryColor,
-              size: 32.w,
-            ),
-            Text(
-              '4',
-              style: TextStyle(
+  Widget _iconButton() {
+    return Consumer(
+      builder: (context, ref, child) {
+        return InkWell(
+          onTap: () {
+            ref.read(firebaseAuthServiceProvider).signOut();
+          },
+          child: Row(
+            children: [
+              Icon(
+                Icons.fire_extinguisher,
+                color: AppColors.primaryColor,
+                size: 32.w,
+              ),
+              Text(
+                '4',
+                style: TextStyle(
                   color: AppColors.textColor,
                   fontSize: 22.sp,
-                  fontWeight: FontWeight.w700),
-            ),
-          ],
-        ),
-      );
-    });
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
-  _dateHeading() => Text.rich(
+  Widget _dateHeading() => Text.rich(
         TextSpan(
           children: [
             TextSpan(
-              text: "Today",
+              text: 'Today',
               style: TextStyle(
-                  color: AppColors.textColor,
-                  fontSize: 26.sp,
-                  height: 1,
-                  fontWeight: FontWeight.w700),
+                color: AppColors.textColor,
+                fontSize: 26.sp,
+                height: 1,
+                fontWeight: FontWeight.w700,
+              ),
             ),
             TextSpan(
-              text: "\n${getFormattedDate(today)}",
+              text: '\n${getFormattedDate(today)}',
               style: TextStyle(
-                  color: AppColors.textColor,
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w700),
+                color: AppColors.textColor,
+                fontSize: 20.sp,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ],
         ),
@@ -118,14 +141,19 @@ class _HomePageState extends State<HomePage> {
                   topRight: Radius.circular(22.r),
                 ),
               ),
-              padding: EdgeInsets.symmetric(vertical: 12.h),
-              child: Text(
-                "Action of the day".toUpperCase(),
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20.sp,
-                  color: Colors.white,
+              child: NeoPopShimmer(
+                shimmerColor: Colors.white54,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12.h),
+                  child: Text(
+                    'Action of the day'.toUpperCase(),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20.sp,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -134,9 +162,10 @@ class _HomePageState extends State<HomePage> {
               child: Text(
                 "Borrow or rent instead of buying a tool or appliance you'll only use once",
                 style: TextStyle(
-                    color: AppColors.primaryColor,
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.bold),
+                  color: AppColors.primaryColor,
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
+                ),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -144,18 +173,19 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: EdgeInsets.only(top: 8.h),
               child: Text(
-                "02 hr 33 min left",
+                '02 hr 33 min left',
                 style: TextStyle(
-                    color: AppColors.primaryColor,
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.bold),
+                  color: AppColors.primaryColor,
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
+                ),
                 textAlign: TextAlign.center,
               ),
             ),
             Padding(
               padding: EdgeInsets.all(8.h),
               child: Text(
-                """Description: Extend the life of existing items and reduce unnecessary consumption""",
+                '''Description: Extend the life of existing items and reduce unnecessary consumption''',
                 style: TextStyle(
                   color: AppColors.primaryColor,
                   fontSize: 18.sp,
@@ -178,13 +208,17 @@ class _HomePageState extends State<HomePage> {
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 10.h),
                       decoration: BoxDecoration(
-                          border: Border(
-                              right: BorderSide(
-                                  width: 1.2.w, color: Colors.white))),
+                        border: Border(
+                          right: BorderSide(
+                            width: 1.2.w,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
                       child: InkWell(
                         onTap: () {},
                         child: Text(
-                          "Verify",
+                          'Verify',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -199,7 +233,7 @@ class _HomePageState extends State<HomePage> {
                     child: InkWell(
                       onTap: () {},
                       child: Text(
-                        "Impact",
+                        'Impact',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -213,13 +247,17 @@ class _HomePageState extends State<HomePage> {
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 10.h),
                       decoration: BoxDecoration(
-                          border: Border(
-                              left: BorderSide(
-                                  width: 1.2.w, color: Colors.white))),
+                        border: Border(
+                          left: BorderSide(
+                            width: 1.2.w,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
                       child: InkWell(
                         onTap: () {},
                         child: Text(
-                          "Modify",
+                          'Modify',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -237,10 +275,9 @@ class _HomePageState extends State<HomePage> {
         ),
       );
 
-  levelBar() => Container(
-        height: 40.h,
+  Widget levelBar() => Container(
         margin: EdgeInsets.symmetric(horizontal: 40.w, vertical: 2.h),
-        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 2.h),
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
         decoration: BoxDecoration(
           color: AppColors.secondaryColor,
           borderRadius: BorderRadius.all(Radius.circular(18.r)),
@@ -248,23 +285,25 @@ class _HomePageState extends State<HomePage> {
         child: Row(
           children: [
             Text(
-              "Medium",
+              'Medium',
               style: TextStyle(
-                  color: AppColors.primaryColor,
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.bold),
+                color: AppColors.primaryColor,
+                fontSize: 18.sp,
+                fontWeight: FontWeight.bold,
+              ),
               textAlign: TextAlign.center,
             ),
             const Spacer(),
             Lottie.asset(
               'assets/images/leaf.json',
               repeat: false,
+              height: 35.h,
             ),
             Text(
-              "4",
+              '4',
               style: TextStyle(
                 color: AppColors.textColor,
-                fontSize: 22.sp,
+                fontSize: 20.sp,
                 fontWeight: FontWeight.w700,
               ),
             ),

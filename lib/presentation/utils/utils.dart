@@ -27,8 +27,5 @@ BoxDecoration roundedContainerDecoration({
           offset: Offset(0, elevation),
         ),
       ],
-      border: Border.all(
-        color: Colors.black,
-        width: 1.0,
-      ),
+      border: Border.all(),
     );

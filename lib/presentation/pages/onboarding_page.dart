@@ -53,38 +53,41 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage>
         backgroundColor: Colors.white,
         body: artboard == null
             ? const SizedBox()
-            : LayoutBuilder(builder: (context, constraints) {
-                if (isMobileScreen(context) &&
-                    artboard.name.contains("Large")) {
-                  controller.loadRiveFile(isSmallScreen: true);
-                } else if (!isMobileScreen(context) &&
-                    artboard.name.contains("Small")) {
-                  controller.loadRiveFile(isSmallScreen: false);
-                }
-                return GestureDetector(
-                  onTap: () async {
-                    if (!inTransition) {
-                      inTransition = true;
-                      await controller.animateToNextPage(
-                          isSmallScreen: isMobileScreen(context));
-                      Future.delayed(const Duration(seconds: 3), () {
-                        inTransition = false;
-                      });
-                    }
-                  },
-                  child: Stack(
-                    children: [
-                      Rive(
-                        artboard: artboard,
-                        fit: artboard.name.contains("Small")
-                            ? BoxFit.fill
-                            : BoxFit.cover,
-                      ),
-                      if (controller.pageNo == 3) const GetStartedButton(),
-                    ],
-                  ),
-                );
-              }),
+            : LayoutBuilder(
+                builder: (context, constraints) {
+                  if (isMobileScreen(context) &&
+                      artboard.name.contains('Large')) {
+                    controller.loadRiveFile(isSmallScreen: true);
+                  } else if (!isMobileScreen(context) &&
+                      artboard.name.contains('Small')) {
+                    controller.loadRiveFile(isSmallScreen: false);
+                  }
+                  return GestureDetector(
+                    onTap: () async {
+                      if (!inTransition) {
+                        inTransition = true;
+                        await controller.animateToNextPage(
+                          isSmallScreen: isMobileScreen(context),
+                        );
+                        Future.delayed(const Duration(seconds: 3), () {
+                          inTransition = false;
+                        });
+                      }
+                    },
+                    child: Stack(
+                      children: [
+                        Rive(
+                          artboard: artboard,
+                          fit: artboard.name.contains('Small')
+                              ? BoxFit.fill
+                              : BoxFit.cover,
+                        ),
+                        if (controller.pageNo == 3) const GetStartedButton(),
+                      ],
+                    ),
+                  );
+                },
+              ),
       ),
     );
   }

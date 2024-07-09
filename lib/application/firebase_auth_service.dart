@@ -4,42 +4,38 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class FirebaseAuthService {
-  final FirebaseAuth _firebaseAuth;
-
   FirebaseAuthService(this._firebaseAuth);
+  final FirebaseAuth _firebaseAuth;
 
   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
 
   Future<User?> signInAnonymously() async {
-    UserCredential userCredential = await _firebaseAuth.signInAnonymously();
+    final userCredential = await _firebaseAuth.signInAnonymously();
     return userCredential.user;
   }
 
   Future<User?> signInWithGoogle() async {
     if (AdaptivePolicy.currentPlatform == Platform.web) {
-      final GoogleAuthProvider provider = GoogleAuthProvider()
+      final provider = GoogleAuthProvider()
           .setCustomParameters({'prompt': 'select_account'});
       final res = await _firebaseAuth.signInWithPopup(provider);
 
       return res.user;
     }
 
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-    print('does it work?');
+    final googleUser = await GoogleSignIn().signIn();
     if (googleUser == null) {
       // The user canceled the sign-in
       return null;
     }
 
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
+    final googleAuth = await googleUser.authentication;
     final AuthCredential credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
 
-    UserCredential userCredential =
-        await _firebaseAuth.signInWithCredential(credential);
+    final userCredential = await _firebaseAuth.signInWithCredential(credential);
     return userCredential.user;
   }
 

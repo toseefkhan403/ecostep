@@ -1,13 +1,12 @@
+import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 
-import '../utils/app_colors.dart';
-
 class CustomBottomNavigationBar extends StatefulWidget {
-  final PageController pageController;
 
   const CustomBottomNavigationBar(this.pageController, {super.key});
+  final PageController pageController;
 
   @override
   State<CustomBottomNavigationBar> createState() =>
@@ -73,7 +72,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar>
     );
   }
 
-  _bottomNavigationItem(int i) => InkWell(
+  Widget _bottomNavigationItem(int i) => InkWell(
         onTap: () {
           _controller.forward(from: 0);
           _onItemTapped(i);
@@ -95,12 +94,13 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar>
               height: 6.h,
               width: 6.w,
               margin: EdgeInsets.only(bottom: 6.h),
-              duration: const Duration(milliseconds: 500,),
+              duration: const Duration(
+                milliseconds: 500,
+              ),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(6.h)),
-                color: _selectedIndex == i
-                    ? AppColors.primaryColor
-                    : Colors.white,
+                color:
+                    _selectedIndex == i ? AppColors.primaryColor : Colors.white,
               ),
             ),
           ],

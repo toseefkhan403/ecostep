@@ -3,6 +3,7 @@ import 'package:ecostep/presentation/controllers/onboarding_artboard_controller.
 import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:neopop/neopop.dart';
 
 class GetStartedButton extends ConsumerStatefulWidget {
@@ -61,16 +62,17 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
                           setState(() {
                             _showLoginButtons = true;
                           });
-                          _controller.reset();
-                          _controller.forward();
+                          _controller
+                            ..reset()
+                            ..forward();
                         });
                       },
-                      child: const Padding(
+                      child: Padding(
                         padding: EdgeInsets.symmetric(
-                          horizontal: 80.0,
-                          vertical: 15,
+                          horizontal: 80.w,
+                          vertical: 15.h,
                         ),
-                        child: Text(
+                        child: const Text(
                           'Get Started',
                           style: TextStyle(
                             color: Colors.white,
@@ -102,12 +104,12 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
           onTapUp: () {
             ref.read(firebaseAuthServiceProvider).signInWithGoogle();
           },
-          child: const Padding(
+          child: Padding(
             padding: EdgeInsets.symmetric(
-              horizontal: 80.0,
-              vertical: 15,
+              horizontal: 80.w,
+              vertical: 15.h,
             ),
-            child: Text(
+            child: const Text(
               'Sign in with Google',
               style: TextStyle(
                 color: Colors.white,
@@ -123,12 +125,12 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
           onTapUp: () {
             ref.read(firebaseAuthServiceProvider).signInAnonymously();
           },
-          child: const Padding(
+          child: Padding(
             padding: EdgeInsets.symmetric(
-              horizontal: 80.0,
-              vertical: 15,
+              horizontal: 80.w,
+              vertical: 15.h,
             ),
-            child: Text(
+            child: const Text(
               ' Sign in as a Guest  ',
               style: TextStyle(
                 color: Colors.white,

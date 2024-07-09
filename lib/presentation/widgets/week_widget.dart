@@ -1,17 +1,15 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:ecostep/presentation/controllers/selected_date_controller.dart';
+import 'package:ecostep/presentation/utils/app_colors.dart';
+import 'package:ecostep/presentation/utils/date_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../utils/app_colors.dart';
-import '../utils/date_utils.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class WeekWidget extends ConsumerStatefulWidget {
-  final DateTime today;
-
   const WeekWidget(this.today, {super.key});
+  final DateTime today;
 
   @override
   ConsumerState<WeekWidget> createState() => _WeekWidgetState();
@@ -45,7 +43,7 @@ class _WeekWidgetState extends ConsumerState<WeekWidget> {
         ),
         Expanded(
           child: Row(
-            children: currentWeek.map((date) => _dateItem(date)).toList(),
+            children: currentWeek.map(_dateItem).toList(),
           ),
         ),
         Padding(
@@ -66,9 +64,10 @@ class _WeekWidgetState extends ConsumerState<WeekWidget> {
   Widget _dateItem(DateTime date) {
     final provider = ref.read(selectedDateControllerProvider.notifier);
     final weekday = getWeekday(date);
-    bool isSelected = provider.isSelected(date);
+    final isSelected = provider.isSelected(date);
+    // ignore: omit_local_variable_types
     double textOpacity = date.day <= widget.today.day ? 1 : 0.5;
-    if(isSelected) {
+    if (isSelected) {
       textOpacity = 1;
     }
     return Expanded(

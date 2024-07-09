@@ -11,15 +11,15 @@ class OnboardingArtboardController extends StateNotifier<Artboard?> {
   int pageNo;
 
   Future<void> loadRiveFile({bool isSmallScreen = false}) async {
-    debugPrint("loading rive file");
+    debugPrint('loading rive file');
     final file = await RiveFile.asset('assets/rive_assets/greenloop.riv');
 
-    final artboard = file.artboardByName(isSmallScreen
-        ? 'Onboarding${pageNo}Small'
-        : 'Onboarding${pageNo}Large');
+    final artboard = file.artboardByName(
+      isSmallScreen ? 'Onboarding${pageNo}Small' : 'Onboarding${pageNo}Large',
+    );
     if (artboard == null) return;
 
-    var controller =
+    final controller =
         StateMachineController.fromArtboard(artboard, 'State Machine 1');
     if (controller != null) {
       artboard.addController(controller);
@@ -29,7 +29,9 @@ class OnboardingArtboardController extends StateNotifier<Artboard?> {
     }
     state = artboard;
     Future.delayed(
-        const Duration(seconds: 3), () => _showTapText?.value = true);
+      const Duration(seconds: 3),
+      () => _showTapText?.value = true,
+    );
   }
 
   Future<void> animateToNextPage({bool isSmallScreen = false}) {

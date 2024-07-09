@@ -34,7 +34,7 @@ class AdaptivePolicy {
   }
 
   static Size getDesignSize() {
-    Size designSize = const Size(1440, 1024);
+    var designSize = const Size(1440, 1024);
     if (currentPlatform == Platform.android ||
         currentPlatform == Platform.ios) {
       designSize = const Size(360, 690);

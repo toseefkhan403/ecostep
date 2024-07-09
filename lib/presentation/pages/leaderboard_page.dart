@@ -4,6 +4,7 @@ import 'package:ecostep/presentation/utils/utils.dart';
 import 'package:ecostep/presentation/widgets/circular_elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/intl.dart';
 
 class LeaderBoardPage extends StatefulWidget {
   const LeaderBoardPage({super.key});
@@ -21,18 +22,24 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
   @override
   void initState() {
     super.initState();
-    for (int i = 0; i < 10; i++) {
-      dummyRecentUsers.add(User(
+    for (var i = 0; i < 10; i++) {
+      dummyRecentUsers.add(
+        User(
           id: '$i',
           ecoBucksBalance: i * 10,
           personalization: false,
-          joinedOn: DateTime.now()));
+          joinedOn: DateTime.now(),
+        ),
+      );
 
-      dummyImpactUsers.add(User(
+      dummyImpactUsers.add(
+        User(
           id: '$i',
           ecoBucksBalance: i * 10,
           personalization: false,
-          joinedOn: DateTime.now()));
+          joinedOn: DateTime.now(),
+        ),
+      );
     }
   }
 
@@ -54,12 +61,13 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
           Padding(
             padding: EdgeInsets.symmetric(vertical: 20.h),
             child: Text(
-              "Leaderboard",
+              'Leaderboard',
               style: TextStyle(
-                  color: AppColors.textColor,
-                  fontSize: 26.sp,
-                  height: 1,
-                  fontWeight: FontWeight.w700),
+                color: AppColors.textColor,
+                fontSize: 26.sp,
+                height: 1,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
           _buttonRow(),
@@ -86,7 +94,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                 ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
@@ -116,11 +124,14 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                 blurRadius: _selectedIndex == 0 ? 1 : 5,
                 darkShadow: _selectedIndex == 0,
                 onPressed: () => _onItemTapped(0),
-                child: const Text(
-                  "Most Recent",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 15.h),
+                  child: const Text(
+                    'Most Recent',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
@@ -136,11 +147,14 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                 onPressed: () => _onItemTapped(1),
                 blurRadius: _selectedIndex == 1 ? 1 : 5,
                 darkShadow: _selectedIndex == 1,
-                child: const Text(
-                  "Most Impact",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 15.h),
+                  child: const Text(
+                    'Most Impact',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
@@ -156,22 +170,39 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            Row(
+              children: [
+                Text(
+                  '#${index + 1}',
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(8.w),
+                  child: CircleAvatar(
+                    radius: 25.r,
+                  ),
+                ),
+                Text(
+                  '${dummyRecentUser.name}',
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
             Text(
-              "#${index + 1} ${dummyRecentUser.name}",
+              'Impact Score: ${dummyRecentUser.impactScore}',
               style: const TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
               ),
             ),
             Text(
-              "Impact Score: ${dummyRecentUser.impactScore}",
-              style: const TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              "Joined On: ${dummyRecentUser.joinedOn}",
+              "Joined On: ${DateFormat('MMM yy').format(dummyRecentUser.joinedOn)}",
               style: const TextStyle(
                 color: Colors.black,
               ),

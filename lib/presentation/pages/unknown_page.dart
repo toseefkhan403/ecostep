@@ -10,7 +10,7 @@ class UnknownPage extends StatelessWidget {
       backgroundColor: AppColors.primaryColor,
       body: Center(
         child: Text(
-          "404 Not Found",
+          '404 Not Found',
         ),
       ),
     );
