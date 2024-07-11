@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_manual_providers_as_generated_provider_dependency
+import 'package:ecostep/application/firebase_auth_service.dart';
 import 'package:ecostep/presentation/pages/home_screen.dart';
 import 'package:ecostep/presentation/pages/onboarding_page.dart';
 import 'package:ecostep/presentation/pages/unknown_page.dart';
@@ -13,16 +15,15 @@ part 'app_router.g.dart';
 GoRouter goRouter(GoRouterRef ref) {
   return GoRouter(
     initialLocation: '/home',
-    // redirect: (context, GoRouterState state) async {
-    //   final authState = ref.watch(authStateProvider);
+    redirect: (context, GoRouterState state) async {
+      final authState = ref.watch(authStateProvider);
 
-    //   final isLoggedIn = authState.asData?.value != null;
-    //   print('isLogged in: $isLoggedIn');
-    //   final isLoggingIn = state.matchedLocation == '/';
-    //   if (!isLoggedIn && !isLoggingIn) return '/';
-    //   if (isLoggedIn && isLoggingIn) return '/home';
-    //   return null;
-    // },
+      final isLoggedIn = authState.asData?.value != null;
+      final isLoggingIn = state.matchedLocation == '/';
+      if (!isLoggedIn && !isLoggingIn) return '/';
+      if (isLoggedIn && isLoggingIn) return '/home';
+      return null;
+    },
     routes: <GoRoute>[
       GoRoute(
         path: '/',

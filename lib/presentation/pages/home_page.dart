@@ -5,11 +5,11 @@ import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/presentation/utils/date_utils.dart';
 import 'package:ecostep/presentation/utils/utils.dart';
 import 'package:ecostep/presentation/widgets/circular_elevated_button.dart';
+import 'package:ecostep/presentation/widgets/lottie_icon_widget.dart';
 import 'package:ecostep/presentation/widgets/week_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:lottie/lottie.dart';
 import 'package:neopop/neopop.dart';
 
 class HomePage extends StatefulWidget {
@@ -40,9 +40,9 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   _dateHeading(),
                   const Spacer(),
-                  _iconButton(),
+                  _iconButton('passion'),
                   SizedBox(width: 8.w),
-                  _iconButton(),
+                  _iconButton('recycle'),
                 ],
               ),
             ),
@@ -71,30 +71,24 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _iconButton() {
+  Widget _iconButton(String iconName) {
     return Consumer(
       builder: (context, ref, child) {
-        return InkWell(
-          onTap: () {
-            ref.read(firebaseAuthServiceProvider).signOut();
-          },
-          child: Row(
-            children: [
-              Icon(
-                Icons.fire_extinguisher,
-                color: AppColors.primaryColor,
-                size: 32.w,
+        return Row(
+          children: [
+            LottieIconWidget(
+              iconName: iconName,
+              onTap: () => ref.read(firebaseAuthServiceProvider).signOut(),
+            ),
+            Text(
+              '4',
+              style: TextStyle(
+                color: AppColors.textColor,
+                fontSize: 22.sp,
+                fontWeight: FontWeight.w700,
               ),
-              Text(
-                '4',
-                style: TextStyle(
-                  color: AppColors.textColor,
-                  fontSize: 22.sp,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         );
       },
     );
@@ -277,7 +271,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget levelBar() => Container(
         margin: EdgeInsets.symmetric(horizontal: 40.w, vertical: 2.h),
-        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
         decoration: BoxDecoration(
           color: AppColors.secondaryColor,
           borderRadius: BorderRadius.all(Radius.circular(18.r)),
@@ -294,11 +288,7 @@ class _HomePageState extends State<HomePage> {
               textAlign: TextAlign.center,
             ),
             const Spacer(),
-            Lottie.asset(
-              'assets/images/leaf.json',
-              repeat: false,
-              height: 35.h,
-            ),
+            const LottieIconWidget(iconName: 'coin'),
             Text(
               '4',
               style: TextStyle(
