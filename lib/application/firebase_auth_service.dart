@@ -1,6 +1,5 @@
 import 'package:ecostep/presentation/utils/adaptive_policy.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -41,12 +40,8 @@ class FirebaseAuthService {
   }
 
   Future<void> signOut() async {
-    try {
-      await _firebaseAuth.signOut();
-      await GoogleSignIn().signOut();
-    } catch (e) {
-      debugPrint(e.toString());
-    }
+    await _firebaseAuth.signOut();
+    await GoogleSignIn().signOut();
   }
 }
 

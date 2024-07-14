@@ -73,7 +73,7 @@ class _WeekWidgetState extends ConsumerState<WeekWidget> {
     return Expanded(
       child: InkWell(
         onTap: () {
-          provider.selectedDate = date;
+          provider.setSelectedDate(date);
         },
         child: Container(
           padding: EdgeInsets.all(4.w),

@@ -6,7 +6,6 @@ import 'package:ecostep/presentation/utils/utils.dart';
 import 'package:ecostep/presentation/widgets/custom_bottom_navigation_bar.dart';
 import 'package:ecostep/presentation/widgets/custom_navigation_rail.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -86,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
             width: MediaQuery.of(context).size.width,
           ),
           Padding(
-            padding: EdgeInsets.only(left: 70.w),
+            padding: const EdgeInsets.only(left: 50),
             child: PageView(
               controller: _pageController,
               physics: const NeverScrollableScrollPhysics(),
