@@ -202,8 +202,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
               ),
             ),
             Text(
-              "Joined On: ${DateFormat('MMM yy')
-              .format(dummyRecentUser.joinedOn)}",
+              "Joined On: ${DateFormat('MMM yy').format(dummyRecentUser.joinedOn)}",
               style: const TextStyle(
                 color: Colors.black,
               ),

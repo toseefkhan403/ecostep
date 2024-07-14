@@ -3,11 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class SelectedDateController extends StateNotifier<DateTime> {
   SelectedDateController() : super(DateTime.now());
 
-  set selectedDate(DateTime date) {
+  void setSelectedDate(DateTime date) {
     state = date;
   }
-
-  DateTime get selectedDate => state;
 
   bool isSelected(DateTime date) {
     return date.month == state.month &&

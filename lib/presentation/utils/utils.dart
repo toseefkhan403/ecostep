@@ -29,18 +29,3 @@ BoxDecoration roundedContainerDecoration({
       ],
       border: Border.all(),
     );
-
-String iconFromNavigationIndex(int i) {
-  switch (i) {
-    case 0:
-      return 'home';
-    case 1:
-      return 'podium';
-    case 2:
-      return 'stalls';
-    case 3:
-      return 'boy';
-    default:
-      return 'recycle';
-  }
-}
