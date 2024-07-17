@@ -1,4 +1,4 @@
-import 'package:ecostep/presentation/pages/home_page.dart';
+// ignore_for_file: avoid_manual_providers_as_generated_provider_dependency
 import 'package:ecostep/presentation/pages/home_screen.dart';
 import 'package:ecostep/presentation/pages/onboarding_page.dart';
 import 'package:ecostep/presentation/pages/unknown_page.dart';
@@ -7,7 +7,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:file_picker/file_picker.dart';
+
 part 'app_router.g.dart';
 
 @Riverpod(keepAlive: true)
@@ -18,7 +18,6 @@ GoRouter goRouter(GoRouterRef ref) {
     //   final authState = ref.watch(authStateProvider);
 
     //   final isLoggedIn = authState.asData?.value != null;
-    //   print('isLogged in: $isLoggedIn');
     //   final isLoggingIn = state.matchedLocation == '/';
     //   if (!isLoggedIn && !isLoggingIn) return '/';
     //   if (isLoggedIn && isLoggingIn) return '/home';
@@ -38,7 +37,7 @@ GoRouter goRouter(GoRouterRef ref) {
         pageBuilder: (context, state) {
           return CustomTransitionPage(
             key: state.pageKey,
-            child: HomeScreen(),
+            child: const HomeScreen(),
             transitionDuration: const Duration(milliseconds: 1000),
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) {

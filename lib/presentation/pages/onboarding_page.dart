@@ -60,7 +60,8 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage>
                     controller.loadRiveFile(isSmallScreen: true);
                   } else if (!isMobileScreen(context) &&
                       artboard.name.contains('Small')) {
-                    controller.loadRiveFile(isSmallScreen: false);
+                    // isSmallScreen: false by default
+                    controller.loadRiveFile();
                   }
                   return GestureDetector(
                     onTap: () async {
