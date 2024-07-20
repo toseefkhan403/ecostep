@@ -29,7 +29,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => ref
           .read(actionsControllerProvider.notifier)
-          .currentWeekActions(today),
+          .currentWeekActions(getCurrentWeek()),
     );
     super.initState();
   }
@@ -85,7 +85,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                         ),
                       ),
                       WeekWidget(today),
-                      actionWidget(actions[selectedDate.weekday]),
+                      actionWidget(actions[selectedDate.weekday - 1]),
                     ],
                   ),
                 ),

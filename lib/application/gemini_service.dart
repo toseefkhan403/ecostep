@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'dart:typed_data';
 import 'package:ecostep/domain/action.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
@@ -18,6 +18,7 @@ class GeminiService {
   late final GenerativeModel model;
 
   Future<List<Action>> generateActions() async {
+    debugPrint('generating actions with AI');
     const prompt =
         r'''Give one actionable task per day for a person for 7 days which is good for the environment, wildlife, nature, humanity, etc. Some examples include: feeding a stray animal, keeping a water bowl for birds, recycling a plastic bottle, etc. Give the difficulty as well based on the effort required to complete that task as easy, moderate, hard. Progressively increase the difficulty of the tasks. These actions should be verifiable by analyzing an image provided by the user. Return the output in json using the following structure: {[ "action" : "$action", "description" : "$description", "difficulty" : "$difficulty", "impact" : "$impact", "impactIfNotDone" : "$impactIfNotDone", "verifiable_image" : "$verifiable_image",]}''';
 
@@ -30,12 +31,13 @@ class GeminiService {
 
   Future<int> verifyImage(Uint8List imageBytes) async {
     final prompt = TextPart(
-        r'''Give a percentage score for this image on how much it matches this description: Image showing the user participating in a volunteer activity for an environmental organization (planting trees, cleaning a beach, etc.). Return the output in json using the following structure: { "verifiedScore" : "$verifiedScore"}''');
+      r'''Give a percentage score for this image on how much it matches this description: Image showing the user participating in a volunteer activity for an environmental organization (planting trees, cleaning a beach, etc.). Return the output in json using the following structure: { "verifiedScore" : "$verifiedScore"}''',
+    );
 
     final imagePart = DataPart('image/jpeg', imageBytes);
 
     final output = await model.generateContent([
-      Content.multi([prompt, imagePart])
+      Content.multi([prompt, imagePart]),
     ]);
 
     final jsonResponse = jsonDecode(output.text!) as Map<String, dynamic>;

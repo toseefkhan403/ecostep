@@ -5,6 +5,11 @@ String getFormattedDate(DateTime date) {
   return formatter.format(date);
 }
 
+String getFormattedFullDate(DateTime date) {
+  final formatter = DateFormat('dd-MM-yyyy');
+  return formatter.format(date);
+}
+
 List<String> getWeekday(DateTime date) {
   final formatter = DateFormat('E');
   final formatterD = DateFormat('dd');

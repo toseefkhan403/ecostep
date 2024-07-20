@@ -51,7 +51,7 @@ class VerifyImageDialog extends ConsumerWidget {
                   SizedBox(
                     width: 352.w,
                     child: Text(
-                      'Verify your action image with AI ✨ to receive your reward',
+                      '''Verify your action image with AI ✨ to receive your reward''',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: const Color.fromRGBO(113, 55, 73, 1),
@@ -70,7 +70,7 @@ class VerifyImageDialog extends ConsumerWidget {
                         ? Column(
                             children: [
                               Text(
-                                'Verified successfully!  score:  ${state.verifiedscore}',
+                                '''Verified successfully! Score: ${state.verifiedscore}''',
                                 style: TextStyle(
                                   color: const Color.fromRGBO(113, 55, 73, 1),
                                   fontSize: 16.sp,

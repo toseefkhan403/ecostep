@@ -1,4 +1,6 @@
 import 'package:ecostep/application/firebase_auth_service.dart';
+import 'package:ecostep/application/firestore_service.dart';
+import 'package:ecostep/domain/user.dart';
 import 'package:ecostep/presentation/controllers/onboarding_artboard_controller.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -101,8 +103,22 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
       children: [
         NeoPopButton(
           color: AppColors.primaryColor,
-          onTapUp: () {
-            ref.read(firebaseAuthServiceProvider).signInWithGoogle();
+          onTapUp: () async {
+            final user =
+                await ref.read(firebaseAuthServiceProvider).signInWithGoogle();
+            if (user == null) return;
+
+            await ref.read(firestoreServiceProvider).createUserIfDoesntExist(
+                  User(
+                    id: user.uid,
+                    ecoBucksBalance: 100,
+                    personalization: false,
+                    name: user.displayName,
+                    profilePicture: user.photoURL,
+                    impactScore: 0,
+                    joinedOn: DateTime.now(),
+                  ),
+                );
           },
           child: Padding(
             padding: EdgeInsets.symmetric(
@@ -122,8 +138,22 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
         const SizedBox(height: 20),
         NeoPopButton(
           color: AppColors.primaryColor,
-          onTapUp: () {
-            ref.read(firebaseAuthServiceProvider).signInAnonymously();
+          onTapUp: () async {
+            final user =
+                await ref.read(firebaseAuthServiceProvider).signInAnonymously();
+            if (user == null) return;
+
+            await ref.read(firestoreServiceProvider).createUserIfDoesntExist(
+                  User(
+                    id: user.uid,
+                    ecoBucksBalance: 100,
+                    personalization: false,
+                    name: user.displayName,
+                    profilePicture: user.photoURL,
+                    impactScore: 0,
+                    joinedOn: DateTime.now(),
+                  ),
+                );
           },
           child: Padding(
             padding: EdgeInsets.symmetric(

@@ -1,6 +1,3 @@
-# Flutter action
-# https://github.com/marketplace/actions/flutter-action
-
 name: Flutter
 
 on:
@@ -16,16 +13,15 @@ jobs:
     steps:
       - name: Clone repository
         uses: actions/checkout@v4
-      - uses: kuhnroyal/flutter-fvm-config-action@v2
-        id: fvm-config-action
+
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: ${{ steps.fvm-config-action.outputs.FLUTTER_VERSION }}
-          channel: ${{ steps.fvm-config-action.outputs.FLUTTER_CHANNEL }}
+          flutter-version: "3.22.2"
+          channel: "stable"
+
       - name: Setup project
         run: |
-          git config --global --add safe.directory /opt/hostedtoolcache/flutter/${{ steps.flutter-action.outputs.CHANNEL }}-${{ steps.flutter-action.outputs.VERSION }}-${{ steps.flutter-action.outputs.ARCHITECTURE }}
           flutter --version
           # Install dependencies
           flutter pub get
