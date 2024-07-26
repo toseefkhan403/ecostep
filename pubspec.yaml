@@ -1,10 +1,10 @@
 name: ecostep
 description: "Greenloop: A Platform for Recycling and Reusing through Sustainable Living"
-publish_to: 'none'
+publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.4.1 <4.0.0'
+  sdk: ">=3.4.1 <4.0.0"
 
 dependencies:
   auto_size_text: ^3.0.0
@@ -30,6 +30,7 @@ dependencies:
   json_annotation: ^4.9.0
   lottie: ^3.1.2
   neopop: ^1.0.2
+  random_string: ^2.3.1
   rive: ^0.13.5
   riverpod_annotation: ^2.3.5
 
@@ -52,6 +53,7 @@ flutter:
     - assets/
     - assets/images/
     - assets/rive_assets/
+    - .env
 
   fonts:
     - family: Poppins

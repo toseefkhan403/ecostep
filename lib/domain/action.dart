@@ -11,6 +11,7 @@ class Action with _$Action {
     required String difficulty,
     required String impact,
     required String impactIfNotDone,
+    // ignore: non_constant_identifier_names
     required String verifiable_image,
   }) = _Action;
 

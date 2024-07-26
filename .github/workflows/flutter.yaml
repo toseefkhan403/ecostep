@@ -1,0 +1,45 @@
+name: Flutter
+
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.22.2"
+          channel: "stable"
+
+      - name: Setup project
+        run: |
+          flutter --version
+          # Install dependencies
+          flutter pub get
+          # Build auto-generated files
+          dart run build_runner build
+
+      - name: Analyze project source
+        run: |
+          # Consider passing '--fatal-infos' for slightly stricter analysis.
+          flutter analyze
+          # Riverpod analysis
+          dart run custom_lint
+
+      # Your project will need to have tests in test/ and a dependency on
+      # package:test for this step to succeed. Note that Flutter projects will
+      # want to change this to 'flutter test'.
+      - name: Run tests
+        run: flutter test
+
+      # Verify that the web build works
+      - run: flutter build web

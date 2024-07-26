@@ -1,10 +1,9 @@
 import 'package:ecostep/presentation/utils/app_colors.dart';
+import 'package:ecostep/presentation/utils/utils.dart';
+import 'package:ecostep/presentation/widgets/lottie_icon_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:lottie/lottie.dart';
 
 class CustomBottomNavigationBar extends StatefulWidget {
-
   const CustomBottomNavigationBar(this.pageController, {super.key});
   final PageController pageController;
 
@@ -37,26 +36,27 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar>
     });
     widget.pageController.animateToPage(
       index,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeIn,
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 60.h,
-      decoration: BoxDecoration(
+      height: 60,
+      width: double.infinity,
+      decoration: const BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30.r),
-          topRight: Radius.circular(30.r),
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
         ),
         boxShadow: [
           BoxShadow(
             color: Colors.black26,
-            offset: const Offset(0, -1),
-            blurRadius: 10.r,
+            offset: Offset(0, -1),
+            blurRadius: 10,
           ),
         ],
       ),
@@ -72,33 +72,24 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar>
     );
   }
 
-  Widget _bottomNavigationItem(int i) => InkWell(
-        onTap: () {
-          _controller.forward(from: 0);
-          _onItemTapped(i);
-        },
+  Widget _bottomNavigationItem(int i) => Padding(
+        padding: const EdgeInsets.all(8),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Lottie.asset(
-              'assets/images/leaf.json',
-              controller: _controller,
-              height: 40.h,
-              onLoaded: (composition) {
-                _controller
-                  ..duration = composition.duration
-                  ..forward();
-              },
+            LottieIconWidget(
+              iconName: iconFromNavigationIndex(i),
+              onTap: () => _onItemTapped(i),
+              height: 35,
             ),
             AnimatedContainer(
-              height: 6.h,
-              width: 6.w,
-              margin: EdgeInsets.only(bottom: 6.h),
+              height: 6,
+              width: 6,
               duration: const Duration(
                 milliseconds: 500,
               ),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(6.h)),
+                borderRadius: const BorderRadius.all(Radius.circular(6)),
                 color:
                     _selectedIndex == i ? AppColors.primaryColor : Colors.white,
               ),
