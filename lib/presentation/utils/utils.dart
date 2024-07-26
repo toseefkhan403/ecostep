@@ -44,3 +44,8 @@ String iconFromNavigationIndex(int i) {
       return 'recycle';
   }
 }
+
+void showSnackbar(BuildContext context, String title) =>
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(title),
+    ));

@@ -5,7 +5,7 @@ String getFormattedDate(DateTime date) {
   return formatter.format(date);
 }
 
-String getFormattedFullDate(DateTime date) {
+String getFormattedDateForDb(DateTime date) {
   final formatter = DateFormat('dd-MM-yyyy');
   return formatter.format(date);
 }
@@ -30,4 +30,22 @@ List<DateTime> getCurrentWeek() {
   }
 
   return week;
+}
+
+String getTimeUntilEod() {
+  // Get the current time
+  final now = DateTime.now();
+
+  // Calculate the end of the day (midnight)
+  final endOfDay = DateTime(now.year, now.month, now.day + 1);
+
+  // Calculate the difference
+  final difference = endOfDay.difference(now);
+
+  // Extract hours and minutes
+  final hours = difference.inHours;
+  final minutes = difference.inMinutes % 60;
+
+  // Format the remaining time
+  return '${hours.toString().padLeft(2, '0')} hr ${minutes.toString().padLeft(2, '0')} min left';
 }

@@ -27,6 +27,8 @@ jobs:
           flutter pub get
           # Build auto-generated files
           dart run build_runner build
+          # Add project env vars
+          cp .env.example .env
 
       - name: Analyze project source
         run: |

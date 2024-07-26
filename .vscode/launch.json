@@ -15,17 +15,6 @@
             ]
         },
         {
-            "name": "ecostep (web in profile mode)",
-            "request": "launch",
-            "type": "dart",
-            "program": "lib/main.dart",
-            "flutterMode": "profile",
-            "args": [
-                "-d",
-                "chrome"
-            ]
-        },
-        {
             "name": "ecostep (web in release mode)",
             "request": "launch",
             "type": "dart",
@@ -47,28 +36,6 @@
             ],
         },
         {
-            "name": "ecostep (android in profile mode)",
-            "request": "launch",
-            "type": "dart",
-            "program": "lib/main.dart",
-            "flutterMode": "profile",
-            "args": [
-                "-d",
-                "android"
-            ]
-        },
-        {
-            "name": "ecostep (android in release mode)",
-            "request": "launch",
-            "type": "dart",
-            "program": "lib/main.dart",
-            "flutterMode": "release",
-            "args": [
-                "-d",
-                "android"
-            ]
-        },
-        {
             "name": "ecostep (ios)",
             "request": "launch",
             "type": "dart",
@@ -79,25 +46,13 @@
             ]
         },
         {
-            "name": "ecostep (ios in profile mode)",
+            "name": "ecostep (windows)",
             "request": "launch",
             "type": "dart",
             "program": "lib/main.dart",
-            "flutterMode": "profile",
             "args": [
                 "-d",
-                "ios"
-            ]
-        },
-        {
-            "name": "ecostep (ios in release mode)",
-            "request": "launch",
-            "type": "dart",
-            "program": "lib/main.dart",
-            "flutterMode": "release",
-            "args": [
-                "-d",
-                "ios"
+                "windows"
             ]
         }
     ]

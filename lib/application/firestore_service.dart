@@ -14,7 +14,7 @@ class FirestoreService {
   final FirebaseFirestore firestore;
   final auth_user.User? currentUser;
 
-  Future<List<Action>> fetchActions(List<DateTime> currentWeek) async {
+  Future<Map<String, Action>> fetchActions() async {
     final querySnapshot = await FirebaseFirestore.instance
         .collection('users')
         .doc(currentUser?.uid)
@@ -24,10 +24,10 @@ class FirestoreService {
         querySnapshot.data()?['userActions'] as Map<String, dynamic>?;
 
     if (userActions == null) {
-      return [];
+      return {};
     }
 
-    return fetchActionsFromRefsMap(currentWeek, userActions);
+    return fetchActionsFromRefsMap(userActions);
   }
 
   Future<void> storeActions(
@@ -56,7 +56,7 @@ class FirestoreService {
 
     final updates = <String, DocumentReference>{};
     for (var i = 0; i < 7; i++) {
-      updates[getFormattedFullDate(currentWeek[i])] = docRefs[i];
+      updates[getFormattedDateForDb(currentWeek[i])] = docRefs[i];
     }
 
     await userDocRef.update(
@@ -77,24 +77,20 @@ class FirestoreService {
     return querySnapshot.exists;
   }
 
-  Future<List<Action>> fetchActionsFromRefsMap(
-    List<DateTime> currentWeek,
+  Future<Map<String, Action>> fetchActionsFromRefsMap(
     Map<String, dynamic> userActions,
   ) async {
-    final actions = <Action>[];
+    final result = <String, Action>{};
 
-    // get actions from docRefs
-    for (final date in currentWeek) {
-      final actionDoc =
-          await (userActions[getFormattedFullDate(date)] as DocumentReference)
-              .get();
+    userActions.forEach((key, val) async {
+      final actionDoc = await (val as DocumentReference).get();
       if (actionDoc.exists) {
         final actionData = actionDoc.data()! as Map<String, dynamic>;
-        actions.add(Action.fromJson(actionData));
+        result[key] = Action.fromJson(actionData);
       }
-    }
+    });
 
-    return actions;
+    return result;
   }
 }
 

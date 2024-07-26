@@ -1,10 +1,11 @@
 import 'package:ecostep/application/firebase_auth_service.dart';
 import 'package:ecostep/domain/action.dart';
 import 'package:ecostep/presentation/controllers/actions_controller.dart';
-import 'package:ecostep/presentation/controllers/selected_date_controller.dart';
+import 'package:ecostep/presentation/controllers/week_widget_controller.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/presentation/utils/date_utils.dart';
 import 'package:ecostep/presentation/utils/utils.dart';
+import 'package:ecostep/presentation/widgets/async_value_widget.dart';
 import 'package:ecostep/presentation/widgets/circular_elevated_button.dart';
 import 'package:ecostep/presentation/widgets/lottie_icon_widget.dart';
 import 'package:ecostep/presentation/widgets/verify_image_dialog.dart';
@@ -29,68 +30,70 @@ class _HomePageState extends ConsumerState<HomePage> {
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => ref
           .read(actionsControllerProvider.notifier)
-          .currentWeekActions(getCurrentWeek()),
+          .fetchCurrentUserActions(),
     );
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final actions = ref.watch(actionsControllerProvider);
-    final selectedDate = ref.watch(selectedDateControllerProvider);
+    final actionsValue = ref.watch(actionsControllerProvider);
+    final weekState = ref.watch(weekWidgetControllerProvider);
 
     final width = MediaQuery.of(context).size.width;
     return SingleChildScrollView(
-      child: actions.isEmpty
-          ? SizedBox(
-              height: MediaQuery.of(context).size.height,
-              child: const Center(child: CircularProgressIndicator()),
-            )
-          : Column(
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: !isMobileScreen(context) ? width * 0.25 : 10,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: !isMobileScreen(context) ? width * 0.25 : 10,
-                  ),
-                  child: Column(
+                  padding: EdgeInsets.all(12.w),
+                  child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: EdgeInsets.all(12.w),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _dateHeading(),
-                            const Spacer(),
-                            _iconButton('passion'),
-                            SizedBox(width: 8.w),
-                            _iconButton('recycle'),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 30.h),
-                        child: CircularElevatedButton(
-                          onPressed: () {},
-                          width: double.infinity,
-                          color: AppColors.backgroundColor,
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8.w),
-                            child: const Text(
-                              '''Your AI generated sustainable actions are not currently personalized. Click here to fill more information about your lifestyle to enable personalized actions.''',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                        ),
-                      ),
-                      WeekWidget(today),
-                      actionWidget(actions[selectedDate.weekday - 1]),
+                      _dateHeading(),
+                      const Spacer(),
+                      _iconButton('passion'),
+                      SizedBox(width: 8.w),
+                      _iconButton('recycle'),
                     ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 30.h),
+                  child: CircularElevatedButton(
+                    onPressed: () {},
+                    width: double.infinity,
+                    color: AppColors.backgroundColor,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8.w),
+                      child: const Text(
+                        '''Your AI generated sustainable actions are not currently personalized. Click here to fill more information about your lifestyle to enable personalized actions.''',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontWeight: FontWeight.w500),
+                      ),
+                    ),
+                  ),
+                ),
+                WeekWidget(today),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.5,
+                  child: AsyncValueWidget(
+                    value: actionsValue,
+                    data: (actions) => actionWidget(
+                        actions[getFormattedDateForDb(weekState.selectedDate)]),
                   ),
                 ),
               ],
             ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -141,8 +144,38 @@ class _HomePageState extends ConsumerState<HomePage> {
         ),
       );
 
-  Widget actionWidget(Action action) {
-    // TODOfetch and set verified image data in db
+  Widget actionNotFoundWidget() {
+    final actionsProvider = ref.read(actionsControllerProvider.notifier);
+    final weekState = ref.watch(weekWidgetControllerProvider);
+
+    return Center(
+        child: TextButton(
+          onPressed: () async {
+            final success = await actionsProvider
+                .generateActionsForWeek(weekState.selectedWeek);
+            if (success) {
+              await ref
+                  .read(actionsControllerProvider.notifier)
+                  .fetchCurrentUserActions();
+            } else {
+              showSnackbar(
+                context,
+                'Our AI is overloaded with work right now! Please try again later!',
+              );
+            }
+          },
+          child: const Text(
+            'AI actions have not been generated for this week yet. Click here to generate',
+          ),
+        ),
+      );
+  }
+
+  Widget actionWidget(Action? action) {
+    if (action == null) {
+      return actionNotFoundWidget();
+    }
+    // TODOfetch and set isVerified in db
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 12.w, vertical: 24.h),
       decoration: BoxDecoration(
@@ -194,7 +227,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           Padding(
             padding: EdgeInsets.only(top: 8.h),
             child: Text(
-              '02 hr 33 min left',
+              getTimeUntilEod(),
               style: TextStyle(
                 color: AppColors.primaryColor,
                 fontSize: 18.sp,
@@ -303,11 +336,18 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   Widget levelBar({required String difficulty}) {
+    var levelColor = AppColors.accentColor;
+    if (difficulty.toLowerCase() == 'moderate') {
+      levelColor = AppColors.secondaryColor;
+    } else if (difficulty.toLowerCase() == 'hard') {
+      levelColor = Colors.amber;
+    }
+
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 40.w, vertical: 2.h),
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
       decoration: BoxDecoration(
-        color: AppColors.secondaryColor,
+        color: levelColor,
         borderRadius: BorderRadius.all(Radius.circular(18.r)),
       ),
       child: Row(

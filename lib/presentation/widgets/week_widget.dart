@@ -1,5 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:ecostep/presentation/controllers/selected_date_controller.dart';
+import 'package:ecostep/presentation/controllers/week_widget_controller.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/presentation/utils/date_utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,45 +16,36 @@ class WeekWidget extends ConsumerStatefulWidget {
 }
 
 class _WeekWidgetState extends ConsumerState<WeekWidget> {
-  List<DateTime> currentWeek = [];
-
-  @override
-  void initState() {
-    currentWeek = getCurrentWeek();
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
-    ref.watch(selectedDateControllerProvider);
+    final weekState = ref.watch(weekWidgetControllerProvider);
+    final controller = ref.read(weekWidgetControllerProvider.notifier);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        InkWell(
-          onTap: () {},
-          child: Padding(
-            padding: EdgeInsets.all(5.w),
-            child: Icon(
-              CupertinoIcons.left_chevron,
-              color: AppColors.primaryColor,
-              size: 16.w,
-            ),
+        IconButton(
+          onPressed: () {
+            controller.changeWeek(goBack: true);
+          },
+          icon: Icon(
+            CupertinoIcons.left_chevron,
+            color: AppColors.primaryColor,
+            size: 16.w,
           ),
         ),
         Expanded(
           child: Row(
-            children: currentWeek.map(_dateItem).toList(),
+            children: weekState.selectedWeek.map(_dateItem).toList(),
           ),
         ),
-        Padding(
-          padding: EdgeInsets.all(5.w),
-          child: InkWell(
-            onTap: () {},
-            child: Icon(
-              CupertinoIcons.right_chevron,
-              color: AppColors.primaryColor,
-              size: 16.w,
-            ),
+        IconButton(
+          onPressed: () {
+            controller.changeWeek(goBack: false);
+          },
+          icon: Icon(
+            CupertinoIcons.right_chevron,
+            color: AppColors.primaryColor,
+            size: 16.w,
           ),
         ),
       ],
@@ -62,18 +53,18 @@ class _WeekWidgetState extends ConsumerState<WeekWidget> {
   }
 
   Widget _dateItem(DateTime date) {
-    final provider = ref.read(selectedDateControllerProvider.notifier);
+    final provider = ref.read(weekWidgetControllerProvider.notifier);
     final weekday = getWeekday(date);
     final isSelected = provider.isSelected(date);
     // ignore: omit_local_variable_types
-    double textOpacity = date.day <= widget.today.day ? 1 : 0.5;
+    double textOpacity = date.isBefore(widget.today) ? 1 : 0.5;
     if (isSelected) {
       textOpacity = 1;
     }
     return Expanded(
       child: InkWell(
         onTap: () {
-          provider.selectedDate = date;
+          provider.setSelectedDate(date);
         },
         child: Container(
           padding: EdgeInsets.all(4.w),
