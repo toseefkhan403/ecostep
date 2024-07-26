@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:ecostep/application/firebase_auth_service.dart';
 import 'package:ecostep/domain/action.dart';
 import 'package:ecostep/presentation/controllers/actions_controller.dart';
@@ -86,7 +88,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                   child: AsyncValueWidget(
                     value: actionsValue,
                     data: (actions) => actionWidget(
-                        actions[getFormattedDateForDb(weekState.selectedDate)]),
+                      actions[getFormattedDateForDb(weekState.selectedDate)],
+                    ),
                   ),
                 ),
               ],
@@ -149,26 +152,26 @@ class _HomePageState extends ConsumerState<HomePage> {
     final weekState = ref.watch(weekWidgetControllerProvider);
 
     return Center(
-        child: TextButton(
-          onPressed: () async {
-            final success = await actionsProvider
-                .generateActionsForWeek(weekState.selectedWeek);
-            if (success) {
-              await ref
-                  .read(actionsControllerProvider.notifier)
-                  .fetchCurrentUserActions();
-            } else {
-              showSnackbar(
-                context,
-                'Our AI is overloaded with work right now! Please try again later!',
-              );
-            }
-          },
-          child: const Text(
-            'AI actions have not been generated for this week yet. Click here to generate',
-          ),
+      child: TextButton(
+        onPressed: () async {
+          final success = await actionsProvider
+              .generateActionsForWeek(weekState.selectedWeek);
+          if (success) {
+            await ref
+                .read(actionsControllerProvider.notifier)
+                .fetchCurrentUserActions();
+          } else {
+            showSnackbar(
+              context,
+              '''Our AI is overloaded with work right now! Please try again later!''',
+            );
+          }
+        },
+        child: const Text(
+          '''AI actions have not been generated for this week yet. Click here to generate''',
         ),
-      );
+      ),
+    );
   }
 
   Widget actionWidget(Action? action) {

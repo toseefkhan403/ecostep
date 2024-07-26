@@ -1,5 +1,6 @@
 import 'package:ecostep/presentation/pages/home_page.dart';
 import 'package:ecostep/presentation/pages/leaderboard_page.dart';
+import 'package:ecostep/presentation/pages/market_place_screen.dart';
 import 'package:ecostep/presentation/pages/profile_page.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/presentation/utils/utils.dart';
@@ -93,7 +94,8 @@ class _HomeScreenState extends State<HomeScreen> {
               children: const [
                 HomePage(),
                 LeaderBoardPage(),
-                Center(child: Text('Marketplace')),
+                MarketplaceScreen(),
+                // Center(child: Text('Marketplace')),
                 ProfilePage(),
               ],
             ),
