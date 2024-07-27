@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:ecostep/presentation/controllers/week_widget_controller.dart';
+import 'package:ecostep/domain/date.dart';
+import 'package:ecostep/presentation/controllers/week_state_controller.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
-import 'package:ecostep/presentation/utils/date_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,23 +9,50 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class WeekWidget extends ConsumerStatefulWidget {
   const WeekWidget(this.today, {super.key});
-  final DateTime today;
+  final Date today;
 
   @override
   ConsumerState<WeekWidget> createState() => _WeekWidgetState();
 }
 
-class _WeekWidgetState extends ConsumerState<WeekWidget> {
+class _WeekWidgetState extends ConsumerState<WeekWidget>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+    _fadeAnimation = Tween<double>(begin: 1, end: 0.6).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final weekState = ref.watch(weekWidgetControllerProvider);
-    final controller = ref.read(weekWidgetControllerProvider.notifier);
+    final weekState = ref.watch(weekStateControllerProvider);
+    final controller = ref.read(weekStateControllerProvider.notifier);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         IconButton(
           onPressed: () {
-            controller.changeWeek(goBack: true);
+            setState(() {});
+            _animationController.forward().then((_) {
+              controller.changeWeek(goBack: true);
+              _animationController.reverse();
+            });
           },
           icon: Icon(
             CupertinoIcons.left_chevron,
@@ -34,13 +61,20 @@ class _WeekWidgetState extends ConsumerState<WeekWidget> {
           ),
         ),
         Expanded(
-          child: Row(
-            children: weekState.selectedWeek.map(_dateItem).toList(),
+          child: FadeTransition(
+            opacity: _fadeAnimation,
+            child: Row(
+              children: weekState.selectedWeek.map(_dateItem).toList(),
+            ),
           ),
         ),
         IconButton(
           onPressed: () {
-            controller.changeWeek(goBack: false);
+            setState(() {});
+            _animationController.forward().then((_) {
+              controller.changeWeek(goBack: false);
+              _animationController.reverse();
+            });
           },
           icon: Icon(
             CupertinoIcons.right_chevron,
@@ -52,12 +86,11 @@ class _WeekWidgetState extends ConsumerState<WeekWidget> {
     );
   }
 
-  Widget _dateItem(DateTime date) {
-    final provider = ref.read(weekWidgetControllerProvider.notifier);
-    final weekday = getWeekday(date);
+  Widget _dateItem(Date date) {
+    final provider = ref.read(weekStateControllerProvider.notifier);
+    final weekday = date.getWeekday();
     final isSelected = provider.isSelected(date);
-    // ignore: omit_local_variable_types
-    double textOpacity = date.isBefore(widget.today) ? 1 : 0.5;
+    var textOpacity = date.isBefore(widget.today) ? 1 : 0.5;
     if (isSelected) {
       textOpacity = 1;
     }
@@ -82,7 +115,7 @@ class _WeekWidgetState extends ConsumerState<WeekWidget> {
               AutoSizeText(
                 weekday[0],
                 style: TextStyle(
-                  color: AppColors.textColor.withOpacity(textOpacity),
+                  color: AppColors.textColor.withOpacity(textOpacity as double),
                   fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                 ),
               ),

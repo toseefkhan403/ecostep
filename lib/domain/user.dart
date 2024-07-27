@@ -9,7 +9,7 @@ class User with _$User {
     required String id,
     required int ecoBucksBalance,
     required bool personalization,
-    required DateTime joinedOn,
+    required String joinedOn,
     String? name,
     String? profilePicture,
     double? impactScore,

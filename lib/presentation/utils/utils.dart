@@ -46,6 +46,8 @@ String iconFromNavigationIndex(int i) {
 }
 
 void showSnackbar(BuildContext context, String title) =>
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(title),
-    ));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(title),
+      ),
+    );

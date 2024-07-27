@@ -1,5 +1,6 @@
 import 'package:ecostep/application/firebase_auth_service.dart';
-import 'package:ecostep/application/firestore_service.dart';
+import 'package:ecostep/data/user_repository.dart';
+import 'package:ecostep/domain/date.dart';
 import 'package:ecostep/domain/user.dart';
 import 'package:ecostep/presentation/controllers/onboarding_artboard_controller.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
@@ -108,7 +109,7 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
                 await ref.read(firebaseAuthServiceProvider).signInWithGoogle();
             if (user == null) return;
 
-            await ref.read(firestoreServiceProvider).createUserIfDoesntExist(
+            await ref.read(userRepositoryProvider).createUserIfDoesntExist(
                   User(
                     id: user.uid,
                     ecoBucksBalance: 100,
@@ -116,7 +117,7 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
                     name: user.displayName,
                     profilePicture: user.photoURL,
                     impactScore: 0,
-                    joinedOn: DateTime.now(),
+                    joinedOn: Date.today().toString(),
                   ),
                 );
           },
@@ -143,7 +144,7 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
                 await ref.read(firebaseAuthServiceProvider).signInAnonymously();
             if (user == null) return;
 
-            await ref.read(firestoreServiceProvider).createUserIfDoesntExist(
+            await ref.read(userRepositoryProvider).createUserIfDoesntExist(
                   User(
                     id: user.uid,
                     ecoBucksBalance: 100,
@@ -151,7 +152,7 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
                     name: user.displayName,
                     profilePicture: user.photoURL,
                     impactScore: 0,
-                    joinedOn: DateTime.now(),
+                    joinedOn: Date.today().toString(),
                   ),
                 );
           },

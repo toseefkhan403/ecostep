@@ -4,14 +4,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AsyncValueWidget<T> extends StatelessWidget {
   const AsyncValueWidget({
-    required this.data,
     required this.value,
+    required this.data,
     this.nullException,
+    this.topMargin = 0,
     super.key,
   });
+
   final AsyncValue<T?> value;
   final Widget Function(T) data;
   final String? nullException;
+  final double topMargin;
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +28,15 @@ class AsyncValueWidget<T> extends StatelessWidget {
         }
         return data(resolved);
       },
-      error: (e, st) => Center(child: ErrorMessageWidget(e.toString())),
+      error: (e, st) => Padding(
+        padding: EdgeInsets.only(top: topMargin),
+        child: Center(child: ErrorMessageWidget(e.toString())),
+      ),
       loading: () {
-        return const Center(child: CircularProgressIndicator());
+        return Padding(
+          padding: EdgeInsets.only(top: topMargin),
+          child: const Center(child: CircularProgressIndicator()),
+        );
       },
     );
   }
