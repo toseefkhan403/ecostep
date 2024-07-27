@@ -1,8 +1,6 @@
 import 'package:ecostep/presentation/controllers/verify_image_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 class VerifyImageDialog extends ConsumerWidget {
   const VerifyImageDialog({super.key});
 
@@ -14,10 +12,10 @@ class VerifyImageDialog extends ConsumerWidget {
 
     return Dialog(
       child: Container(
-        width: 540.w,
+        width: 540,
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(16.r),
+          borderRadius: BorderRadius.circular(16),
           boxShadow: const [BoxShadow()],
         ),
         child: isLoading
@@ -39,30 +37,30 @@ class VerifyImageDialog extends ConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const SizedBox(height: 20),
-                  Text(
+                  const Text(
                     'Image Verification',
                     style: TextStyle(
-                      color: const Color.fromRGBO(113, 55, 73, 1),
-                      fontSize: 32.sp,
+                      color:  Color.fromRGBO(113, 55, 73, 1),
+                      fontSize: 32,
                       fontWeight: FontWeight.w700,
                       fontFamily: 'Poppins',
                     ),
                   ),
-                  SizedBox(
-                    width: 352.w,
+                  const SizedBox(
+                    width: 352,
                     child: Text(
                       '''Verify your action image with AI ✨ to receive your reward''',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: const Color.fromRGBO(113, 55, 73, 1),
-                        fontSize: 20.sp,
+                        color:  Color.fromRGBO(113, 55, 73, 1),
+                        fontSize: 20,
                         fontWeight: FontWeight.w700,
                         fontFamily: 'Poppins',
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: 19.h,
+                  const SizedBox(
+                    height: 19,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8),
@@ -71,18 +69,18 @@ class VerifyImageDialog extends ConsumerWidget {
                             children: [
                               Text(
                                 '''Verified successfully! Score: ${state.verifiedscore}''',
-                                style: TextStyle(
-                                  color: const Color.fromRGBO(113, 55, 73, 1),
-                                  fontSize: 16.sp,
+                                style: const TextStyle(
+                                  color:  Color.fromRGBO(113, 55, 73, 1),
+                                  fontSize: 16,
                                   fontWeight: FontWeight.w700,
                                   fontFamily: 'Poppins',
                                 ),
                               ),
-                              Text(
+                              const Text(
                                 'Reward added to your account :)',
                                 style: TextStyle(
-                                  color: const Color.fromRGBO(113, 55, 73, 1),
-                                  fontSize: 16.sp,
+                                  color:  Color.fromRGBO(113, 55, 73, 1),
+                                  fontSize: 16,
                                   fontWeight: FontWeight.w700,
                                   fontFamily: 'Poppins',
                                 ),
@@ -90,8 +88,8 @@ class VerifyImageDialog extends ConsumerWidget {
                             ],
                           )
                         : RichText(
-                            text: TextSpan(
-                              style: const TextStyle(
+                            text: const TextSpan(
+                              style: TextStyle(
                                 fontSize: 18,
                                 color: Colors.black,
                               ),
@@ -99,8 +97,8 @@ class VerifyImageDialog extends ConsumerWidget {
                                 TextSpan(
                                   text: 'Image description: ',
                                   style: TextStyle(
-                                    color: const Color.fromRGBO(113, 55, 73, 1),
-                                    fontSize: 16.sp,
+                                    color: Color.fromRGBO(113, 55, 73, 1),
+                                    fontSize: 16,
                                     fontWeight: FontWeight.w700,
                                     fontFamily: 'Poppins',
                                   ),
@@ -109,8 +107,8 @@ class VerifyImageDialog extends ConsumerWidget {
                                   text:
                                       '''Image showing the user participating in a volunteer activity for an environmental organization (planting trees, cleaning a beach, etc.).''',
                                   style: TextStyle(
-                                    color: const Color.fromRGBO(113, 55, 73, 1),
-                                    fontSize: 16.sp,
+                                    color: Color.fromRGBO(113, 55, 73, 1),
+                                    fontSize: 16,
                                     fontWeight: FontWeight.w400,
                                     fontFamily: 'Poppins',
                                   ),

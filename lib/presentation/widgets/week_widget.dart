@@ -5,7 +5,7 @@ import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 
 class WeekWidget extends ConsumerStatefulWidget {
   const WeekWidget(this.today, {super.key});
@@ -54,10 +54,10 @@ class _WeekWidgetState extends ConsumerState<WeekWidget>
               _animationController.reverse();
             });
           },
-          icon: Icon(
+          icon: const Icon(
             CupertinoIcons.left_chevron,
             color: AppColors.primaryColor,
-            size: 16.w,
+            size: 16,
           ),
         ),
         Expanded(
@@ -76,10 +76,10 @@ class _WeekWidgetState extends ConsumerState<WeekWidget>
               _animationController.reverse();
             });
           },
-          icon: Icon(
+          icon: const Icon(
             CupertinoIcons.right_chevron,
             color: AppColors.primaryColor,
-            size: 16.w,
+            size: 16,
           ),
         ),
       ],
@@ -100,10 +100,10 @@ class _WeekWidgetState extends ConsumerState<WeekWidget>
           provider.setSelectedDate(date);
         },
         child: Container(
-          padding: EdgeInsets.all(4.w),
+          padding: const EdgeInsets.all(4),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(
-              Radius.circular(8.r),
+            borderRadius: const BorderRadius.all(
+              Radius.circular(8),
             ),
             color: isSelected
                 ? AppColors.primaryColor.withOpacity(0.2)

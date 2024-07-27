@@ -2,7 +2,7 @@ import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/presentation/utils/utils.dart';
 import 'package:ecostep/presentation/widgets/lottie_icon_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 
 class CustomNavigationRail extends StatefulWidget {
   const CustomNavigationRail(this.pageController, {super.key});
@@ -30,14 +30,14 @@ class _CustomNavigationRailState extends State<CustomNavigationRail>
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 70.w,
-      decoration: BoxDecoration(
+      width: 70,
+      decoration: const BoxDecoration(
         color: AppColors.primaryColor,
         boxShadow: [
           BoxShadow(
             color: Colors.black26,
-            offset: const Offset(0, -1),
-            blurRadius: 10.r,
+            offset:  Offset(0, -1),
+            blurRadius: 10,
           ),
         ],
       ),
@@ -56,7 +56,7 @@ class _CustomNavigationRailState extends State<CustomNavigationRail>
   }
 
   Widget _bottomNavigationItem(int i) => Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 25.h),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 25),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

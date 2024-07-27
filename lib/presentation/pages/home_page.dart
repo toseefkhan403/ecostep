@@ -11,7 +11,7 @@ import 'package:ecostep/presentation/widgets/lottie_icon_widget.dart';
 import 'package:ecostep/presentation/widgets/week_widget.dart';
 import 'package:flutter/material.dart' hide Action;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -38,27 +38,27 @@ class _HomePageState extends ConsumerState<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: EdgeInsets.all(12.w),
+                  padding: const EdgeInsets.all(12),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _dateHeading(),
                       const Spacer(),
                       _iconButton('passion'),
-                      SizedBox(width: 8.w),
+                     const SizedBox(width: 8),
                       _iconButton('recycle'),
                     ],
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(bottom: 30.h),
+                  padding: const EdgeInsets.only(bottom: 30),
                   child: CircularElevatedButton(
                     onPressed: () {},
                     width: double.infinity,
                     color: AppColors.backgroundColor,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.w),
-                      child: const Text(
+                    child:const  Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      child: Text(
                         '''Your AI generated sustainable actions are not currently personalized. Click here to fill more information about your lifestyle to enable personalized actions.''',
                         textAlign: TextAlign.center,
                         style: TextStyle(fontWeight: FontWeight.w500),
@@ -91,11 +91,11 @@ class _HomePageState extends ConsumerState<HomePage> {
               iconName: iconName,
               onTap: () => ref.read(firebaseAuthServiceProvider).signOut(),
             ),
-            Text(
+            const Text(
               '4',
               style: TextStyle(
                 color: AppColors.textColor,
-                fontSize: 22.sp,
+                fontSize: 22,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -108,20 +108,20 @@ class _HomePageState extends ConsumerState<HomePage> {
   Widget _dateHeading() => Text.rich(
         TextSpan(
           children: [
-            TextSpan(
+            const TextSpan(
               text: 'Today',
               style: TextStyle(
                 color: AppColors.textColor,
-                fontSize: 26.sp,
+                fontSize: 26,
                 height: 1,
                 fontWeight: FontWeight.w700,
               ),
             ),
-            TextSpan(
+             TextSpan(
               text: '\n${Date.today().getMonthFormattedDate()}',
-              style: TextStyle(
+              style: const TextStyle(
                 color: AppColors.textColor,
-                fontSize: 20.sp,
+                fontSize: 20,
                 fontWeight: FontWeight.w700,
               ),
             ),

@@ -10,7 +10,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 
 // 6 weeks to finish - lead with web
 // week 1(24 June) - complete onboarding - rive design, animation, text, coding - done
@@ -26,7 +26,7 @@ void main() async {
   await dotenv.load();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
-  );
+  );  
   runApp(const ProviderScope(child: GreenLoopApp()));
 }
 
@@ -37,11 +37,11 @@ class GreenLoopApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final goRouter = ref.watch(goRouterProvider);
 
-    return ScreenUtilInit(
-      designSize: AdaptivePolicy.getDesignSize(),
-      minTextAdapt: true,
-      splitScreenMode: true,
-      builder: (_, child) {
+    // return ScreenUtilInit(
+    //   designSize: AdaptivePolicy.getDesignSize(),
+    //   minTextAdapt: true,
+    //   splitScreenMode: true,
+    //   builder: (_, child) {
         return MaterialApp.router(
           routerConfig: goRouter,
           title: 'GreenLoop',
@@ -54,7 +54,6 @@ class GreenLoopApp extends ConsumerWidget {
           ),
           debugShowCheckedModeBanner: false,
         );
-      },
-    );
+      
   }
 }
