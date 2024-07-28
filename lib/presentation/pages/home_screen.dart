@@ -6,7 +6,6 @@ import 'package:ecostep/presentation/utils/utils.dart';
 import 'package:ecostep/presentation/widgets/custom_bottom_navigation_bar.dart';
 import 'package:ecostep/presentation/widgets/custom_navigation_rail.dart';
 import 'package:flutter/material.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -49,10 +48,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     controller: _scrollController,
                     scrollDirection: Axis.horizontal,
                     physics: const NeverScrollableScrollPhysics(),
-                    child: FadeInImage.memoryNetwork(
-                      image: 'assets/images/mountains.png',
-                      placeholder: kTransparentImage,
-                      fadeInDuration: Durations.short3,
+                    child: Image.asset(
+                      'assets/images/mountains.png',
                       fit: BoxFit.cover,
                       height: MediaQuery.of(context).size.height,
                       width: MediaQuery.of(context).size.width * 4,
@@ -81,10 +78,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget webWidget() => Stack(
         children: [
-          FadeInImage.memoryNetwork(
-            image: 'assets/images/mountains.png',
-            placeholder: kTransparentImage,
-            fadeInDuration: Durations.short3,
+          Image.asset(
+            'assets/images/mountains.png',
             fit: BoxFit.cover,
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,

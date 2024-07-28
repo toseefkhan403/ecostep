@@ -70,7 +70,7 @@ Widget loadingIconAI(double topMargin) => Padding(
         child: LottieIconWidget(
           iconName: 'artificial-intelligence',
           height: 100,
-          autoPlay: true,
+          repeat: true,
         ),
       ),
     );

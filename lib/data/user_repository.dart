@@ -2,6 +2,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecostep/application/firebase_auth_service.dart';
 import 'package:ecostep/application/firestore_service.dart';
+import 'package:ecostep/domain/date.dart';
 import 'package:ecostep/domain/user.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth_user;
 import 'package:flutter/material.dart';
@@ -50,6 +51,18 @@ class UserRepository {
     firestoreService.updateDocument(
       userDocRef,
       {'ecoBucksBalance': FieldValue.increment(reward)},
+    );
+  }
+
+  void completeUserAction(Date selectedDate) {
+    final userDocRef =
+        firestoreService.firestore.collection('users').doc(currentUser?.uid);
+    firestoreService.updateDocument(
+      userDocRef,
+      {
+        'completedActionsDates':
+            FieldValue.arrayUnion([selectedDate.toString()]),
+      },
     );
   }
 }

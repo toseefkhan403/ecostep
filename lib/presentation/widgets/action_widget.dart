@@ -1,11 +1,15 @@
 import 'package:ecostep/application/extensions.dart';
+import 'package:ecostep/data/user_repository.dart';
 import 'package:ecostep/domain/action.dart';
 import 'package:ecostep/domain/date.dart';
 import 'package:ecostep/presentation/controllers/week_state_controller.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/presentation/utils/utils.dart';
+import 'package:ecostep/presentation/widgets/async_value_widget.dart';
 import 'package:ecostep/presentation/widgets/expired_overlay.dart';
+import 'package:ecostep/presentation/widgets/impact_dialog.dart';
 import 'package:ecostep/presentation/widgets/lottie_icon_widget.dart';
+import 'package:ecostep/presentation/widgets/modify_confirmation_dialog.dart';
 import 'package:ecostep/presentation/widgets/verify_image_dialog.dart';
 import 'package:flutter/material.dart' hide Action;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -46,7 +50,7 @@ class _ActionWidgetState extends ConsumerState<ActionWidget>
   Widget build(BuildContext context) {
     final weekState = ref.watch(weekStateControllerProvider);
     final action = widget.action;
-    // TODOfetch and set isVerified in db
+
     return FadeTransition(
       opacity: _animation,
       child: Padding(
@@ -132,7 +136,7 @@ class _ActionWidgetState extends ConsumerState<ActionWidget>
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  actionRow(context, action),
+                  actionRow(context, action, weekState.selectedDate),
                 ],
               ),
             ),
@@ -183,7 +187,8 @@ class _ActionWidgetState extends ConsumerState<ActionWidget>
     );
   }
 
-  Widget actionRow(BuildContext context, Action? action) => Container(
+  Widget actionRow(BuildContext context, Action? action, Date selectedDate) =>
+      Container(
         width: double.infinity,
         decoration: const BoxDecoration(
           color: AppColors.accentColor,
@@ -205,30 +210,57 @@ class _ActionWidgetState extends ConsumerState<ActionWidget>
                     ),
                   ),
                 ),
-                child: InkWell(
-                  onTap: () {
-                    if (action == null) return;
+                child: Consumer(
+                  builder: (context, ref, child) {
+                    final userValue = ref.watch(firestoreUserProvider);
+                    return AsyncValueWidget(
+                      value: userValue,
+                      data: (user) => InkWell(
+                        onTap: () {
+                          if (action == null) return;
 
-                    showDialog<void>(
-                      context: context,
-                      builder: (c) => VerifyImageDialog(action),
+                          showDialog<void>(
+                            context: context,
+                            builder: (c) => VerifyImageDialog(
+                              action,
+                              hasVerified: user.completedActionsDates
+                                      ?.contains(selectedDate.toString()) ??
+                                  false,
+                            ),
+                          );
+                        },
+                        child: Text(
+                          (user.completedActionsDates
+                                      ?.contains(selectedDate.toString()) ??
+                                  false)
+                              ? 'Verified'
+                              : 'Verify',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            color: AppColors.black,
+                          ),
+                        ),
+                      ),
                     );
                   },
-                  child: const Text(
-                    'Verify',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: AppColors.black,
-                    ),
-                  ),
                 ),
               ),
             ),
             Expanded(
               child: InkWell(
-                onTap: () {},
+                onTap: () {
+                  if (action == null) return;
+
+                  showDialog<void>(
+                    context: context,
+                    builder: (c) => ImpactDialog(
+                      action.impact,
+                      action.impactIfNotDone,
+                    ),
+                  );
+                },
                 child: const Text(
                   'Impact',
                   textAlign: TextAlign.center,
@@ -252,7 +284,13 @@ class _ActionWidgetState extends ConsumerState<ActionWidget>
                   ),
                 ),
                 child: InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    if (action == null) return;
+                    showDialog<void>(
+                      context: context,
+                      builder: (c) => const ModifyConfirmationDialog(),
+                    );
+                  },
                   child: const Text(
                     'Modify',
                     textAlign: TextAlign.center,

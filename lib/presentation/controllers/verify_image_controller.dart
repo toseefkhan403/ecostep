@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:ecostep/data/gemini_repository.dart';
 import 'package:ecostep/data/user_repository.dart';
 import 'package:ecostep/domain/verify_image_state.dart';
+import 'package:ecostep/presentation/controllers/week_state_controller.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -42,14 +43,18 @@ class VerifyImageController extends _$VerifyImageController {
           .verifyImage(imageBytes, verifiableImage);
       final score = int.parse(verification['verifiedScore'] as String);
       debugPrint('image score: $score');
-      
+
       state = state.copyWith(
         isLoadingImage: false,
         verificationSuccess: score > 50,
         imageAnalysis: verification['imageAnalysis'] as String,
       );
       if (score > 50) {
-        ref.read(userRepositoryProvider).addEcoBucks(reward);
+        final selectedDate =
+            ref.watch(weekStateControllerProvider).selectedDate;
+        ref.read(userRepositoryProvider)
+          ..addEcoBucks(reward)
+          ..completeUserAction(selectedDate);
       }
     } catch (e) {
       debugPrint(e.toString());

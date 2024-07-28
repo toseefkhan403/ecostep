@@ -16,8 +16,6 @@ class ActionWidgetContainer extends ConsumerWidget {
 
   final dynamic actionRef;
 
-  // TODOfix bottom three buttons, stop reverification, action expired widget,
-  // switch animation, loading animation(generating with AI), personalization
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     const topMargin = 100.0;

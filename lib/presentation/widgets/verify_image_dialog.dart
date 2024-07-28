@@ -8,9 +8,10 @@ import 'package:flutter/material.dart' hide Action;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class VerifyImageDialog extends ConsumerWidget {
-  const VerifyImageDialog(this.action, {super.key});
+  const VerifyImageDialog(this.action, {required this.hasVerified, super.key});
 
   final Action action;
+  final bool hasVerified;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -33,39 +34,47 @@ class VerifyImageDialog extends ConsumerWidget {
         ),
         content: SizedBox(
           width: dialogWidth,
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            child: (state.isLoadingImage)
-                ? _analyzingImage(key: const ValueKey('verifyImageDialog.1'))
-                : (state.verificationSuccess != null)
-                    ? _verificationStatus(
-                        key: const ValueKey('verifyImageDialog.2'),
-                        verificationSuccess: state.verificationSuccess!,
-                        imageAnalysis: state.imageAnalysis,
-                        reward: reward,
-                      )
-                    : Column(
-                        key: const ValueKey('verifyImageDialog.3'),
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            '''Verify your action image with AI ✨ to receive EcoBucks''',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+          child: hasVerified
+              ? _verifiedAlready()
+              : AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  child: (state.isLoadingImage)
+                      ? _analyzingImage(
+                          key: const ValueKey('verifyImageDialog.1'),
+                        )
+                      : (state.verificationSuccess != null)
+                          ? _verificationStatus(
+                              key: const ValueKey('verifyImageDialog.2'),
+                              verificationSuccess: state.verificationSuccess!,
+                              imageAnalysis: state.imageAnalysis,
+                              reward: reward,
+                            )
+                          : Column(
+                              key: const ValueKey('verifyImageDialog.3'),
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  '''Verify your action image with AI ✨ to receive EcoBucks''',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8),
+                                  child: _imageDescription(
+                                    action.difficulty,
+                                    reward,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            child: _imageDescription(action.difficulty, reward),
-                          ),
-                        ],
-                      ),
-          ),
+                ),
         ),
         actions: [
-          if (state.verificationSuccess != null)
+          if (hasVerified || state.verificationSuccess != null)
             FilledButton(
               onPressed: () => Navigator.pop(context),
               child: const Text('Exit'),
@@ -142,7 +151,7 @@ class VerifyImageDialog extends ConsumerWidget {
           LottieIconWidget(
             iconName: 'search-file',
             height: 150,
-            autoPlay: true,
+            repeat: true,
           ),
           Padding(
             padding: EdgeInsets.all(10),
@@ -169,7 +178,7 @@ class VerifyImageDialog extends ConsumerWidget {
           LottieIconWidget(
             iconName: verificationSuccess ? 'right-decision' : 'wrong-decision',
             height: 150,
-            autoPlay: true,
+            repeat: true,
           ),
           Text(
             '''Verification ${verificationSuccess ? 'successful' : 'failed'}!''',
@@ -184,6 +193,25 @@ class VerifyImageDialog extends ConsumerWidget {
                 : """Image verification failed! Here's the analysis: $imageAnalysis""",
             style: const TextStyle(
               fontSize: 16,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      );
+
+  Widget _verifiedAlready() => const Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          LottieIconWidget(
+            iconName: 'right-decision',
+            height: 150,
+            repeat: true,
+          ),
+          Text(
+            'Action has been completed and verified already!',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ],

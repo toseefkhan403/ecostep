@@ -9,7 +9,8 @@ part 'gemini_repository.g.dart';
 
 class GeminiRepository {
   GeminiRepository() {
-    final apiKey = dotenv.env['gemini_api_key']!;
+    final apiKey = dotenv.env['gemini_api_key'] ??
+        const String.fromEnvironment('gemini_api_key');
     model = GenerativeModel(
       model: 'gemini-1.5-flash-latest',
       apiKey: apiKey,
