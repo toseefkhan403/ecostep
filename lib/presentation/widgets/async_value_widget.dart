@@ -6,6 +6,7 @@ class AsyncValueWidget<T> extends StatelessWidget {
   const AsyncValueWidget({
     required this.value,
     required this.data,
+    this.loading,
     this.nullException,
     this.topMargin = 0,
     super.key,
@@ -13,6 +14,7 @@ class AsyncValueWidget<T> extends StatelessWidget {
 
   final AsyncValue<T?> value;
   final Widget Function(T) data;
+  final Widget Function()? loading;
   final String? nullException;
   final double topMargin;
 
@@ -32,7 +34,7 @@ class AsyncValueWidget<T> extends StatelessWidget {
         padding: EdgeInsets.only(top: topMargin),
         child: Center(child: ErrorMessageWidget(e.toString())),
       ),
-      loading: () {
+      loading: loading ?? () {
         return Padding(
           padding: EdgeInsets.only(top: topMargin),
           child: const Center(child: CircularProgressIndicator()),

@@ -3,7 +3,6 @@ import 'package:ecostep/presentation/utils/utils.dart';
 import 'package:ecostep/presentation/widgets/lottie_icon_widget.dart';
 import 'package:flutter/material.dart';
 
-
 class CustomNavigationRail extends StatefulWidget {
   const CustomNavigationRail(this.pageController, {super.key});
   final PageController pageController;
@@ -30,13 +29,13 @@ class _CustomNavigationRailState extends State<CustomNavigationRail>
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 70,
+      width: 65,
       decoration: const BoxDecoration(
         color: AppColors.primaryColor,
         boxShadow: [
           BoxShadow(
             color: Colors.black26,
-            offset:  Offset(0, -1),
+            offset: Offset(0, -1),
             blurRadius: 10,
           ),
         ],

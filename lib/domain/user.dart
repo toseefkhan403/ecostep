@@ -12,7 +12,8 @@ class User with _$User {
     required String joinedOn,
     String? name,
     String? profilePicture,
-    double? impactScore,
+    int? streak,
+    String? lastActionDate,
   }) = _User;
 
   factory User.fromJson(Map<String, Object?> json) => _$UserFromJson(json);

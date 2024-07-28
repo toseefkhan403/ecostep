@@ -1,17 +1,20 @@
 import 'dart:io';
 
 import 'package:ecostep/data/gemini_repository.dart';
+import 'package:ecostep/data/user_repository.dart';
 import 'package:ecostep/domain/verify_image_state.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-class VerifyImageController extends StateNotifier<VerifyImageState> {
-  VerifyImageController(this.geminiService) : super(const VerifyImageState());
+part 'verify_image_controller.g.dart';
 
-  final GeminiRepository geminiService;
+@riverpod
+class VerifyImageController extends _$VerifyImageController {
+  @override
+  VerifyImageState build() => const VerifyImageState(isLoadingImage: false);
 
-  Future<void> pickImage() async {
+  Future<void> pickImage(String verifiableImage, int reward) async {
     final result = await FilePicker.platform.pickFiles(type: FileType.image);
 
     if (result != null) {
@@ -19,23 +22,37 @@ class VerifyImageController extends StateNotifier<VerifyImageState> {
           ? result.files.single.bytes
           : File(result.files.single.path!).readAsBytesSync();
       state = state.copyWith(
-        isloadingImage: true,
-        imagebytes: imageBytes,
+        isLoadingImage: true,
+        imageBytes: imageBytes,
       );
-      await verifyImage(imageBytes!);
+      await verifyImage(imageBytes!, verifiableImage, reward);
     } else {
-      state = state.copyWith(isloadingImage: false);
+      state = state.copyWith(isLoadingImage: false);
     }
   }
 
-  Future<void> verifyImage(Uint8List imageBytes) async {
-    final score = await geminiService.verifyImage(imageBytes);
-    state = state.copyWith(verifiedscore: score, isloadingImage: false);
+  Future<void> verifyImage(
+    Uint8List imageBytes,
+    String verifiableImage,
+    int reward,
+  ) async {
+    try {
+      final verification = await ref
+          .read(geminiRepositoryProvider)
+          .verifyImage(imageBytes, verifiableImage);
+      final score = int.parse(verification['verifiedScore'] as String);
+      debugPrint('image score: $score');
+      
+      state = state.copyWith(
+        isLoadingImage: false,
+        verificationSuccess: score > 50,
+        imageAnalysis: verification['imageAnalysis'] as String,
+      );
+      if (score > 50) {
+        ref.read(userRepositoryProvider).addEcoBucks(reward);
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 }
-
-final verifyImageControllerProvider =
-    StateNotifierProvider<VerifyImageController, VerifyImageState>((ref) {
-  final geminiService = ref.read(geminiServiceProvider);
-  return VerifyImageController(geminiService);
-});

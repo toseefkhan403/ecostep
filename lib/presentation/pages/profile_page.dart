@@ -1,25 +1,20 @@
-import 'package:ecostep/application/constants.dart';
+import 'package:ecostep/data/user_repository.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/presentation/utils/utils.dart';
 import 'package:ecostep/presentation/widgets/async_value_widget.dart';
+import 'package:ecostep/presentation/widgets/center_content_padding.dart';
 import 'package:ecostep/presentation/widgets/circular_elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 
 class ProfilePage extends ConsumerWidget {
   const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // TODOreplace with firestore user
-    final userValue = AsyncValue.data(dummyUser);
+    final userValue = ref.watch(firestoreUserProvider);
 
-    final width = MediaQuery.of(context).size.width;
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: !isMobileScreen(context) ? width * 0.25 : 10,
-      ),
+    return CenterContentPadding(
       child: AsyncValueWidget(
         value: userValue,
         data: (user) => Column(
@@ -71,7 +66,7 @@ class ProfilePage extends ConsumerWidget {
               ],
             ),
             Padding(
-              padding:const EdgeInsets.only(top: 10, bottom: 15),
+              padding: const EdgeInsets.only(top: 10, bottom: 15),
               child: Text(
                 '${user.name}',
                 style: const TextStyle(
@@ -153,14 +148,14 @@ class ProfilePage extends ConsumerWidget {
         ],
       );
 
-  Widget _actionCard() =>  Container(
-        padding:const EdgeInsets.all(10),
+  Widget _actionCard() => Container(
+        padding: const EdgeInsets.all(10),
         margin: const EdgeInsets.all(10),
         decoration: roundedContainerDecoration(),
         child: const Text('hi'),
       );
 
-  Widget _cityCountryRankRow() =>  Padding(
+  Widget _cityCountryRankRow() => Padding(
         padding: const EdgeInsets.all(8),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -173,7 +168,7 @@ class ProfilePage extends ConsumerWidget {
                 onPressed: () {},
                 child: const Padding(
                   padding: EdgeInsets.symmetric(vertical: 15),
-                  child:  Text(
+                  child: Text(
                     '#1 in New Delhi',
                     style: TextStyle(
                       color: Colors.black,
@@ -192,9 +187,9 @@ class ProfilePage extends ConsumerWidget {
                 blurRadius: 1,
                 darkShadow: true,
                 onPressed: () {},
-                child:  const Padding(
+                child: const Padding(
                   padding: EdgeInsets.symmetric(vertical: 15),
-                  child:  Text(
+                  child: Text(
                     '#1 in India',
                     style: TextStyle(
                       color: Colors.black,

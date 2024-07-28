@@ -7,8 +7,9 @@ part 'verify_image_state.freezed.dart';
 @freezed
 class VerifyImageState with _$VerifyImageState {
   const factory VerifyImageState({
-    Uint8List? imagebytes,
-    bool? isloadingImage,
-    int? verifiedscore,
+    required bool isLoadingImage,
+    Uint8List? imageBytes,
+    bool? verificationSuccess,
+    String? imageAnalysis,
   }) = _VerifyImageState;
 }

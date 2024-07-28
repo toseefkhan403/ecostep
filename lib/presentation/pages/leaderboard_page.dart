@@ -2,6 +2,7 @@ import 'package:ecostep/domain/date.dart';
 import 'package:ecostep/domain/user.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/presentation/utils/utils.dart';
+import 'package:ecostep/presentation/widgets/center_content_padding.dart';
 import 'package:ecostep/presentation/widgets/circular_elevated_button.dart';
 import 'package:flutter/material.dart';
 
@@ -51,11 +52,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: !isMobileScreen(context) ? width * 0.25 : 10,
-      ),
+    return CenterContentPadding(
       child: Column(
         children: [
           const Padding(
@@ -195,7 +192,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
               ],
             ),
             Text(
-              'Impact Score: ${dummyRecentUser.impactScore}',
+              'EcoBucks balance: ${dummyRecentUser.ecoBucksBalance}',
               style: const TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,

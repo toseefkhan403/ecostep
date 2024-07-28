@@ -18,6 +18,13 @@ class FirestoreService {
     return ref.get();
   }
 
+  Future<void> updateDocument(
+    DocumentReference ref,
+    Map<String, dynamic> data,
+  ) async {
+    await ref.update(data);
+  }
+
   WriteBatch batch() {
     return firestore.batch();
   }

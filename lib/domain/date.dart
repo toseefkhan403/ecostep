@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 
+@immutable
 class Date {
-  Date(this.dateTime);
+  const Date(this.dateTime);
 
   Date.today() : dateTime = DateTime.now();
 
@@ -65,4 +67,17 @@ class Date {
   String toString() {
     return _dateFormat.format(dateTime);
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! Date) return false;
+    return dateTime.year == other.dateTime.year &&
+        dateTime.month == other.dateTime.month &&
+        dateTime.day == other.dateTime.day;
+  }
+
+  @override
+  int get hashCode =>
+      dateTime.year.hashCode ^ dateTime.month.hashCode ^ dateTime.day.hashCode;
 }

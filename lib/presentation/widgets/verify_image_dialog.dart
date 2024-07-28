@@ -1,137 +1,191 @@
+import 'package:ecostep/domain/action.dart';
 import 'package:ecostep/presentation/controllers/verify_image_controller.dart';
-import 'package:flutter/material.dart';
+import 'package:ecostep/presentation/utils/app_colors.dart';
+import 'package:ecostep/presentation/utils/utils.dart';
+import 'package:ecostep/presentation/widgets/center_content_padding.dart';
+import 'package:ecostep/presentation/widgets/lottie_icon_widget.dart';
+import 'package:flutter/material.dart' hide Action;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 class VerifyImageDialog extends ConsumerWidget {
-  const VerifyImageDialog({super.key});
+  const VerifyImageDialog(this.action, {super.key});
+
+  final Action action;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(verifyImageControllerProvider);
     final controller = ref.read(verifyImageControllerProvider.notifier);
-    final isLoading = state.isloadingImage ?? false;
+    final reward = coinsFromDifficulty(action.difficulty.toLowerCase());
 
-    return Dialog(
-      child: Container(
-        width: 540,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: const [BoxShadow()],
+    final dialogWidth = !isMobileScreen(context)
+        ? MediaQuery.of(context).size.width * 0.5
+        : 300.0;
+
+    return CenterContentPadding(
+      child: AlertDialog(
+        title: const Text(
+          'Image Verification',
+          style: TextStyle(
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-        child: isLoading
-            ? const Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.all(50),
-                    child: CircularProgressIndicator(),
-                  ),
-                  SizedBox(height: 20),
-                  Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Text('Loading...'),
-                  ),
-                ],
-              )
-            : Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const SizedBox(height: 20),
-                  const Text(
-                    'Image Verification',
-                    style: TextStyle(
-                      color:  Color.fromRGBO(113, 55, 73, 1),
-                      fontSize: 32,
-                      fontWeight: FontWeight.w700,
-                      fontFamily: 'Poppins',
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 352,
-                    child: Text(
-                      '''Verify your action image with AI ✨ to receive your reward''',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color:  Color.fromRGBO(113, 55, 73, 1),
-                        fontSize: 20,
-                        fontWeight: FontWeight.w700,
-                        fontFamily: 'Poppins',
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 19,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: state.verifiedscore != null
-                        ? Column(
-                            children: [
-                              Text(
-                                '''Verified successfully! Score: ${state.verifiedscore}''',
-                                style: const TextStyle(
-                                  color:  Color.fromRGBO(113, 55, 73, 1),
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  fontFamily: 'Poppins',
-                                ),
-                              ),
-                              const Text(
-                                'Reward added to your account :)',
-                                style: TextStyle(
-                                  color:  Color.fromRGBO(113, 55, 73, 1),
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  fontFamily: 'Poppins',
-                                ),
-                              ),
-                            ],
-                          )
-                        : RichText(
-                            text: const TextSpan(
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.black,
-                              ),
-                              children: <TextSpan>[
-                                TextSpan(
-                                  text: 'Image description: ',
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(113, 55, 73, 1),
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w700,
-                                    fontFamily: 'Poppins',
-                                  ),
-                                ),
-                                TextSpan(
-                                  text:
-                                      '''Image showing the user participating in a volunteer activity for an environmental organization (planting trees, cleaning a beach, etc.).''',
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(113, 55, 73, 1),
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w400,
-                                    fontFamily: 'Poppins',
-                                  ),
-                                ),
-                              ],
+        content: SizedBox(
+          width: dialogWidth,
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: (state.isLoadingImage)
+                ? _analyzingImage(key: const ValueKey('verifyImageDialog.1'))
+                : (state.verificationSuccess != null)
+                    ? _verificationStatus(
+                        key: const ValueKey('verifyImageDialog.2'),
+                        verificationSuccess: state.verificationSuccess!,
+                        imageAnalysis: state.imageAnalysis,
+                        reward: reward,
+                      )
+                    : Column(
+                        key: const ValueKey('verifyImageDialog.3'),
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            '''Verify your action image with AI ✨ to receive EcoBucks''',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                  ),
-                  const SizedBox(height: 20),
-                  if (state.verifiedscore != null)
-                    ElevatedButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text('Exit'),
-                    )
-                  else
-                    ElevatedButton(
-                      onPressed: controller.pickImage,
-                      child: const Text('Select Image'),
-                    ),
-                  const SizedBox(height: 20),
-                ],
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: _imageDescription(action.difficulty, reward),
+                          ),
+                        ],
+                      ),
+          ),
+        ),
+        actions: [
+          if (state.verificationSuccess != null)
+            FilledButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Exit'),
+            )
+          else
+            FilledButton(
+              onPressed: () => controller.pickImage(
+                action.verifiableImage,
+                reward,
               ),
+              child: const Text('Select Image'),
+            ),
+        ],
       ),
     );
   }
+
+  Widget _imageDescription(String difficulty, int reward) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          RichText(
+            text: TextSpan(
+              style: const TextStyle(
+                fontSize: 18,
+                color: Colors.black,
+              ),
+              children: <TextSpan>[
+                const TextSpan(
+                  text:
+                      '''You must verify your action with an image. Please upload an image with the following content: ''',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                TextSpan(
+                  text: action.verifiableImage,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Row(
+            children: [
+              const Text(
+                "EcoBucks you'll get after verification: ",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const LottieIconWidget(iconName: 'coin'),
+              Text(
+                '$reward',
+                style: const TextStyle(
+                  color: AppColors.textColor,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+
+  Widget _analyzingImage({required ValueKey<String> key}) => Column(
+        key: key,
+        mainAxisSize: MainAxisSize.min,
+        children: const [
+          LottieIconWidget(
+            iconName: 'search-file',
+            height: 150,
+            autoPlay: true,
+          ),
+          Padding(
+            padding: EdgeInsets.all(10),
+            child: Text(
+              'Analyzing Image...',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ],
+      );
+
+  Widget _verificationStatus({
+    required ValueKey<String> key,
+    required bool verificationSuccess,
+    required String? imageAnalysis,
+    required int reward,
+  }) =>
+      Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          LottieIconWidget(
+            iconName: verificationSuccess ? 'right-decision' : 'wrong-decision',
+            height: 150,
+            autoPlay: true,
+          ),
+          Text(
+            '''Verification ${verificationSuccess ? 'successful' : 'failed'}!''',
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Text(
+            verificationSuccess
+                ? '''Action has been verified successfully. $reward EcoBucks has been successfully added to your account.'''
+                : """Image verification failed! Here's the analysis: $imageAnalysis""",
+            style: const TextStyle(
+              fontSize: 16,
+            ),
+          ),
+        ],
+      );
 }

@@ -6,10 +6,12 @@ class LottieIconWidget extends StatefulWidget {
     required this.iconName,
     this.onTap,
     this.height = 50,
+    this.autoPlay = false,
     super.key,
   });
   final String iconName;
   final double height;
+  final bool autoPlay;
   final void Function()? onTap;
 
   @override
@@ -49,6 +51,11 @@ class _LottieIconWidgetState extends State<LottieIconWidget>
           controller: _controller,
           onLoaded: (composition) {
             _controller.duration = composition.duration;
+            if (widget.autoPlay) {
+              _controller
+                ..forward()
+                ..repeat();
+            }
           },
         ),
       ),

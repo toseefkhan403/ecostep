@@ -1,3 +1,4 @@
+import 'package:ecostep/presentation/widgets/lottie_icon_widget.dart';
 import 'package:flutter/material.dart';
 
 bool isMobileScreen(BuildContext context) {
@@ -49,5 +50,27 @@ void showSnackbar(BuildContext context, String title) =>
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(title),
+      ),
+    );
+
+int coinsFromDifficulty(String difficulty) {
+  if (difficulty == 'easy') {
+    return 100;
+  }
+  if (difficulty == 'hard') {
+    return 300;
+  }
+
+  return 200;
+}
+
+Widget loadingIconAI(double topMargin) => Padding(
+      padding: EdgeInsets.only(top: topMargin),
+      child: const Center(
+        child: LottieIconWidget(
+          iconName: 'artificial-intelligence',
+          height: 100,
+          autoPlay: true,
+        ),
       ),
     );

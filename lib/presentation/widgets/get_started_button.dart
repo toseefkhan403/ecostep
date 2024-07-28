@@ -75,7 +75,7 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
                           horizontal: 80,
                           vertical: 15,
                         ),
-                        child:  Text(
+                        child: Text(
                           'Get Started',
                           style: TextStyle(
                             color: Colors.white,
@@ -116,7 +116,7 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
                     personalization: false,
                     name: user.displayName,
                     profilePicture: user.photoURL,
-                    impactScore: 0,
+                    streak: 0,
                     joinedOn: Date.today().toString(),
                   ),
                 );
@@ -151,7 +151,7 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
                     personalization: false,
                     name: user.displayName,
                     profilePicture: user.photoURL,
-                    impactScore: 0,
+                    streak: 0,
                     joinedOn: Date.today().toString(),
                   ),
                 );
