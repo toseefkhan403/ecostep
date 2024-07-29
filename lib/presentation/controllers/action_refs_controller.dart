@@ -43,7 +43,7 @@ class ActionRefsController extends _$ActionRefsController {
   Future<void> _generateActionsForWeek(List<Date> week) async {
     try {
       final generatedActions =
-          await ref.read(geminiServiceProvider).generateActions();
+          await ref.read(geminiRepositoryProvider).generateActions();
       await ref
           .read(actionRepositoryProvider)
           .storeActions(generatedActions, week);

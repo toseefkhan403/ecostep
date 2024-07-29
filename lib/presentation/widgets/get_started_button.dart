@@ -6,7 +6,7 @@ import 'package:ecostep/presentation/controllers/onboarding_artboard_controller.
 import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:neopop/neopop.dart';
 
 class GetStartedButton extends ConsumerStatefulWidget {
@@ -70,12 +70,12 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
                             ..forward();
                         });
                       },
-                      child: Padding(
+                      child: const Padding(
                         padding: EdgeInsets.symmetric(
-                          horizontal: 80.w,
-                          vertical: 15.h,
+                          horizontal: 80,
+                          vertical: 15,
                         ),
-                        child: const Text(
+                        child: Text(
                           'Get Started',
                           style: TextStyle(
                             color: Colors.white,
@@ -116,17 +116,17 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
                     personalization: false,
                     name: user.displayName,
                     profilePicture: user.photoURL,
-                    impactScore: 0,
+                    streak: 0,
                     joinedOn: Date.today().toString(),
                   ),
                 );
           },
-          child: Padding(
+          child: const Padding(
             padding: EdgeInsets.symmetric(
-              horizontal: 80.w,
-              vertical: 15.h,
+              horizontal: 80,
+              vertical: 15,
             ),
-            child: const Text(
+            child: Text(
               'Sign in with Google',
               style: TextStyle(
                 color: Colors.white,
@@ -151,17 +151,17 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
                     personalization: false,
                     name: user.displayName,
                     profilePicture: user.photoURL,
-                    impactScore: 0,
+                    streak: 0,
                     joinedOn: Date.today().toString(),
                   ),
                 );
           },
-          child: Padding(
+          child: const Padding(
             padding: EdgeInsets.symmetric(
-              horizontal: 80.w,
-              vertical: 15.h,
+              horizontal: 80,
+              vertical: 15,
             ),
-            child: const Text(
+            child: Text(
               ' Sign in as a Guest  ',
               style: TextStyle(
                 color: Colors.white,

@@ -9,7 +9,6 @@ import 'package:ecostep/presentation/widgets/post_item_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ecostep/presentation/widgets/circular_elevated_button.dart';
 
 class MarketplaceScreen extends ConsumerStatefulWidget {
@@ -55,8 +54,6 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
     final marketplaceItemsvalue = ref.watch(marketplaceControllerProvider);
     final currentUserUid = FirebaseAuth.instance.currentUser!.uid;
 
-
-
     return AsyncValueWidget(
       value: marketplaceItemsvalue,
       data: (marketplaceitems) {
@@ -64,7 +61,6 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
             getFilteredItems(marketplaceitems, currentUserUid);
         return Scaffold(
           backgroundColor: Colors.transparent,
-       
           floatingActionButton: ElevatedButton(
             onPressed: () {
               showDialog(
@@ -82,15 +78,15 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
             ),
             child: Column(
               children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20.h),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20),
                   child: Row(
                     children: [
                       Text(
                         'Market Place',
                         style: TextStyle(
                           color: AppColors.textColor,
-                          fontSize: 26.sp,
+                          fontSize: 26,
                           height: 1,
                           fontWeight: FontWeight.w700,
                         ),
@@ -105,8 +101,8 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
                     physics: const NeverScrollableScrollPhysics(),
                     children: [
                       Container(
-                        margin: EdgeInsets.only(top: 20.h),
-                        padding: EdgeInsets.all(20.w),
+                        margin: const EdgeInsets.only(top: 20),
+                        padding: const EdgeInsets.all(20),
                         child: GridView.builder(
                           padding: const EdgeInsets.all(10),
                           gridDelegate:
@@ -155,7 +151,7 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
   }
 
   Widget _buttonRow() => Padding(
-        padding: EdgeInsets.all(8.w),
+        padding: const EdgeInsets.all(8),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -167,9 +163,9 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
                 blurRadius: _selectedIndex == 0 ? 1 : 5,
                 darkShadow: _selectedIndex == 0,
                 onPressed: () => _onItemTapped(0),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 15.h),
-                  child: const Text(
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 15),
+                  child: Text(
                     'All Items',
                     style: TextStyle(
                       color: Colors.black,
@@ -179,8 +175,8 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
                 ),
               ),
             ),
-            SizedBox(
-              width: 30.w,
+            const SizedBox(
+              width: 30,
             ),
             Expanded(
               child: CircularElevatedButton(
@@ -190,9 +186,9 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
                 onPressed: () => _onItemTapped(1),
                 blurRadius: _selectedIndex == 1 ? 1 : 5,
                 darkShadow: _selectedIndex == 1,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 15.h),
-                  child: const Text(
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 15),
+                  child: Text(
                     'Your Items',
                     style: TextStyle(
                       color: Colors.black,

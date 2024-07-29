@@ -1,7 +1,6 @@
 import 'dart:io' as io;
 
 import 'package:flutter/foundation.dart' as foundation;
-import 'package:flutter/material.dart';
 
 enum Platform { web, android, ios, windows, macos, linux, unknown }
 
@@ -31,15 +30,6 @@ class AdaptivePolicy {
       default:
         return Platform.unknown;
     }
-  }
-
-  static Size getDesignSize() {
-    var designSize = const Size(1440, 1024);
-    if (currentPlatform == Platform.android ||
-        currentPlatform == Platform.ios) {
-      designSize = const Size(360, 690);
-    }
-    return designSize;
   }
 
   static bool isMobile() {

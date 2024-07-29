@@ -21,6 +21,13 @@ class FirestoreService {
     return ref.get();
   }
 
+  Future<void> updateDocument(
+    DocumentReference ref,
+    Map<String, dynamic> data,
+  ) async {
+    await ref.update(data);
+  }
+
   Future<List<DocumentSnapshot>> getCollection(CollectionReference ref) async {
     final snapshot = await ref.get();
 
