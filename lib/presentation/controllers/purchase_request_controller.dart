@@ -1,21 +1,22 @@
 // ignore_for_file: use_build_context_synchronously
 import 'package:ecostep/application/firestore_service.dart';
+import 'package:ecostep/data/market_place_repository.dart';
 import 'package:ecostep/domain/marketplace_item.dart';
 import 'package:ecostep/presentation/utils/show_dalog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PurchaseRequestController extends StateNotifier<void> {
-  PurchaseRequestController(this.firestoreService) : super(null);
+  PurchaseRequestController(this.provider) : super(null);
 
-  final FirestoreService firestoreService;
+  final MarketPlaceRepository provider;
 
   Future<void> sendPurchaseRequest(
     MarketplaceItem item,
     BuildContext context,
   ) async {
     try {
-      await firestoreService.sendPurchaseRequest(item);
+      await provider.sendPurchaseRequest(item);
 
       showAlertDialog(
         context,
@@ -36,6 +37,6 @@ class PurchaseRequestController extends StateNotifier<void> {
 
 final purchaseRequestControllerProvider =
     StateNotifierProvider<PurchaseRequestController, void>((ref) {
-  final firestoreService = ref.read(firestoreServiceProvider);
-  return PurchaseRequestController(firestoreService);
+  final provider = ref.read(marketplaceRepositoryProvider);
+  return PurchaseRequestController(provider);
 });

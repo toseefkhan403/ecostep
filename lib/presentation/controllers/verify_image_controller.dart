@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:ecostep/application/gemini_service.dart';
+import 'package:ecostep/data/gemini_repository.dart';
 import 'package:ecostep/domain/verify_image_state.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
@@ -9,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class VerifyImageController extends StateNotifier<VerifyImageState> {
   VerifyImageController(this.geminiService) : super(const VerifyImageState());
 
-  final GeminiService geminiService;
+  final GeminiRepository geminiService;
 
   Future<void> pickImage() async {
     final result = await FilePicker.platform.pickFiles(type: FileType.image);

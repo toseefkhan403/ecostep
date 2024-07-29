@@ -1,25 +1,30 @@
 import 'package:ecostep/application/firestore_service.dart';
+import 'package:ecostep/data/market_place_repository.dart';
 import 'package:ecostep/domain/marketplace_item.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-class MarketplaceController extends StateNotifier<List<MarketplaceItem>> {
-  MarketplaceController(this.firestoreService) : super([]);
+part 'market_place_controller.g.dart';
 
-  final FirestoreService firestoreService;
+@riverpod
+class MarketplaceController extends _$MarketplaceController {
+  @override
+  Stream<List<MarketplaceItem>> build() {
+    return fetchMarketplaceItems();
+  }
 
-  Future<void> fetchMarketplaceItems() async {
+  Stream<List<MarketplaceItem>> fetchMarketplaceItems() {
     try {
-      final items = await firestoreService.fetchMarketplaceItems();
-      state = items;
+      final itemsStream =
+          ref.watch(marketplaceRepositoryProvider).fetchMarketplaceItems();
+      itemsStream.listen((items) {
+        state = AsyncData(items);
+      });
+      return itemsStream;
     } catch (e) {
       debugPrint('Error fetching marketplace items: $e');
+      return Stream.error(e);
     }
   }
 }
-
-final marketplaceControllerProvider =
-    StateNotifierProvider<MarketplaceController, List<MarketplaceItem>>((ref) {
-  final firestoreService = ref.read(firestoreServiceProvider);
-  return MarketplaceController(firestoreService);
-});

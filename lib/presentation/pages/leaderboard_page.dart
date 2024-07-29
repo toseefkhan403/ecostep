@@ -1,10 +1,10 @@
+import 'package:ecostep/domain/date.dart';
 import 'package:ecostep/domain/user.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/presentation/utils/utils.dart';
 import 'package:ecostep/presentation/widgets/circular_elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
 
 class LeaderBoardPage extends StatefulWidget {
   const LeaderBoardPage({super.key});
@@ -28,7 +28,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
           id: '$i',
           ecoBucksBalance: i * 10,
           personalization: false,
-          joinedOn: DateTime.now(),
+          joinedOn: Date.today().toString(),
         ),
       );
 
@@ -37,7 +37,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
           id: '$i',
           ecoBucksBalance: i * 10,
           personalization: false,
-          joinedOn: DateTime.now(),
+          joinedOn: Date.today().toString(),
         ),
       );
     }
@@ -202,8 +202,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
               ),
             ),
             Text(
-              "Joined On: ${DateFormat('MMM yy')
-              .format(dummyRecentUser.joinedOn)}",
+              'Joined On: ${dummyRecentUser.joinedOn}',
               style: const TextStyle(
                 color: Colors.black,
               ),
