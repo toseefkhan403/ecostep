@@ -79,7 +79,7 @@ class VerifyImageDialog extends ConsumerWidget {
               onPressed: () => Navigator.pop(context),
               child: const Text('Exit'),
             )
-          else
+          else if (!state.isLoadingImage)
             FilledButton(
               onPressed: () => controller.pickImage(
                 action.verifiableImage,

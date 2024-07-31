@@ -6,7 +6,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
 class WeekWidget extends ConsumerStatefulWidget {
   const WeekWidget(this.today, {super.key});
   final Date today;

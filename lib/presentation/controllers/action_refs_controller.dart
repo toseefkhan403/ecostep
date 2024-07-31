@@ -16,14 +16,14 @@ class ActionRefsController extends _$ActionRefsController {
 
   Future<Map<String, dynamic>> fetchCurrentUserActions(
     List<Date> week, {
-    bool generateDirectly = false,
+    bool generateMore = false,
   }) async {
     state = const AsyncLoading();
     var actions = <String, dynamic>{};
     final actionProvider = ref.read(actionRepositoryProvider);
 
     try {
-      if (!generateDirectly) {
+      if (!generateMore) {
         actions = await actionProvider.fetchUserActions();
       }
       if (actions.values.isEmpty || actions[week.first.toString()] == null) {

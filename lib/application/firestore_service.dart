@@ -9,6 +9,14 @@ class FirestoreService {
 
   final FirebaseFirestore firestore;
 
+  Future<List<DocumentReference>> getAllDocumentReferences(
+    String collectionPath,
+  ) async {
+    final QuerySnapshot snapshot =
+        await firestore.collection(collectionPath).get();
+    return snapshot.docs.map((doc) => doc.reference).toList();
+  }
+
   Future<void> setDocument(
     DocumentReference ref,
     Map<String, dynamic> data, {

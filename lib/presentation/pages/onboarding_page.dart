@@ -14,7 +14,7 @@ class OnboardingPage extends ConsumerStatefulWidget {
 }
 
 class _OnboardingPageState extends ConsumerState<OnboardingPage>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   // spam click protection
   bool inTransition = false;
   late AnimationController _controller;
@@ -22,7 +22,6 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage>
 
   @override
   void initState() {
-    super.initState();
     ref
         .read(onboardingArtboardControllerProvider.notifier)
         .loadRiveFile(isSmallScreen: AdaptivePolicy.isMobile());
@@ -34,6 +33,7 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage>
 
     _animation = Tween<double>(begin: 0, end: 1).animate(_controller);
     _controller.forward();
+    super.initState();
   }
 
   @override

@@ -7,6 +7,7 @@ import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/presentation/utils/utils.dart';
 import 'package:ecostep/presentation/widgets/async_value_widget.dart';
 import 'package:ecostep/presentation/widgets/expired_overlay.dart';
+import 'package:ecostep/presentation/widgets/fade_in_widget.dart';
 import 'package:ecostep/presentation/widgets/impact_dialog.dart';
 import 'package:ecostep/presentation/widgets/lottie_icon_widget.dart';
 import 'package:ecostep/presentation/widgets/modify_confirmation_dialog.dart';
@@ -15,44 +16,17 @@ import 'package:flutter/material.dart' hide Action;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:neopop/neopop.dart';
 
-class ActionWidget extends ConsumerStatefulWidget {
+class ActionWidget extends ConsumerWidget {
   const ActionWidget(this.action, {super.key});
 
   final Action? action;
 
   @override
-  ConsumerState<ActionWidget> createState() => _ActionWidgetState();
-}
-
-class _ActionWidgetState extends ConsumerState<ActionWidget>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 400),
-      vsync: this,
-    );
-    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
-    _controller.forward();
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final weekState = ref.watch(weekStateControllerProvider);
-    final action = widget.action;
 
-    return FadeTransition(
-      opacity: _animation,
+    // todofade in widget leads to crashes - fix
+    return FadeInWidget(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
         child: ClipRRect(
@@ -197,113 +171,135 @@ class _ActionWidgetState extends ConsumerState<ActionWidget>
             bottomRight: Radius.circular(22),
           ),
         ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                decoration: const BoxDecoration(
-                  border: Border(
-                    right: BorderSide(
-                      width: 1.2,
-                      color: Colors.white,
+        child: Consumer(
+          builder: (context, ref, child) {
+            final userValue = ref.watch(firestoreUserProvider);
+            return AsyncValueWidget(
+              value: userValue,
+              data: (user) {
+                final isActionCompleted = user.completedActionsDates
+                        ?.contains(selectedDate.toString()) ??
+                    false;
+                return Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            right: BorderSide(
+                              width: 1.2,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        child: InkWell(
+                          onTap: () {
+                            if (action == null) return;
+                            if (selectedDate.isAfter(
+                              Date.today().add(const Duration(days: 7)),
+                            )) {
+                              showToast(
+                                '''You can complete tasks up to 7 days in advance only''',
+                              );
+                              return;
+                            }
+
+                            showDialog<void>(
+                              context: context,
+                              builder: (c) => VerifyImageDialog(
+                                action,
+                                hasVerified: isActionCompleted,
+                              ),
+                            );
+                          },
+                          child: Text(
+                            isActionCompleted ? 'Verified' : 'Verify',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: AppColors.black,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                child: Consumer(
-                  builder: (context, ref, child) {
-                    final userValue = ref.watch(firestoreUserProvider);
-                    return AsyncValueWidget(
-                      value: userValue,
-                      data: (user) => InkWell(
+                    Expanded(
+                      child: InkWell(
                         onTap: () {
                           if (action == null) return;
 
                           showDialog<void>(
                             context: context,
-                            builder: (c) => VerifyImageDialog(
-                              action,
-                              hasVerified: user.completedActionsDates
-                                      ?.contains(selectedDate.toString()) ??
-                                  false,
+                            builder: (c) => ImpactDialog(
+                              action.impact,
+                              action.impactIfNotDone,
                             ),
                           );
                         },
-                        child: Text(
-                          (user.completedActionsDates
-                                      ?.contains(selectedDate.toString()) ??
-                                  false)
-                              ? 'Verified'
-                              : 'Verify',
+                        child: const Text(
+                          'Impact',
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
                             color: AppColors.black,
                           ),
                         ),
                       ),
-                    );
-                  },
-                ),
-              ),
-            ),
-            Expanded(
-              child: InkWell(
-                onTap: () {
-                  if (action == null) return;
+                    ),
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            left: BorderSide(
+                              width: 1.2,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        child: InkWell(
+                          onTap: () {
+                            if (action == null) return;
+                            if (selectedDate != Date.today()) {
+                              showToast(
+                                "You can only modify today's action",
+                              );
+                              return;
+                            }
+                            if (isActionCompleted) {
+                              showToast(
+                                'Action has been completed already',
+                              );
+                              return;
+                            }
 
-                  showDialog<void>(
-                    context: context,
-                    builder: (c) => ImpactDialog(
-                      action.impact,
-                      action.impactIfNotDone,
+                            showDialog<void>(
+                              context: context,
+                              builder: (c) => ModifyConfirmationDialog(
+                                user.ecoBucksBalance,
+                              ),
+                            );
+                          },
+                          child: const Text(
+                            'Modify',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              color: AppColors.black,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                  );
-                },
-                child: const Text(
-                  'Impact',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: AppColors.black,
-                  ),
-                ),
-              ),
-            ),
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                decoration: const BoxDecoration(
-                  border: Border(
-                    left: BorderSide(
-                      width: 1.2,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                child: InkWell(
-                  onTap: () {
-                    if (action == null) return;
-                    showDialog<void>(
-                      context: context,
-                      builder: (c) => const ModifyConfirmationDialog(),
-                    );
-                  },
-                  child: const Text(
-                    'Modify',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: AppColors.black,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
+                  ],
+                );
+              },
+            );
+          },
         ),
       );
 }

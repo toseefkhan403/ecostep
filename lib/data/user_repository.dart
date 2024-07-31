@@ -1,4 +1,6 @@
 // ignore_for_file: avoid_manual_providers_as_generated_provider_dependency
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecostep/application/firebase_auth_service.dart';
 import 'package:ecostep/application/firestore_service.dart';
@@ -45,25 +47,60 @@ class UserRepository {
     });
   }
 
-  void addEcoBucks(int reward) {
+  Future<void> addEcoBucks(int reward) async {
     final userDocRef =
         firestoreService.firestore.collection('users').doc(currentUser?.uid);
-    firestoreService.updateDocument(
+    await firestoreService.updateDocument(
       userDocRef,
       {'ecoBucksBalance': FieldValue.increment(reward)},
     );
   }
 
-  void completeUserAction(Date selectedDate) {
+  Future<void> completeUserAction(Date selectedDate) async {
     final userDocRef =
         firestoreService.firestore.collection('users').doc(currentUser?.uid);
-    firestoreService.updateDocument(
+    await firestoreService.updateDocument(
       userDocRef,
       {
         'completedActionsDates':
             FieldValue.arrayUnion([selectedDate.toString()]),
       },
     );
+  }
+
+  Future<bool> modifyAction(Date date, int fees) async {
+    // fetch random action ref
+    try {
+      final docRefs =
+          await firestoreService.getAllDocumentReferences('actions');
+
+      if (docRefs.isEmpty) {
+        return false;
+      }
+
+      final randomIndex = Random().nextInt(docRefs.length);
+      final randomActionRef = docRefs[randomIndex];
+
+      // set the actionRef to today's date
+      final userDocRef =
+          firestoreService.firestore.collection('users').doc(currentUser?.uid);
+      await firestoreService.setDocument(
+        userDocRef,
+        {
+          'userActions': {date.toString(): randomActionRef},
+        },
+        options: SetOptions(merge: true),
+      );
+
+      // deduct fees
+      await addEcoBucks(-50);
+      
+      return true;
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+
+    return false;
   }
 }
 

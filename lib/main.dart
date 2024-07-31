@@ -10,6 +10,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:toastification/toastification.dart';
 
 // 6 weeks to finish - lead with web
 // week 1(24 June) - complete onboarding - rive design, animation, text, coding - done
@@ -35,17 +36,19 @@ class GreenLoopApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final goRouter = ref.watch(goRouterProvider);
-    return MaterialApp.router(
-      routerConfig: goRouter,
-      title: 'GreenLoop',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: AppColors.primaryColor,
+    return ToastificationWrapper(
+      child: MaterialApp.router(
+        routerConfig: goRouter,
+        title: 'GreenLoop',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: AppColors.primaryColor,
+          ),
+          useMaterial3: true,
+          fontFamily: 'Poppins',
         ),
-        useMaterial3: true,
-        fontFamily: 'Poppins',
+        debugShowCheckedModeBanner: false,
       ),
-      debugShowCheckedModeBanner: false,
     );
   }
 }
