@@ -52,9 +52,9 @@ class VerifyImageController extends _$VerifyImageController {
       if (score > 50) {
         final selectedDate =
             ref.watch(weekStateControllerProvider).selectedDate;
-        ref.read(userRepositoryProvider)
-          ..addEcoBucks(reward)
-          ..completeUserAction(selectedDate);
+        final userProvider = ref.read(userRepositoryProvider);
+        await userProvider.addEcoBucks(reward);
+        await userProvider.completeUserAction(selectedDate);
       }
     } catch (e) {
       debugPrint(e.toString());

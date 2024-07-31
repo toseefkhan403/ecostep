@@ -1,5 +1,9 @@
+import 'dart:math';
+
+import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/presentation/widgets/lottie_icon_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:toastification/toastification.dart';
 
 bool isMobileScreen(BuildContext context) {
   final size = MediaQuery.of(context).size;
@@ -46,11 +50,31 @@ String iconFromNavigationIndex(int i) {
   }
 }
 
-void showSnackbar(BuildContext context, String title) =>
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(title),
+void showToast(
+  String title, {
+  ToastificationType type = ToastificationType.info,
+}) =>
+    toastification.show(
+      title: Text(
+        title,
       ),
+      type: type,
+      style: ToastificationStyle.fillColored,
+      autoCloseDuration: const Duration(seconds: 5),
+      primaryColor: AppColors.accentColor,
+      foregroundColor: Colors.black,
+      alignment: Alignment.bottomCenter,
+      animationDuration: const Duration(milliseconds: 300),
+      showProgressBar: false,
+      animationBuilder: (context, animation, alignment, child) {
+        return SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0, 1),
+            end: Offset.zero,
+          ).animate(animation),
+          child: child,
+        );
+      },
     );
 
 int coinsFromDifficulty(String difficulty) {
@@ -64,13 +88,19 @@ int coinsFromDifficulty(String difficulty) {
   return 200;
 }
 
-Widget loadingIconAI(double topMargin) => Padding(
-      padding: EdgeInsets.only(top: topMargin),
-      child: const Center(
-        child: LottieIconWidget(
-          iconName: 'artificial-intelligence',
-          height: 100,
-          repeat: true,
-        ),
+Widget loadingIconAI(double topMargin) {
+  final icons = [
+    'artificial-intelligence',
+    'artificial-intelligence (1)',
+  ];
+  return Padding(
+    padding: EdgeInsets.only(top: topMargin),
+    child: Center(
+      child: LottieIconWidget(
+        iconName: icons[Random().nextInt(icons.length)],
+        height: 100,
+        repeat: true,
       ),
-    );
+    ),
+  );
+}

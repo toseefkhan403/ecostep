@@ -1,18 +1,25 @@
+import 'package:ecostep/data/user_repository.dart';
+import 'package:ecostep/domain/date.dart';
+import 'package:ecostep/presentation/controllers/action_refs_controller.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/presentation/utils/utils.dart';
 import 'package:ecostep/presentation/widgets/center_content_padding.dart';
 import 'package:ecostep/presentation/widgets/lottie_icon_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:toastification/toastification.dart';
 
 class ModifyConfirmationDialog extends StatelessWidget {
-  const ModifyConfirmationDialog({super.key});
+  const ModifyConfirmationDialog(this.ecoBucksBalance, {super.key});
+
+  final int ecoBucksBalance;
 
   @override
   Widget build(BuildContext context) {
     final dialogWidth = !isMobileScreen(context)
         ? MediaQuery.of(context).size.width * 0.5
         : 300.0;
+    const fees = 50;
 
     return CenterContentPadding(
       child: AlertDialog(
@@ -39,7 +46,7 @@ class ModifyConfirmationDialog extends StatelessWidget {
                     iconName: 'coin',
                   ),
                   Text(
-                    '50',
+                    '$fees',
                     style: TextStyle(
                       color: AppColors.textColor,
                       fontSize: 22,
@@ -53,13 +60,35 @@ class ModifyConfirmationDialog extends StatelessWidget {
         ),
         actions: [
           Consumer(
-            builder: (context, ref, child) => FilledButton(
-              onPressed: () {
-                // TODOmodify action - can only modify today's action
-                // change ref in user's collection - fetchRefs again
-                // also cant modify if action is verified already
-                // TODOadd 7 days limit to action verification - add Toasts
-                // ref.read(userRepositoryProvider).modifyAction();
+            builder: (c, ref, child) => FilledButton(
+              onPressed: () async {
+                if (ecoBucksBalance < fees) {
+                  showToast(
+                    'Insufficient balance!',
+                    type: ToastificationType.error,
+                  );
+                  return;
+                }
+
+                final success = await ref
+                    .read(userRepositoryProvider)
+                    .modifyAction(Date.today(), fees);
+                if (success) {
+                  await ref
+                      .read(actionRefsControllerProvider.notifier)
+                      .fetchCurrentUserActions(
+                        Date.presentWeek(),
+                      );
+                  showToast(
+                    'Action modified successfully!',
+                  );
+                } else {
+                  showToast(
+                    "Could not modify today's action. Please try again later!",
+                  );
+                }
+                // ignore: use_build_context_synchronously
+                Navigator.pop(context);
               },
               child: const Text('Proceed'),
             ),

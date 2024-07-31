@@ -65,7 +65,7 @@ class ActionWidgetContainer extends ConsumerWidget {
           onPressed: () async {
             await actionsProvider.fetchCurrentUserActions(
               weekState.selectedWeek,
-              generateDirectly: true,
+              generateMore: true,
             );
           },
           child: const Text(
