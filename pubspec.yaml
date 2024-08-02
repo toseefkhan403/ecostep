@@ -7,6 +7,7 @@ environment:
   sdk: ">=3.4.1 <4.0.0"
 
 dependencies:
+  audioplayers: ^6.0.0
   auto_size_text: ^3.0.0
   cloud_firestore: ^4.17.0
   cupertino_icons: ^1.0.6
@@ -52,6 +53,7 @@ flutter:
     - assets/
     - assets/images/
     - assets/rive_assets/
+    - assets/sounds/
     - .env
 
   fonts:

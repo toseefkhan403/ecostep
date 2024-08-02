@@ -200,6 +200,7 @@ class ActionWidget extends ConsumerWidget {
                               Date.today().add(const Duration(days: 7)),
                             )) {
                               showToast(
+                                ref,
                                 '''You can complete tasks up to 7 days in advance only''',
                               );
                               return;
@@ -265,12 +266,14 @@ class ActionWidget extends ConsumerWidget {
                             if (action == null) return;
                             if (selectedDate != Date.today()) {
                               showToast(
+                                ref,
                                 "You can only modify today's action",
                               );
                               return;
                             }
                             if (isActionCompleted) {
                               showToast(
+                                ref,
                                 'Action has been completed already',
                               );
                               return;

@@ -1,7 +1,9 @@
+import 'package:ecostep/application/audio_player_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
 
-class LottieIconWidget extends StatefulWidget {
+class LottieIconWidget extends ConsumerStatefulWidget {
   const LottieIconWidget({
     required this.iconName,
     this.onTap,
@@ -17,10 +19,10 @@ class LottieIconWidget extends StatefulWidget {
   final void Function()? onTap;
 
   @override
-  State<LottieIconWidget> createState() => _LottieIconWidgetState();
+  ConsumerState<LottieIconWidget> createState() => _LottieIconWidgetState();
 }
 
-class _LottieIconWidgetState extends State<LottieIconWidget>
+class _LottieIconWidgetState extends ConsumerState<LottieIconWidget>
     with TickerProviderStateMixin {
   late final AnimationController _controller;
 
@@ -47,6 +49,9 @@ class _LottieIconWidgetState extends State<LottieIconWidget>
             ..reset()
             ..forward();
           widget.onTap?.call();
+          ref
+              .read(audioPlayerServiceProvider)
+              .playSound(getSoundFromIcon(widget.iconName));
         },
         child: Lottie.asset(
           'assets/images/${widget.iconName}.json',
@@ -56,12 +61,23 @@ class _LottieIconWidgetState extends State<LottieIconWidget>
             if (widget.autoPlay) {
               _controller.forward();
             }
-            if(widget.repeat) {
+            if (widget.repeat) {
               _controller.repeat();
             }
           },
         ),
       ),
     );
+  }
+}
+
+String getSoundFromIcon(String iconName) {
+  switch (iconName) {
+    case 'coin':
+      return 'pickupCoin';
+    case 'passion':
+      return 'explosion';
+    default:
+      return 'Abstract2';
   }
 }

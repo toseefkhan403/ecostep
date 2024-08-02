@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:ecostep/application/audio_player_service.dart';
 import 'package:ecostep/data/gemini_repository.dart';
 import 'package:ecostep/data/user_repository.dart';
 import 'package:ecostep/domain/verify_image_state.dart';
@@ -53,8 +54,16 @@ class VerifyImageController extends _$VerifyImageController {
         final selectedDate =
             ref.watch(weekStateControllerProvider).selectedDate;
         final userProvider = ref.read(userRepositoryProvider);
+        await ref
+            .read(audioPlayerServiceProvider)
+            .playSound('success', extension: 'mp3');
         await userProvider.addEcoBucks(reward);
         await userProvider.completeUserAction(selectedDate);
+        await userProvider.updateStreak();
+      } else {
+        await ref
+            .read(audioPlayerServiceProvider)
+            .playSound('fail', extension: 'mp3');
       }
     } catch (e) {
       debugPrint(e.toString());

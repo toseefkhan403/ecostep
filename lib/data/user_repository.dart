@@ -8,6 +8,7 @@ import 'package:ecostep/domain/date.dart';
 import 'package:ecostep/domain/user.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth_user;
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'user_repository.g.dart';
@@ -94,13 +95,49 @@ class UserRepository {
 
       // deduct fees
       await addEcoBucks(-50);
-      
+
       return true;
     } catch (e) {
       debugPrint(e.toString());
     }
 
     return false;
+  }
+
+  Future<void> updateStreak() async {
+    final userRef =
+        firestoreService.firestore.collection('users').doc(currentUser?.uid);
+    final userDoc = await firestoreService.getDocument(userRef);
+
+    final user = User.fromJson(userDoc.data()! as Map<String, dynamic>);
+
+    final today = Date.today().toString();
+    if (user.lastActionDate == null) {
+      // first action, set streak to 1 and return
+      await firestoreService.updateDocument(userRef, {
+        'streak': 1,
+        'lastActionDate': today,
+      });
+      return;
+    }
+
+    final now = DateTime.now();
+    final lastStreakDateTime =
+        DateFormat('dd-MM-yyyy').parse(user.lastActionDate!);
+
+    final daysDifference = now.difference(lastStreakDateTime).inDays;
+
+    if (daysDifference == 1) {
+      await firestoreService.updateDocument(userRef, {
+        'streak': FieldValue.increment(1),
+        'lastActionDate': today,
+      });
+    } else if (daysDifference > 1) {
+      await firestoreService.updateDocument(userRef, {
+        'streak': 1,
+        'lastActionDate': today,
+      });
+    }
   }
 }
 

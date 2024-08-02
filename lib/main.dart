@@ -19,6 +19,8 @@ import 'package:toastification/toastification.dart';
 // week 4(15 July) - marketplace feature - upload stuff, list it, buy it, your orders in profile
 // week 5(22 July) - transactions, slick video, sound fx and apple account setup(if needed)
 // week 6(29 July) - responsiveness and release
+
+// todomake image verification dialog barrierdismissable, test streaks and show streak, balance in a dialog after success
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   configureApp();
