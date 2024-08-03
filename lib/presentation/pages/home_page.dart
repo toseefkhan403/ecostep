@@ -48,8 +48,6 @@ class _HomePageState extends ConsumerState<HomePage> {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 30),
                   child: CircularElevatedButton(
-                    
-                    
                     onPressed: () {},
                     width: double.infinity,
                     color: AppColors.backgroundColor,
@@ -82,9 +80,6 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   Widget _iconsRow() {
     final userValue = ref.watch(firestoreUserProvider);
-
-    // TODOimplement streak logic - check lastDate - if diff > 1 day, reset to 0
-    // when action completed, do streak+1 if diff < 1 day
     return userValue.when(
       data: (user) => Row(
         children: [

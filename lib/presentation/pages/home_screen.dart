@@ -1,3 +1,4 @@
+import 'package:ecostep/application/audio_player_service.dart';
 import 'package:ecostep/presentation/pages/home_page.dart';
 import 'package:ecostep/presentation/pages/leaderboard_page.dart';
 import 'package:ecostep/presentation/pages/market_place_screen.dart';
@@ -7,15 +8,16 @@ import 'package:ecostep/presentation/utils/utils.dart';
 import 'package:ecostep/presentation/widgets/custom_bottom_navigation_bar.dart';
 import 'package:ecostep/presentation/widgets/custom_navigation_rail.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   final PageController _pageController = PageController();
   final ScrollController _scrollController = ScrollController();
 
@@ -41,38 +43,42 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: SafeArea(
-        child: !isMobile
-            ? webWidget()
-            : Stack(
-                children: [
-                  SingleChildScrollView(
-                    controller: _scrollController,
-                    scrollDirection: Axis.horizontal,
-                    physics: const NeverScrollableScrollPhysics(),
-                    child: Image.asset(
-                      'assets/images/mountains.png',
-                      fit: BoxFit.cover,
-                      height: MediaQuery.of(context).size.height,
-                      width: MediaQuery.of(context).size.width * 4,
+        child: Listener(
+          onPointerUp: (_) =>
+              ref.read(audioPlayerServiceProvider).playClickSound(),
+          child: !isMobile
+              ? webWidget()
+              : Stack(
+                  children: [
+                    SingleChildScrollView(
+                      controller: _scrollController,
+                      scrollDirection: Axis.horizontal,
+                      physics: const NeverScrollableScrollPhysics(),
+                      child: Image.asset(
+                        'assets/images/mountains.png',
+                        fit: BoxFit.cover,
+                        height: MediaQuery.of(context).size.height,
+                        width: MediaQuery.of(context).size.width * 4,
+                      ),
                     ),
-                  ),
-                  PageView(
-                    controller: _pageController,
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: const [
-                      HomePage(),
-                      LeaderBoardPage(),
-                      MarketplaceScreen(),
-                      ProfilePage(),
-                    ],
-                  ),
-                  if (isMobile)
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: CustomBottomNavigationBar(_pageController),
+                    PageView(
+                      controller: _pageController,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: const [
+                        HomePage(),
+                        LeaderBoardPage(),
+                        MarketplaceScreen(),
+                        ProfilePage(),
+                      ],
                     ),
-                ],
-              ),
+                    if (isMobile)
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: CustomBottomNavigationBar(_pageController),
+                      ),
+                  ],
+                ),
+        ),
       ),
     );
   }

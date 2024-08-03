@@ -61,7 +61,9 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
             getFilteredItems(marketplaceitems, currentUserUid);
         return Scaffold(
           backgroundColor: Colors.transparent,
-          floatingActionButton: ElevatedButton(
+          floatingActionButton: CircularElevatedButton(
+            color: AppColors.secondaryColor,
+            height: 60,
             onPressed: () {
               showDialog(
                 context: context,
@@ -70,7 +72,11 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
                 },
               );
             },
-            child: const Text('add item'),
+            child: const Text(
+              'Post Item',
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            ),
           ),
           body: Padding(
             padding: EdgeInsets.symmetric(
@@ -81,9 +87,10 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 20),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Market Place',
+                        'Marketplace',
                         style: TextStyle(
                           color: AppColors.textColor,
                           fontSize: 26,
@@ -100,43 +107,89 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
                     controller: _pageController,
                     physics: const NeverScrollableScrollPhysics(),
                     children: [
-                      Container(
-                        margin: const EdgeInsets.only(top: 20),
-                        padding: const EdgeInsets.all(20),
-                        child: GridView.builder(
-                          padding: const EdgeInsets.all(10),
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            childAspectRatio: 0.8,
-                            crossAxisSpacing: 10,
-                            mainAxisSpacing: 10,
-                          ),
-                          itemCount: marketplaceitems.length,
-                          itemBuilder: (context, index) {
-                            final item = marketplaceitems[index];
-                            return MarketplaceCard(
-                              item: item,
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          if (constraints.maxWidth < 600) {
+                            return Container(
+                              padding: const EdgeInsets.all(10),
+                              child: ListView.builder(
+                                padding: const EdgeInsets.all(10),
+                                itemCount: marketplaceitems.length,
+                                itemBuilder: (context, index) {
+                                  final item = marketplaceitems[index];
+                                  return SizedBox(
+                                    height: 400,
+                                    child: MarketplaceCard(
+                                      isShowDetails: true,
+                                      item: item,
+                                    ),
+                                  );
+                                },
+                              ),
                             );
-                          },
-                        ),
+                          } else {
+                            return Container(
+                              margin: const EdgeInsets.only(top: 20),
+                              padding: const EdgeInsets.all(20),
+                              child: GridView.builder(
+                                padding: const EdgeInsets.all(10),
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  childAspectRatio: 0.8,
+                                  crossAxisSpacing: 10,
+                                  mainAxisSpacing: 10,
+                                ),
+                                itemCount: marketplaceitems.length,
+                                itemBuilder: (context, index) {
+                                  final item = marketplaceitems[index];
+                                  return MarketplaceCard(
+                                    isShowDetails: true,
+                                    item: item,
+                                  );
+                                },
+                              ),
+                            );
+                          }
+                        },
                       ),
-                      GridView.builder(
-                        padding: const EdgeInsets.all(10),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          childAspectRatio: 0.8,
-                          crossAxisSpacing: 10,
-                          mainAxisSpacing: 10,
-                        ),
-                        itemCount: filteredItems.length,
-                        itemBuilder: (context, index) {
-                          final item = filteredItems[index];
-
-                          return MarketplaceCard(
-                            item: item,
-                          );
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          if (constraints.maxWidth < 600) {
+                            return ListView.builder(
+                              padding: const EdgeInsets.all(10),
+                              itemCount: filteredItems.length,
+                              itemBuilder: (context, index) {
+                                final item = filteredItems[index];
+                                return SizedBox(
+                                  height: 400,
+                                  child: MarketplaceCard(
+                                    item: item,
+                                    isShowDetails: false,
+                                  ),
+                                );
+                              },
+                            );
+                          } else {
+                            return GridView.builder(
+                              padding: const EdgeInsets.all(10),
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                childAspectRatio: 0.8,
+                                crossAxisSpacing: 10,
+                                mainAxisSpacing: 10,
+                              ),
+                              itemCount: filteredItems.length,
+                              itemBuilder: (context, index) {
+                                final item = filteredItems[index];
+                                return MarketplaceCard(
+                                  isShowDetails: false,
+                                  item: item,
+                                );
+                              },
+                            );
+                          }
                         },
                       ),
                     ],
@@ -166,7 +219,7 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
                 child: const Padding(
                   padding: EdgeInsets.symmetric(vertical: 15),
                   child: Text(
-                    'All Items',
+                    'Items For Recycle',
                     style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
@@ -189,7 +242,7 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
                 child: const Padding(
                   padding: EdgeInsets.symmetric(vertical: 15),
                   child: Text(
-                    'Your Items',
+                    'Your Recycles',
                     style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,

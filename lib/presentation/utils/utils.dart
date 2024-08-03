@@ -1,8 +1,10 @@
 import 'dart:math';
 
+import 'package:ecostep/application/audio_player_service.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/presentation/widgets/lottie_icon_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toastification/toastification.dart';
 
 bool isMobileScreen(BuildContext context) {
@@ -38,7 +40,7 @@ BoxDecoration roundedContainerDecoration({
 String iconFromNavigationIndex(int i) {
   switch (i) {
     case 0:
-      return 'home';
+      return 'eco-earth';
     case 1:
       return 'podium';
     case 2:
@@ -51,31 +53,34 @@ String iconFromNavigationIndex(int i) {
 }
 
 void showToast(
+  WidgetRef ref,
   String title, {
   ToastificationType type = ToastificationType.info,
-}) =>
-    toastification.show(
-      title: Text(
-        title,
-      ),
-      type: type,
-      style: ToastificationStyle.fillColored,
-      autoCloseDuration: const Duration(seconds: 5),
-      primaryColor: AppColors.accentColor,
-      foregroundColor: Colors.black,
-      alignment: Alignment.bottomCenter,
-      animationDuration: const Duration(milliseconds: 300),
-      showProgressBar: false,
-      animationBuilder: (context, animation, alignment, child) {
-        return SlideTransition(
-          position: Tween<Offset>(
-            begin: const Offset(0, 1),
-            end: Offset.zero,
-          ).animate(animation),
-          child: child,
-        );
-      },
-    );
+}) {
+  ref.read(audioPlayerServiceProvider).playSound('error', extension: 'mp3');
+  toastification.show(
+    title: Text(
+      title,
+    ),
+    type: type,
+    style: ToastificationStyle.fillColored,
+    autoCloseDuration: const Duration(seconds: 5),
+    primaryColor: AppColors.accentColor,
+    foregroundColor: Colors.black,
+    alignment: Alignment.bottomCenter,
+    animationDuration: const Duration(milliseconds: 300),
+    showProgressBar: false,
+    animationBuilder: (context, animation, alignment, child) {
+      return SlideTransition(
+        position: Tween<Offset>(
+          begin: const Offset(0, 1),
+          end: Offset.zero,
+        ).animate(animation),
+        child: child,
+      );
+    },
+  );
+}
 
 int coinsFromDifficulty(String difficulty) {
   if (difficulty == 'easy') {

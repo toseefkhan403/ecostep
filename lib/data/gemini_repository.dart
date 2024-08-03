@@ -39,6 +39,36 @@ class GeminiRepository {
         .toList();
   }
 
+  Future<String> generatePrice(
+    String itemTitle,
+    String itemDescription,
+    String usedForMonths,
+    Uint8List imageBytes,
+  ) async {
+    const promptTemplate =
+        r'''Give a price estimation in rupees for a used item, whose description is as follows: $itemTitle, $itemDescription, which has been used for $usedForMonths. Also, consider the attached image of the item for a more accurate estimation. Return the output in JSON using the following structure: { "itemPrice" : "$itemPrice"}, itemPrice must be an integer.''';
+
+    final prompt = promptTemplate
+        .replaceAll(r'$itemTitle', itemTitle)
+        .replaceAll(r'$itemDescription', itemDescription)
+        .replaceAll(r'$usedForMonths', usedForMonths);
+
+    print(prompt);
+
+    final imagePart = DataPart('image/jpeg', imageBytes);
+
+    final output = await model.generateContent([
+      Content.multi([
+        TextPart(prompt),
+        imagePart,
+      ]),
+    ]);
+    final jsonResponse = jsonDecode(output.text!) as Map<String, dynamic>;
+    final itemPrice = jsonResponse['itemPrice'];
+
+    return itemPrice.toString();
+  }
+
   Future<Map<String, dynamic>> verifyImage(
     Uint8List imageBytes,
     String verifiableImage,

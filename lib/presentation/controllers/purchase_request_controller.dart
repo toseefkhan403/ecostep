@@ -11,12 +11,13 @@ class PurchaseRequestController extends StateNotifier<void> {
 
   final MarketPlaceRepository provider;
 
-  Future<void> sendPurchaseRequest(
-    MarketplaceItem item,
-    BuildContext context,
-  ) async {
+  Future<void> sendPurchaseRequest({
+    required MarketplaceItem item,
+    required BuildContext context,
+    required String enteredprice,
+  }) async {
     try {
-      await provider.sendPurchaseRequest(item);
+      await provider.sendPurchaseRequest(item: item, buyerprice: enteredprice);
 
       showAlertDialog(
         context,

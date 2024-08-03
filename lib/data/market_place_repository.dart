@@ -25,7 +25,10 @@ class MarketPlaceRepository {
     });
   }
 
-  Future<void> sendPurchaseRequest(MarketplaceItem item) async {
+  Future<void> sendPurchaseRequest({
+    required MarketplaceItem item,
+    required String buyerprice,
+  }) async {
     if (currentUser == null) {
       throw StateError('No user is currently logged in');
     }
@@ -44,7 +47,10 @@ class MarketPlaceRepository {
       'buyerId': buyerRef,
       'item': itemRef,
       'sellerId': sellerRef,
+      'buyerPrice': buyerprice,
       'timestamp': timestamp,
+      'sellerConfirm': false,
+      'buyerConfirm': false,
     };
 
     try {
@@ -55,11 +61,31 @@ class MarketPlaceRepository {
 
       await sellerRef.update(
         {
-          'purchaseRequests': FieldValue.arrayUnion([ref]),
+          'buyerRequests': FieldValue.arrayUnion([ref]),
         },
       );
+
+      //TODO  update buyer  ref also
     } catch (e) {
-      debugPrint('Error sending purchase request: $e');
+      debugPrint('Error sending buyer request: $e');
+
+      rethrow;
+    }
+    try {
+      final ref = firestoreService.firestore
+          .collection('purchaseRequests')
+          .doc(purchaseRequestId);
+      await firestoreService.setDocument(ref, purchaseRequestData);
+
+      await buyerRef.update(
+        {
+          'sellerRequests': FieldValue.arrayUnion([ref]),
+        },
+      );
+
+      //TODO  update buyer  ref also
+    } catch (e) {
+      debugPrint('Error sending buyer request: $e');
 
       rethrow;
     }

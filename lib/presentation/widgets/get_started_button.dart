@@ -1,3 +1,4 @@
+import 'package:ecostep/application/audio_player_service.dart';
 import 'package:ecostep/application/firebase_auth_service.dart';
 import 'package:ecostep/data/user_repository.dart';
 import 'package:ecostep/domain/date.dart';
@@ -60,6 +61,7 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
                   : NeoPopButton(
                       color: AppColors.primaryColor,
                       onTapUp: () {
+                        ref.read(audioPlayerServiceProvider).playClickSound();
                         _controller.reverse().then((_) {
                           controller.getStarted();
                           setState(() {
@@ -105,6 +107,7 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
         NeoPopButton(
           color: AppColors.primaryColor,
           onTapUp: () async {
+            await ref.read(audioPlayerServiceProvider).playClickSound();
             final user =
                 await ref.read(firebaseAuthServiceProvider).signInWithGoogle();
             if (user == null) return;
@@ -140,6 +143,7 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
         NeoPopButton(
           color: AppColors.primaryColor,
           onTapUp: () async {
+            await ref.read(audioPlayerServiceProvider).playClickSound();
             final user =
                 await ref.read(firebaseAuthServiceProvider).signInAnonymously();
             if (user == null) return;

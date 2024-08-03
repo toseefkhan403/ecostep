@@ -1,7 +1,6 @@
 import 'dart:typed_data';
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecostep/data/gemini_repository.dart';
 import 'package:ecostep/presentation/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -12,10 +11,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
-import 'dart:html' as html;
-
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:toastification/toastification.dart';
 
 class PostItemDialog extends ConsumerStatefulWidget {
   const PostItemDialog({super.key});
@@ -31,14 +28,13 @@ class _PostItemDialogState extends ConsumerState<PostItemDialog> {
   late TextEditingController _priceController;
   late TextEditingController _locationController;
   late TextEditingController _usedForMonthsController;
+  late TextEditingController _contactInformationController;
   String? _imageUrl;
   Uint8List? _imageBytes;
   bool _isLoadingImage = false;
   UploadTask? uploadTask;
   String? downloadURL;
   bool _isLoadingPrice = false;
-
-  late final GenerativeModel model;
 
   @override
   void initState() {
@@ -48,13 +44,7 @@ class _PostItemDialogState extends ConsumerState<PostItemDialog> {
     _priceController = TextEditingController();
     _locationController = TextEditingController();
     _usedForMonthsController = TextEditingController();
-
-    final apiKey = dotenv.env['gemini_api_key']!;
-    model = GenerativeModel(
-      model: 'gemini-1.5-flash-latest',
-      apiKey: apiKey,
-      generationConfig: GenerationConfig(responseMimeType: 'application/json'),
-    );
+    _contactInformationController = TextEditingController();
   }
 
   @override
@@ -64,6 +54,7 @@ class _PostItemDialogState extends ConsumerState<PostItemDialog> {
     _priceController.dispose();
     _locationController.dispose();
     _usedForMonthsController.dispose();
+    _contactInformationController.dispose();
     super.dispose();
   }
 
@@ -124,23 +115,28 @@ class _PostItemDialogState extends ConsumerState<PostItemDialog> {
     final itemDescription = _descriptionController.text;
     final usedForMonths = _usedForMonthsController.text;
 
-    const promptTemplate =
-        r'Give a price estimation in rupees for a used item, whose description is as follows: $itemTitle, $itemDescription, which has been used for $usedForMonths. Return the output in json using the following structure: { "itemPrice" : "$itemPrice"}';
-
-    final prompt = promptTemplate
-        .replaceAll(r'$itemTitle', itemTitle)
-        .replaceAll(r'$itemDescription', itemDescription)
-        .replaceAll(r'$usedForMonths', usedForMonths);
-
-    print(prompt);
+    if (_imageBytes == null) {
+      setState(() {
+        _isLoadingPrice = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('No image selected for price estimation.'),
+        ),
+      );
+      return;
+    }
 
     try {
-      final output = await model.generateContent([Content.text(prompt)]);
-      final jsonResponse = jsonDecode(output.text!) as Map<String, dynamic>;
-      final itemPrice = jsonResponse['itemPrice'];
+      final itemPrice = await ref.read(geminiRepositoryProvider).generatePrice(
+            itemTitle,
+            itemDescription,
+            usedForMonths,
+            _imageBytes!,
+          );
 
       setState(() {
-        _priceController.text = itemPrice as String;
+        _priceController.text = itemPrice;
         _isLoadingPrice = false;
       });
     } catch (e) {
@@ -164,7 +160,7 @@ class _PostItemDialogState extends ConsumerState<PostItemDialog> {
       await docRef.set({
         'name': _nameController.text,
         'description': _descriptionController.text,
-        'price': _priceController.text,
+        'price': _priceController.text.replaceAll(',', ''),
         'location': _locationController.text,
         'usedForMonths': int.parse(_usedForMonthsController.text),
         'imageUrl': _imageUrl,
@@ -172,9 +168,16 @@ class _PostItemDialogState extends ConsumerState<PostItemDialog> {
         'docid': docRef.id,
         'sellingUser': sellingUserRef,
         'uploadedAt': FieldValue.serverTimestamp(),
+        'contactInfo': _contactInformationController.text,
       });
 
       Navigator.of(context).pop();
+
+      showToast(
+        ref,
+        'Item added to the Marketplace Sucessfully!',
+        type: ToastificationType.success,
+      );
     }
   }
 
@@ -186,128 +189,236 @@ class _PostItemDialogState extends ConsumerState<PostItemDialog> {
         horizontal: !isMobileScreen(context) ? width * 0.25 : 10,
       ),
       child: Dialog(
+        backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: _isLoadingImage
-                        ? const CircularProgressIndicator()
-                        : _imageBytes != null
-                            ? Column(
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Image.memory(
-                                      _imageBytes!,
-                                      height: 200,
-                                      width: double.infinity,
-                                      fit: BoxFit.cover,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: AppColors.primaryColor,
+              width: 2,
+            ),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: _isLoadingImage
+                          ? const CircularProgressIndicator()
+                          : _imageBytes != null
+                              ? Column(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: Image.memory(
+                                        _imageBytes!,
+                                        height: 200,
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
-                                  ),
-                                  // const SizedBox(height: 10),
-                                ],
-                              )
-                            : GestureDetector(
-                                onTap: pickAndUploadImage,
-                                child: Container(
-                                  height: 200,
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: AppColors.primaryColor,
-                                  ),
-                                  child: const Center(
-                                    child: Text(
-                                      'Upload Image',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.white,
+                                    // const SizedBox(height: 10),
+                                  ],
+                                )
+                              : GestureDetector(
+                                  onTap: pickAndUploadImage,
+                                  child: Container(
+                                    height: 200,
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.transparent,
+                                      border: Border.all(
+                                        color: AppColors.primaryColor,
+                                      ),
+                                    ),
+                                    child: const Center(
+                                      child: Text(
+                                        'Upload Image',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          color: AppColors.primaryColor,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
+                    ),
+                    const SizedBox(height: 25),
+                    const Text(
+                      'Post an Item',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blueGrey,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _nameController,
+                      decoration: const InputDecoration(
+                        labelText: 'Name',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        labelStyle: TextStyle(color: Colors.blueGrey),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter the name';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _descriptionController,
+                      decoration: const InputDecoration(
+                        labelText: 'Description',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        labelStyle: TextStyle(color: Colors.blueGrey),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter the description';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        ElevatedButton(
+                          onPressed: generatePrice,
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 40,
+                              vertical: 15,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            backgroundColor: AppColors.primaryColor,
+                          ),
+                          child: _isLoadingPrice
+                              ? const CircularProgressIndicator(
+                                  color: Colors.white,
+                                )
+                              : const Text(
+                                  'Generate Price',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: TextFormField(
+                            enabled: false,
+                            controller: _priceController,
+                            decoration: const InputDecoration(
+                              labelText: 'Price',
+                              border: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
                               ),
-                    // : ElevatedButton(
-                    //     onPressed: pickAndUploadImage,
-                    //     style: ElevatedButton.styleFrom(
-                    //       padding: const EdgeInsets.symmetric(
-                    //         horizontal: 40,
-                    //         vertical: 15,
-                    //       ),
-                    //       shape: RoundedRectangleBorder(
-                    //         borderRadius: BorderRadius.circular(30),
-                    //       ),
-                    //       backgroundColor: AppColors.primaryColor,
-                    //     ),
-                    //     child: const Text(
-                    //       'Upload Image',
-                    //       style: TextStyle(
-                    //         fontSize: 18,
-                    //         color: Colors.white,
-                    //       ),
-                    //     ),
-                    //   ),
-                  ),
-                  const SizedBox(height: 25),
-                  const Text(
-                    'Post an Item',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blueGrey,
+                              filled: true,
+                              fillColor: Colors.white,
+                              labelStyle: TextStyle(color: Colors.blueGrey),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please generate the price';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _nameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Name',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _locationController,
+                      decoration: const InputDecoration(
+                        labelText: 'Location',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        labelStyle: TextStyle(color: Colors.blueGrey),
                       ),
-                      filled: true,
-                      fillColor: Colors.white,
-                      labelStyle: TextStyle(color: Colors.blueGrey),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter the location';
+                        }
+                        return null;
+                      },
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter the name';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _descriptionController,
-                    decoration: const InputDecoration(
-                      labelText: 'Description',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _usedForMonthsController,
+                      decoration: const InputDecoration(
+                        labelText: 'Used for months',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        labelStyle: TextStyle(color: Colors.blueGrey),
                       ),
-                      filled: true,
-                      fillColor: Colors.white,
-                      labelStyle: TextStyle(color: Colors.blueGrey),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter the used months';
+                        }
+                        return null;
+                      },
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter the description';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      ElevatedButton(
-                        onPressed: generatePrice,
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _contactInformationController,
+                      decoration: const InputDecoration(
+                        labelText: 'Contact information',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        labelStyle: TextStyle(color: Colors.blueGrey),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter contact information!';
+                        }
+                        final emailRegExp = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+                        final phoneRegExp = RegExp(r'^\+?[0-9]{10,15}$');
+
+                        if (!emailRegExp.hasMatch(value) &&
+                            !phoneRegExp.hasMatch(value)) {
+                          return 'Please enter a valid email address or phone number!';
+                        }
+
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 32),
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: _postItem,
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 40,
@@ -318,103 +429,15 @@ class _PostItemDialogState extends ConsumerState<PostItemDialog> {
                           ),
                           backgroundColor: AppColors.primaryColor,
                         ),
-                        child: _isLoadingPrice
-                            ? const CircularProgressIndicator(
-                                color: Colors.white,
-                              )
-                            : const Text(
-                                'Generate Price',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.white,
-                                ),
-                              ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: TextFormField(
-                          enabled: false,
-                          controller: _priceController,
-                          decoration: const InputDecoration(
-                            labelText: 'Price',
-                            border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                            ),
-                            filled: true,
-                            fillColor: Colors.white,
-                            labelStyle: TextStyle(color: Colors.blueGrey),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please generate the price';
-                            }
-                            return null;
-                          },
+                        child: const Text(
+                          'Post Item',
+                          style: TextStyle(fontSize: 18, color: Colors.white),
                         ),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _locationController,
-                    decoration: const InputDecoration(
-                      labelText: 'Location',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                      labelStyle: TextStyle(color: Colors.blueGrey),
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter the location';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _usedForMonthsController,
-                    decoration: const InputDecoration(
-                      labelText: 'Used for months',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                      filled: true,
-                      fillColor: Colors.white,
-                      labelStyle: TextStyle(color: Colors.blueGrey),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter the used months';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 32),
-                  Center(
-                    child: ElevatedButton(
-                      onPressed: _postItem,
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 40,
-                          vertical: 15,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        backgroundColor: AppColors.primaryColor,
-                      ),
-                      child: const Text(
-                        'Post Item',
-                        style: TextStyle(fontSize: 18, color: Colors.white),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 25),
-                ],
+                    const SizedBox(height: 25),
+                  ],
+                ),
               ),
             ),
           ),

@@ -64,6 +64,7 @@ class ModifyConfirmationDialog extends StatelessWidget {
               onPressed: () async {
                 if (ecoBucksBalance < fees) {
                   showToast(
+                    ref,
                     'Insufficient balance!',
                     type: ToastificationType.error,
                   );
@@ -80,10 +81,12 @@ class ModifyConfirmationDialog extends StatelessWidget {
                         Date.presentWeek(),
                       );
                   showToast(
+                    ref,
                     'Action modified successfully!',
                   );
                 } else {
                   showToast(
+                    ref,
                     "Could not modify today's action. Please try again later!",
                   );
                 }

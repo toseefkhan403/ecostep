@@ -16,6 +16,7 @@ class MarketplaceItem with _$MarketplaceItem {
     required dynamic uploadedAt,
     required int usedForMonths,
     required String docid,
+    required String  contactInfo,
   }) = _MarketplaceItem;
 
   factory MarketplaceItem.fromJson(Map<String, dynamic> json) =>
