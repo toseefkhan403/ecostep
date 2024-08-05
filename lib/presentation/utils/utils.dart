@@ -40,7 +40,7 @@ BoxDecoration roundedContainerDecoration({
 String iconFromNavigationIndex(int i) {
   switch (i) {
     case 0:
-      return 'home';
+      return 'eco-earth';
     case 1:
       return 'podium';
     case 2:

@@ -4,10 +4,14 @@ class ExpiredOverlay extends StatelessWidget {
   const ExpiredOverlay({
     required this.child,
     required this.isExpired,
+    this.expiredMessage,
+    this.messageColor,
     super.key,
   });
   final Widget child;
   final bool isExpired;
+  final String? expiredMessage;
+  final Color? messageColor;
 
   @override
   Widget build(BuildContext context) {
@@ -24,11 +28,11 @@ class ExpiredOverlay extends StatelessWidget {
               child: Center(
                 child: Transform.rotate(
                   angle: -30 * 3.1415926535 / 180,
-                  child: const Text(
-                    'EXPIRED',
+                  child: Text(
+                    expiredMessage ?? 'EXPIRED',
                     style: TextStyle(
                       fontSize: 50,
-                      color: Colors.black45,
+                      color: messageColor ?? Colors.black45,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

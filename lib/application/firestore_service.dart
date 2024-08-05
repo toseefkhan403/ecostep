@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+
 class FirestoreService {
   FirestoreService(this.firestore);
 
@@ -31,6 +32,12 @@ class FirestoreService {
     Map<String, dynamic> data,
   ) async {
     await ref.update(data);
+  }
+
+  Future<List<DocumentSnapshot>> getCollection(CollectionReference ref) async {
+    final snapshot = await ref.get();
+
+    return snapshot.docs;
   }
 
   WriteBatch batch() {

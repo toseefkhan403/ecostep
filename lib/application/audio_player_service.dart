@@ -1,4 +1,5 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'audio_player_service.g.dart';
@@ -13,11 +14,19 @@ class AudioPlayerService {
   final AudioPlayer _audioPlayer = AudioPlayer();
 
   Future<void> playSound(String asset, {String extension = 'wav'}) async {
-    await _audioPlayer.play(AssetSource('sounds/$asset.$extension'));
+    try {
+      await _audioPlayer.play(AssetSource('sounds/$asset.$extension'));
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   Future<void> playClickSound() async {
-    await _audioPlayer.play(AssetSource('sounds/Abstract2.wav'));
+    try {
+      await _audioPlayer.play(AssetSource('sounds/Abstract2.wav'));
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   Future<void> stop() async {

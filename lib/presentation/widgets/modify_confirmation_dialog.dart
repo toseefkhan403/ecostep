@@ -26,6 +26,7 @@ class ModifyConfirmationDialog extends StatelessWidget {
         title: const Text(
           "Modify Today's Action",
           style: TextStyle(
+            color: AppColors.primaryColor,
             fontSize: 32,
             fontWeight: FontWeight.bold,
           ),

@@ -1,6 +1,7 @@
 import 'package:ecostep/application/audio_player_service.dart';
 import 'package:ecostep/presentation/pages/home_page.dart';
 import 'package:ecostep/presentation/pages/leaderboard_page.dart';
+import 'package:ecostep/presentation/pages/market_place_screen.dart';
 import 'package:ecostep/presentation/pages/profile_page.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/presentation/utils/utils.dart';
@@ -66,7 +67,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       children: const [
                         HomePage(),
                         LeaderBoardPage(),
-                        Center(child: Text('Marketplace')),
+                        MarketplaceScreen(),
                         ProfilePage(),
                       ],
                     ),
@@ -96,7 +97,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             children: const [
               HomePage(),
               LeaderBoardPage(),
-              Center(child: Text('Marketplace')),
+              MarketplaceScreen(),
               ProfilePage(),
             ],
           ),

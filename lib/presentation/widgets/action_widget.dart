@@ -208,6 +208,7 @@ class ActionWidget extends ConsumerWidget {
 
                             showDialog<void>(
                               context: context,
+                              barrierDismissible: false,
                               builder: (c) => VerifyImageDialog(
                                 action,
                                 hasVerified: isActionCompleted,
