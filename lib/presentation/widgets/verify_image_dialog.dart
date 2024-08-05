@@ -28,6 +28,7 @@ class VerifyImageDialog extends ConsumerWidget {
         title: const Text(
           'Image Verification',
           style: TextStyle(
+            color: AppColors.primaryColor,
             fontSize: 32,
             fontWeight: FontWeight.bold,
           ),
@@ -55,7 +56,7 @@ class VerifyImageDialog extends ConsumerWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const Text(
-                                  '''Verify your action image with AI ✨ to receive EcoBucks''',
+                                  '''Verify your action image with Gemini AI ✨''',
                                   style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
@@ -74,12 +75,12 @@ class VerifyImageDialog extends ConsumerWidget {
                 ),
         ),
         actions: [
-          if (hasVerified || state.verificationSuccess != null)
+          if (!state.isLoadingImage)
             FilledButton(
               onPressed: () => Navigator.pop(context),
               child: const Text('Exit'),
-            )
-          else if (!state.isLoadingImage)
+            ),
+          if (state.verificationSuccess == null && !state.isLoadingImage)
             FilledButton(
               onPressed: () => controller.pickImage(
                 action.verifiableImage,
@@ -104,21 +105,25 @@ class VerifyImageDialog extends ConsumerWidget {
               children: <TextSpan>[
                 const TextSpan(
                   text:
-                      '''You must verify your action with an image. Please upload an image with the following content: ''',
+                      '''You must verify your action with an image. Please upload an image with the following content: \n\n''',
                   style: TextStyle(
                     fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
                 TextSpan(
                   text: action.verifiableImage,
                   style: const TextStyle(
+                    fontStyle: FontStyle.italic,
                     fontSize: 16,
                     fontWeight: FontWeight.w400,
                   ),
                 ),
               ],
             ),
+          ),
+          const SizedBox(
+            height: 5,
           ),
           Row(
             children: [

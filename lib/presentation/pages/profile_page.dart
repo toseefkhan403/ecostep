@@ -1,6 +1,6 @@
 import 'package:ecostep/data/user_repository.dart';
 import 'package:ecostep/domain/user.dart';
-import 'package:ecostep/presentation/pages/RequestSection.dart';
+import 'package:ecostep/presentation/pages/request_section.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/presentation/utils/utils.dart';
 import 'package:ecostep/presentation/widgets/async_value_widget.dart';
@@ -18,7 +18,6 @@ class ProfilePage extends ConsumerStatefulWidget {
 
 class _ProfilePageState extends ConsumerState<ProfilePage> {
   final PageController _pageController = PageController();
-  int _selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
     final userValue = ref.watch(firestoreUserProvider);
@@ -56,68 +55,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     );
   }
 
-  Widget _buttonRow() => Padding(
-        padding: const EdgeInsets.all(8),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Expanded(
-              child: CircularElevatedButton(
-                color: _selectedIndex == 0
-                    ? AppColors.secondaryColor
-                    : AppColors.backgroundColor,
-                blurRadius: _selectedIndex == 0 ? 1 : 5,
-                darkShadow: _selectedIndex == 0,
-                onPressed: () => _onItemTapped(0),
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 15),
-                  child: Text(
-                    'User Profile',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(
-              width: 30,
-            ),
-            Expanded(
-              child: CircularElevatedButton(
-                color: _selectedIndex == 1
-                    ? AppColors.secondaryColor
-                    : AppColors.backgroundColor,
-                onPressed: () => _onItemTapped(1),
-                blurRadius: _selectedIndex == 1 ? 1 : 5,
-                darkShadow: _selectedIndex == 1,
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 15),
-                  child: Text(
-                    'Your Requests',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-    _pageController.animateToPage(
-      index,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
-  }
 }
 
 class UserProfileSection extends StatelessWidget {

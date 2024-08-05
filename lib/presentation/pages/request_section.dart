@@ -1,13 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ecostep/domain/user.dart';
 import 'package:ecostep/domain/purchase_request.dart';
+import 'package:ecostep/domain/user.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/presentation/widgets/buyer_purchase_widget.dart';
 import 'package:ecostep/presentation/widgets/circular_elevated_button.dart';
+import 'package:ecostep/presentation/widgets/lottie_icon_widget.dart';
 import 'package:ecostep/presentation/widgets/seller_purchase_request_widget1.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+// ignore: depend_on_referenced_packages
 import 'package:rxdart/rxdart.dart';
 
 class RequestSection extends ConsumerStatefulWidget {
@@ -37,7 +40,9 @@ class _RequestSectionState extends ConsumerState<RequestSection> {
             docSnapshot.data()! as Map<String, dynamic>,
           );
         } else {
-          print('Document does not exist: ${ref.path}');
+          if (kDebugMode) {
+            print('Document does not exist: ${ref.path}');
+          }
           return null;
         }
       });
@@ -53,8 +58,7 @@ class _RequestSectionState extends ConsumerState<RequestSection> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.user.buyerRequests);
-    final width = MediaQuery.of(context).size.width;
+
     return SizedBox(
       child: Column(
         children: [
@@ -116,7 +120,13 @@ class _RequestSectionState extends ConsumerState<RequestSection> {
           );
         }
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text('No requests found'));
+          return const Center(
+            child: LottieIconWidget(
+              autoPlay: true,
+              iconName: 'not-found',
+              height: 120,
+            ),
+          );
         }
         final requestsList = snapshot.data!;
         return ListView.builder(

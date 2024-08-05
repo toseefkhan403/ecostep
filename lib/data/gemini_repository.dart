@@ -53,7 +53,9 @@ class GeminiRepository {
         .replaceAll(r'$itemDescription', itemDescription)
         .replaceAll(r'$usedForMonths', usedForMonths);
 
-    print(prompt);
+    if (kDebugMode) {
+      print(prompt);
+    }
 
     final imagePart = DataPart('image/jpeg', imageBytes);
 

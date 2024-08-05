@@ -1,15 +1,17 @@
 // ignore_for_file: inference_failure_on_function_invocation
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecostep/domain/marketplace_item.dart';
 import 'package:ecostep/presentation/controllers/market_place_controller.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/presentation/utils/utils.dart';
 import 'package:ecostep/presentation/widgets/async_value_widget.dart';
+import 'package:ecostep/presentation/widgets/circular_elevated_button.dart';
+import 'package:ecostep/presentation/widgets/lottie_icon_widget.dart';
 import 'package:ecostep/presentation/widgets/market_place_card.dart';
 import 'package:ecostep/presentation/widgets/post_item_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ecostep/presentation/widgets/circular_elevated_button.dart';
 
 class MarketplaceScreen extends ConsumerStatefulWidget {
   const MarketplaceScreen({super.key});
@@ -43,7 +45,7 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
     String? currentUserUid,
   ) {
     return items.where((item) {
-      final sellingUserId = item.sellingUser.id;
+      final sellingUserId = (item.sellingUser as DocumentReference).id;
       return sellingUserId == currentUserUid;
     }).toList();
   }
@@ -112,43 +114,61 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
                           if (constraints.maxWidth < 600) {
                             return Container(
                               padding: const EdgeInsets.all(10),
-                              child: ListView.builder(
-                                padding: const EdgeInsets.all(10),
-                                itemCount: marketplaceitems.length,
-                                itemBuilder: (context, index) {
-                                  final item = marketplaceitems[index];
-                                  return SizedBox(
-                                    height: 400,
-                                    child: MarketplaceCard(
-                                      isShowDetails: true,
-                                      item: item,
+                              child: marketplaceitems.isEmpty
+                                  ? const Center(
+                                      child: LottieIconWidget(
+                                        autoPlay: true,
+                                        iconName: 'not-found',
+                                        height: 120,
+                                      ),
+                                    )
+                                  : ListView.builder(
+                                      padding: const EdgeInsets.all(10),
+                                      itemCount: marketplaceitems.length,
+                                      itemBuilder: (context, index) {
+                                        final item = marketplaceitems[index];
+
+                                        return SizedBox(
+                                          height: 400,
+                                          child: MarketplaceCard(
+                                            isShowDetails: true,
+                                            item: item,
+                                          ),
+                                        );
+                                      },
                                     ),
-                                  );
-                                },
-                              ),
                             );
                           } else {
                             return Container(
                               margin: const EdgeInsets.only(top: 20),
                               padding: const EdgeInsets.all(20),
-                              child: GridView.builder(
-                                padding: const EdgeInsets.all(10),
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  childAspectRatio: 0.8,
-                                  crossAxisSpacing: 10,
-                                  mainAxisSpacing: 10,
-                                ),
-                                itemCount: marketplaceitems.length,
-                                itemBuilder: (context, index) {
-                                  final item = marketplaceitems[index];
-                                  return MarketplaceCard(
-                                    isShowDetails: true,
-                                    item: item,
-                                  );
-                                },
-                              ),
+                              child: marketplaceitems.isEmpty
+                                  ? const Center(
+                                      child: LottieIconWidget(
+                                        autoPlay: true,
+                                        iconName: 'not-found',
+                                        height: 120,
+                                      ),
+                                    )
+                                  : GridView.builder(
+                                      padding: const EdgeInsets.all(10),
+                                      gridDelegate:
+                                          // ignore: lines_longer_than_80_chars
+                                          const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        childAspectRatio: 0.8,
+                                        crossAxisSpacing: 10,
+                                        mainAxisSpacing: 10,
+                                      ),
+                                      itemCount: marketplaceitems.length,
+                                      itemBuilder: (context, index) {
+                                        final item = marketplaceitems[index];
+                                        return MarketplaceCard(
+                                          isShowDetails: true,
+                                          item: item,
+                                        );
+                                      },
+                                    ),
                             );
                           }
                         },
@@ -156,39 +176,56 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
                       LayoutBuilder(
                         builder: (context, constraints) {
                           if (constraints.maxWidth < 600) {
-                            return ListView.builder(
-                              padding: const EdgeInsets.all(10),
-                              itemCount: filteredItems.length,
-                              itemBuilder: (context, index) {
-                                final item = filteredItems[index];
-                                return SizedBox(
-                                  height: 400,
-                                  child: MarketplaceCard(
-                                    item: item,
-                                    isShowDetails: false,
-                                  ),
-                                );
-                              },
-                            );
+                            return marketplaceitems.isEmpty
+                                ? const Center(
+                                    child: LottieIconWidget(
+                                      autoPlay: true,
+                                      iconName: 'not-found',
+                                      height: 120,
+                                    ),
+                                  )
+                                : ListView.builder(
+                                    padding: const EdgeInsets.all(10),
+                                    itemCount: filteredItems.length,
+                                    itemBuilder: (context, index) {
+                                      final item = filteredItems[index];
+                                      return SizedBox(
+                                        height: 400,
+                                        child: MarketplaceCard(
+                                          item: item,
+                                          isShowDetails: false,
+                                        ),
+                                      );
+                                    },
+                                  );
                           } else {
-                            return GridView.builder(
-                              padding: const EdgeInsets.all(10),
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                childAspectRatio: 0.8,
-                                crossAxisSpacing: 10,
-                                mainAxisSpacing: 10,
-                              ),
-                              itemCount: filteredItems.length,
-                              itemBuilder: (context, index) {
-                                final item = filteredItems[index];
-                                return MarketplaceCard(
-                                  isShowDetails: false,
-                                  item: item,
-                                );
-                              },
-                            );
+                            return marketplaceitems.isEmpty
+                                ? const Center(
+                                    child: LottieIconWidget(
+                                      autoPlay: true,
+                                      iconName: 'not-found',
+                                      height: 120,
+                                    ),
+                                  )
+                                : GridView.builder(
+                                    padding: const EdgeInsets.all(10),
+                                    gridDelegate:
+                                        // ignore: lines_longer_than_80_chars
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2,
+                                      childAspectRatio: 0.8,
+                                      crossAxisSpacing: 10,
+                                      mainAxisSpacing: 10,
+                                    ),
+                                    itemCount: filteredItems.length,
+                                    itemBuilder: (context, index) {
+                                      final item = filteredItems[index];
+                                      return MarketplaceCard(
+                                        isShowDetails: false,
+                                        item: item,
+                                      );
+                                    },
+                                  );
                           }
                         },
                       ),

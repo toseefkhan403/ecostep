@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ecostep/domain/user.dart';
 import 'package:ecostep/domain/marketplace_item.dart';
 import 'package:ecostep/domain/purchase_request.dart';
+import 'package:ecostep/domain/user.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/presentation/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +19,7 @@ class BuyerPurchaseRequestWidget extends ConsumerStatefulWidget {
   final DocumentReference requestReference;
 
   @override
-  _BuyerPurchaseRequestWidgetState createState() =>
+  ConsumerState createState() =>
       _BuyerPurchaseRequestWidgetState();
 }
 

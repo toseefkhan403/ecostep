@@ -1,8 +1,6 @@
-import 'package:ecostep/application/firestore_service.dart';
 import 'package:ecostep/data/market_place_repository.dart';
 import 'package:ecostep/domain/marketplace_item.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'market_place_controller.g.dart';
@@ -17,8 +15,9 @@ class MarketplaceController extends _$MarketplaceController {
   Stream<List<MarketplaceItem>> fetchMarketplaceItems() {
     try {
       final itemsStream =
-          ref.watch(marketplaceRepositoryProvider).fetchMarketplaceItems();
-      itemsStream.listen((items) {
+          // ignore: avoid_manual_providers_as_generated_provider_dependency
+          ref.watch(marketplaceRepositoryProvider).fetchMarketplaceItems()
+      ..listen((items) {
         state = AsyncData(items);
       });
       return itemsStream;

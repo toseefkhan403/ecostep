@@ -10,6 +10,7 @@ import 'package:ecostep/presentation/widgets/center_content_padding.dart';
 import 'package:ecostep/presentation/widgets/circular_elevated_button.dart';
 import 'package:ecostep/presentation/widgets/error_message_widget.dart';
 import 'package:ecostep/presentation/widgets/lottie_icon_widget.dart';
+import 'package:ecostep/presentation/widgets/personalization_form_dialog.dart';
 import 'package:ecostep/presentation/widgets/week_widget.dart';
 import 'package:flutter/material.dart' hide Action;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -48,13 +49,20 @@ class _HomePageState extends ConsumerState<HomePage> {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 30),
                   child: CircularElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      showDialog<void>(
+                        context: context,
+                        builder: (context) {
+                          return const PersonalizationFormDialog();
+                        },
+                      );
+                    },
                     width: double.infinity,
                     color: AppColors.backgroundColor,
                     child: const Padding(
                       padding: EdgeInsets.symmetric(vertical: 8),
                       child: Text(
-                        '''Your AI generated sustainable actions are not currently personalized. Click here to fill more information about your lifestyle to enable personalized actions.''',
+                        '''Your Gemini AI generated sustainable actions are not currently personalized. Click here to fill more information about your lifestyle to enable personalized actions.''',
                         textAlign: TextAlign.center,
                         style: TextStyle(fontWeight: FontWeight.w500),
                       ),

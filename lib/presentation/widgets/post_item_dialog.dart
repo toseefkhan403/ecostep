@@ -1,17 +1,17 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecostep/data/gemini_repository.dart';
+import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/presentation/utils/utils.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ecostep/presentation/utils/app_colors.dart';
-import 'dart:convert';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:toastification/toastification.dart';
 
 class PostItemDialog extends ConsumerStatefulWidget {
@@ -318,7 +318,7 @@ class _PostItemDialogState extends ConsumerState<PostItemDialog> {
                                   color: Colors.white,
                                 )
                               : const Text(
-                                  'Generate Price',
+                                  'Gemini AI Price',
                                   style: TextStyle(
                                     fontSize: 18,
                                     color: Colors.white,
@@ -409,7 +409,7 @@ class _PostItemDialogState extends ConsumerState<PostItemDialog> {
 
                         if (!emailRegExp.hasMatch(value) &&
                             !phoneRegExp.hasMatch(value)) {
-                          return 'Please enter a valid email address or phone number!';
+                          return '''Please enter a valid email address or phone number!''';
                         }
 
                         return null;

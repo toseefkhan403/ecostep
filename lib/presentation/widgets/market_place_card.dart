@@ -1,10 +1,16 @@
+// ignore_for_file: avoid_dynamic_calls, use_build_context_synchronously
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecostep/application/audio_player_service.dart';
+import 'package:ecostep/data/user_repository.dart';
 import 'package:ecostep/domain/marketplace_item.dart';
 import 'package:ecostep/presentation/controllers/purchase_request_controller.dart';
-import 'package:ecostep/presentation/pages/market_place_detailed_screen.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/presentation/utils/utils.dart';
+import 'package:ecostep/presentation/widgets/async_value_widget.dart';
 import 'package:ecostep/presentation/widgets/expired_overlay.dart';
 import 'package:ecostep/presentation/widgets/lottie_icon_widget.dart';
+import 'package:ecostep/presentation/widgets/request_confirm_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toastification/toastification.dart';
@@ -29,7 +35,7 @@ class _MarketplaceCardState extends State<MarketplaceCard> {
     final formKey = GlobalKey<FormState>();
     var isRequestButtonEnabled = true;
 
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (context) {
         return StatefulBuilder(
@@ -117,7 +123,7 @@ class _MarketplaceCardState extends State<MarketplaceCard> {
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                'Contact Information: ${widget.item.contactInfo}',
+                                '''Contact Information: ${widget.item.contactInfo}''',
                                 style: const TextStyle(
                                   fontSize: 18,
                                 ),
@@ -171,7 +177,7 @@ class _MarketplaceCardState extends State<MarketplaceCard> {
                                           }
                                           if (enteredPrice < minPrice ||
                                               enteredPrice > maxPrice) {
-                                            return 'Price must be within the range $itemPrice';
+                                            return '''Price must be within the range $itemPrice''';
                                           }
                                         } else {
                                           final fixedPrice =
@@ -188,62 +194,137 @@ class _MarketplaceCardState extends State<MarketplaceCard> {
                                     ),
                                     const SizedBox(height: 16),
                                     Center(
-                                      child: ElevatedButton(
-                                        onPressed: isRequestButtonEnabled
-                                            ? () async {
-                                                if (formKey.currentState
-                                                        ?.validate() ??
-                                                    false) {
-                                                  setState(() {
-                                                    isRequestButtonEnabled =
-                                                        false;
-                                                  });
-                                                  await purchaseRequestController
-                                                      .sendPurchaseRequest(
-                                                    item: widget.item,
-                                                    context: context,
-                                                    enteredprice:
-                                                        priceController.text,
-                                                  );
-                                                } else {
-                                                  showToast(
-                                                    ref,
-                                                    'Please enter a valid price',
-                                                    type: ToastificationType
-                                                        .error,
-                                                  );
-                                                  // ScaffoldMessenger.of(context)
-                                                  //     .showSnackBar(
-                                                  //   const SnackBar(
-                                                  //     content: Text(
-                                                  //       'Please enter a valid price',
-                                                  //     ),
-                                                  //   ),
-                                                  // );
-                                                }
-                                              }
-                                            : null,
-                                        style: ElevatedButton.styleFrom(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 40,
-                                            vertical: 15,
-                                          ),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30),
-                                          ),
-                                          backgroundColor:
-                                              isRequestButtonEnabled
-                                                  ? AppColors.primaryColor
-                                                  : Colors.grey,
-                                        ),
-                                        child: const Text(
-                                          'Request to buy',
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                            color: Colors.white,
-                                          ),
-                                        ),
+                                      child: Consumer(
+                                        builder: (context, ref, child) {
+                                          final uservalue =
+                                              ref.watch(firestoreUserProvider);
+
+                                          return AsyncValueWidget(
+                                            value: uservalue,
+                                            data: (user) => ElevatedButton(
+                                              onPressed: isRequestButtonEnabled
+                                                  ? () async {
+                                                      if (formKey.currentState
+                                                              ?.validate() ??
+                                                          false) {
+                                                        final userSnapshot =
+                                                            await widget.item
+                                                                    .sellingUser
+                                                                    .get()
+                                                                // ignore: lines_longer_than_80_chars
+                                                                as DocumentSnapshot;
+
+                                                        final itemUserId =
+                                                            userSnapshot
+                                                                .get('id');
+
+                                                        if (itemUserId ==
+                                                            user.id) {
+                                                          showToast(
+                                                            ref,
+                                                            '''you can't buy your own item''',
+                                                            type:
+                                                                // ignore: lines_longer_than_80_chars
+                                                                ToastificationType
+                                                                    .error,
+                                                          );
+
+                                                          return;
+                                                        }
+                                                        final itemPrice =
+                                                            int.parse(
+                                                          widget.item.price,
+                                                        );
+
+                                                        // ignore: lines_longer_than_80_chars
+                                                        if (user.ecoBucksBalance <
+                                                            itemPrice) {
+                                                          showToast(
+                                                            ref,
+                                                            '''Insufficient balance''',
+                                                            type:
+                                                                // ignore: lines_longer_than_80_chars
+                                                                ToastificationType
+                                                                    .error,
+                                                          );
+
+                                                          return;
+                                                        }
+                                                        setState(() {
+                                                          // ignore: lines_longer_than_80_chars
+                                                          isRequestButtonEnabled =
+                                                              false;
+                                                        });
+
+                                                        final isSucess =
+                                                            // ignore: lines_longer_than_80_chars
+                                                            await purchaseRequestController
+                                                                // ignore: lines_longer_than_80_chars
+                                                                .sendPurchaseRequest(
+                                                          item: widget.item,
+                                                          context: context,
+                                                          enteredprice:
+                                                              priceController
+                                                                  .text,
+                                                        );
+
+                                                        await showDialog<void>(
+                                                          context: context,
+                                                          builder: (c) {
+                                                            // ignore: lines_longer_than_80_chars
+                                                            return RequestConfirmPurchase(
+                                                              isSuccess:
+                                                                  isSucess,
+                                                            );
+                                                          },
+                                                        );
+
+                                                        await ref
+                                                            .read(
+                                                              // ignore: lines_longer_than_80_chars
+                                                              audioPlayerServiceProvider,
+                                                            )
+                                                            .playSound(
+                                                              'success',
+                                                              extension: 'mp3',
+                                                            );
+                                                      } else {
+                                                        showToast(
+                                                          ref,
+                                                          '''Please enter a valid price''',
+                                                          type:
+                                                              ToastificationType
+                                                                  .error,
+                                                        );
+                                                        
+                                                      }
+                                                    }
+                                                  : null,
+                                              style: ElevatedButton.styleFrom(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: 40,
+                                                  vertical: 15,
+                                                ),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(30),
+                                                ),
+                                                backgroundColor:
+                                                    isRequestButtonEnabled
+                                                        ? AppColors.primaryColor
+                                                        : Colors.grey,
+                                              ),
+                                              child: const Text(
+                                                'Request to buy',
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        },
                                       ),
                                     ),
                                   ],
@@ -267,7 +348,7 @@ class _MarketplaceCardState extends State<MarketplaceCard> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.item.imageUrl);
+   
 
     return GestureDetector(
       onTap: widget.item.hasSold
@@ -360,7 +441,7 @@ class _MarketplaceCardState extends State<MarketplaceCard> {
                                 ),
                                 const SizedBox(height: 5),
                                 Text(
-                                  'Used for: ${widget.item.usedForMonths} months',
+                                  '''Used for: ${widget.item.usedForMonths} months''',
                                   style: const TextStyle(
                                     fontSize: 16,
                                   ),
@@ -368,7 +449,7 @@ class _MarketplaceCardState extends State<MarketplaceCard> {
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
-                                  'Contact Information: ${widget.item.contactInfo}',
+                                  '''Contact Information: ${widget.item.contactInfo}''',
                                   style: const TextStyle(
                                     fontSize: 16,
                                   ),

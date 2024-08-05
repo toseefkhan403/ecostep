@@ -1,3 +1,4 @@
+import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/presentation/utils/utils.dart';
 import 'package:ecostep/presentation/widgets/center_content_padding.dart';
 import 'package:ecostep/presentation/widgets/lottie_icon_widget.dart';
@@ -20,6 +21,7 @@ class ImpactDialog extends StatelessWidget {
         title: const Text(
           'Action Impact',
           style: TextStyle(
+            color: AppColors.primaryColor,
             fontSize: 32,
             fontWeight: FontWeight.bold,
           ),

@@ -1,11 +1,11 @@
-import 'package:ecostep/domain/date.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecostep/domain/user.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/presentation/utils/utils.dart';
 import 'package:ecostep/presentation/widgets/center_content_padding.dart';
 import 'package:ecostep/presentation/widgets/circular_elevated_button.dart';
+import 'package:ecostep/presentation/widgets/lottie_icon_widget.dart';
 import 'package:flutter/material.dart';
-
 
 class LeaderBoardPage extends StatefulWidget {
   const LeaderBoardPage({super.key});
@@ -17,32 +17,6 @@ class LeaderBoardPage extends StatefulWidget {
 class _LeaderBoardPageState extends State<LeaderBoardPage> {
   final PageController _pageController = PageController();
   int _selectedIndex = 0;
-  final List<User> dummyRecentUsers = [];
-  final List<User> dummyImpactUsers = [];
-
-  @override
-  void initState() {
-    super.initState();
-    for (var i = 0; i < 10; i++) {
-      dummyRecentUsers.add(
-        User(
-          id: '$i',
-          ecoBucksBalance: i * 10,
-          personalization: false,
-          joinedOn: Date.today().toString(),
-        ),
-      );
-
-      dummyImpactUsers.add(
-        User(
-          id: '$i',
-          ecoBucksBalance: i * 10,
-          personalization: false,
-          joinedOn: Date.today().toString(),
-        ),
-      );
-    }
-  }
 
   @override
   void dispose() {
@@ -78,22 +52,63 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                   padding: const EdgeInsets.all(20),
                   decoration:
                       roundedContainerDecoration(color: AppColors.accentColor),
-                  child: ListView.builder(
-                    itemCount: dummyRecentUsers.length,
-                    itemBuilder: (context, index) =>
-                        userCard(dummyRecentUsers[index], index),
+                  child: Expanded(
+                    child: StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('users')
+                          .orderBy('joinedOn', descending: true)
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        final users = snapshot.data!.docs
+                            .map(
+                              (doc) => User.fromJson(
+                                doc.data()! as Map<String, dynamic>,
+                              ),
+                            )
+                            .toList();
+                        return _buildUserList(users);
+                      },
+                    ),
                   ),
                 ),
-                ListView.builder(
-                  itemCount: dummyImpactUsers.length,
-                  itemBuilder: (context, index) =>
-                      userCard(dummyImpactUsers[index], index),
+                Expanded(
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('users')
+                        .orderBy('ecoBucksBalance', descending: true)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      final users = snapshot.data!.docs
+                          .map(
+                            (doc) => User.fromJson(
+                              doc.data()! as Map<String, dynamic>,
+                            ),
+                          )
+                          .toList();
+                      return _buildUserList(users);
+                    },
+                  ),
                 ),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildUserList(List<User> users) {
+    return ListView.builder(
+      itemCount: users.length,
+      itemBuilder: (context, index) => userCard(users[index], index),
     );
   }
 
@@ -136,7 +151,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
             const SizedBox(
               width: 30,
             ),
-             Expanded(
+            Expanded(
               child: CircularElevatedButton(
                 color: _selectedIndex == 1
                     ? AppColors.secondaryColor
@@ -145,7 +160,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                 blurRadius: _selectedIndex == 1 ? 1 : 5,
                 darkShadow: _selectedIndex == 1,
                 child: const Padding(
-                  padding:  EdgeInsets.symmetric(vertical: 15),
+                  padding: EdgeInsets.symmetric(vertical: 15),
                   child: Text(
                     'Most Impact',
                     style: TextStyle(
@@ -160,7 +175,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
         ),
       );
 
-  Widget userCard(User dummyRecentUser, int index) => Container(
+  Widget userCard(User user, int index) => Container(
         padding: const EdgeInsets.all(20),
         margin: const EdgeInsets.symmetric(vertical: 20),
         decoration: roundedContainerDecoration(),
@@ -176,14 +191,31 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.all(8),
+                Padding(
+                  padding: const EdgeInsets.all(8),
                   child: CircleAvatar(
                     radius: 25,
+                    backgroundImage: user.profilePicture != null
+                        ? NetworkImage(user.profilePicture!)
+                        : null,
                   ),
                 ),
                 Text(
-                  '${dummyRecentUser.name}',
+                  user.name ?? 'Gest User',
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                const LottieIconWidget(
+                  iconName: 'coin',
+                ),
+                Text(
+                  ' ${user.ecoBucksBalance}',
                   style: const TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
@@ -192,14 +224,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
               ],
             ),
             Text(
-              'EcoBucks balance: ${dummyRecentUser.ecoBucksBalance}',
-              style: const TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              'Joined On: ${dummyRecentUser.joinedOn}',
+              'Joined On: ${user.joinedOn}',
               style: const TextStyle(
                 color: Colors.black,
               ),

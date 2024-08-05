@@ -65,7 +65,7 @@ class MarketPlaceRepository {
         },
       );
 
-      //TODO  update buyer  ref also
+
     } catch (e) {
       debugPrint('Error sending buyer request: $e');
 
@@ -83,7 +83,7 @@ class MarketPlaceRepository {
         },
       );
 
-      //TODO  update buyer  ref also
+  
     } catch (e) {
       debugPrint('Error sending buyer request: $e');
 

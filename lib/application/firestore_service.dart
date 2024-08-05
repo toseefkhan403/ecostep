@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ecostep/domain/marketplace_item.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:random_string/random_string.dart';
+
 
 class FirestoreService {
   FirestoreService(this.firestore);
