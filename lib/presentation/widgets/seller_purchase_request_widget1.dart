@@ -99,10 +99,6 @@ class _SellerPurchaseRequestWidgetState
         type: ToastificationType.success,
       );
 
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   const SnackBar(content: Text('Funds transferred')),
-      // );
-
       return true;
     } catch (e) {
       debugPrint(e.toString());

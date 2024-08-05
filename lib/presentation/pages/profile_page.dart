@@ -1,3 +1,4 @@
+import 'package:ecostep/application/firebase_auth_service.dart';
 import 'package:ecostep/data/user_repository.dart';
 import 'package:ecostep/domain/user.dart';
 import 'package:ecostep/presentation/pages/request_section.dart';
@@ -6,6 +7,7 @@ import 'package:ecostep/presentation/utils/utils.dart';
 import 'package:ecostep/presentation/widgets/async_value_widget.dart';
 import 'package:ecostep/presentation/widgets/center_content_padding.dart';
 import 'package:ecostep/presentation/widgets/circular_elevated_button.dart';
+import 'package:ecostep/presentation/widgets/lottie_icon_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -22,40 +24,52 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
   Widget build(BuildContext context) {
     final userValue = ref.watch(firestoreUserProvider);
 
-    return CenterContentPadding(
-      child: AsyncValueWidget(
-        value: userValue,
-        data: (user) => Column(
-          children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      floatingActionButton: CircularElevatedButton(
+        color: AppColors.secondaryColor,
+        height: 60,
+        onPressed: () {
+          ref.read(firebaseAuthServiceProvider).signOut();
+        },
+        child: const Text(
+          'Logout',
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ),
+      ),
+      body: CenterContentPadding(
+        child: AsyncValueWidget(
+          value: userValue,
+          data: (user) => Column(
+            children: [
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                ),
               ),
-            ),
-            // _buttonRow(),
-            Expanded(
-              child: PageView(
-                controller: _pageController,
-                children: [
-                  UserProfileSection(
-                    pageController: _pageController,
-                    user: user,
-                  ),
-                  RequestSection(
-                    profilePageController: _pageController,
-                    user: user,
-                  ),
-                ],
+              // _buttonRow(),
+              Expanded(
+                child: PageView(
+                  controller: _pageController,
+                  children: [
+                    UserProfileSection(
+                      pageController: _pageController,
+                      user: user,
+                    ),
+                    RequestSection(
+                      profilePageController: _pageController,
+                      user: user,
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
-
-
 }
 
 class UserProfileSection extends StatelessWidget {
@@ -73,10 +87,13 @@ class UserProfileSection extends StatelessWidget {
       children: [
         Stack(
           children: [
-            const Padding(
-              padding: EdgeInsets.only(bottom: 30),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 30),
               child: CircleAvatar(
-                radius: 120,
+                radius: 100,
+                backgroundImage: user.profilePicture != null
+                    ? NetworkImage(user.profilePicture!)
+                    : const AssetImage('images/eco-earth.png'),
               ),
             ),
             Positioned(
@@ -86,27 +103,21 @@ class UserProfileSection extends StatelessWidget {
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: CircularElevatedButton(
-                  onPressed: () {
-                    showDialog<void>(
-                      context: context,
-                      builder: aboutLevelDialog,
-                    );
-                  },
+                  onPressed: () {},
                   color: AppColors.secondaryColor,
-                  child: const Column(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        'Level',
-                        style: TextStyle(color: Colors.black),
+                      const LottieIconWidget(
+                        iconName: 'coin',
                       ),
                       Text(
-                        '33',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 28,
-                          color: Colors.black,
+                        '${user.ecoBucksBalance}',
+                        style: const TextStyle(
+                          color: AppColors.textColor,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                     ],
@@ -119,7 +130,7 @@ class UserProfileSection extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(top: 10, bottom: 15),
           child: Text(
-            '${user.name}',
+            user.name ?? 'Guest User',
             style: const TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
@@ -136,8 +147,6 @@ class UserProfileSection extends StatelessWidget {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  _heading('Impact'),
-                  const Text('show with icons'),
                   _heading('Your actions'),
                   SizedBox(
                     height: 150,
@@ -165,24 +174,6 @@ class UserProfileSection extends StatelessWidget {
     );
   }
 }
-
-Widget aboutLevelDialog(BuildContext context) => AlertDialog(
-      title: const Text('Level Information'),
-      content: const Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text('Explain levels here'),
-        ],
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: const Text('Exit'),
-        ),
-      ],
-    );
 
 Widget _heading(String title) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,

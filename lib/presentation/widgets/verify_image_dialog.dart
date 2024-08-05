@@ -77,7 +77,8 @@ class VerifyImageDialog extends ConsumerWidget {
         actions: [
           if (!state.isLoadingImage)
             FilledButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () =>
+                  Navigator.of(context).pop(state.verificationSuccess),
               child: const Text('Exit'),
             ),
           if (state.verificationSuccess == null && !state.isLoadingImage)
@@ -95,6 +96,7 @@ class VerifyImageDialog extends ConsumerWidget {
 
   Widget _imageDescription(String difficulty, int reward) => Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           RichText(
             text: TextSpan(

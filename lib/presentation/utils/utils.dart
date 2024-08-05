@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:ecostep/application/audio_player_service.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/presentation/widgets/lottie_icon_widget.dart';
@@ -94,15 +92,11 @@ int coinsFromDifficulty(String difficulty) {
 }
 
 Widget loadingIconAI(double topMargin) {
-  final icons = [
-    'artificial-intelligence',
-    'artificial-intelligence (1)',
-  ];
   return Padding(
     padding: EdgeInsets.only(top: topMargin),
-    child: Center(
+    child: const Center(
       child: LottieIconWidget(
-        iconName: icons[Random().nextInt(icons.length)],
+        iconName: 'artificial-intelligence (1)',
         height: 100,
         repeat: true,
       ),

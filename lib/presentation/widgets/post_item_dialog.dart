@@ -98,8 +98,10 @@ class _PostItemDialogState extends ConsumerState<PostItemDialog> {
           setState(() {
             _isLoadingImage = false;
           });
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to upload image: $e')),
+          showToast(
+            ref,
+            'Failed to upload image: $e',
+            type: ToastificationType.error,
           );
         }
       }
@@ -119,11 +121,7 @@ class _PostItemDialogState extends ConsumerState<PostItemDialog> {
       setState(() {
         _isLoadingPrice = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('No image selected for price estimation.'),
-        ),
-      );
+      showToast(ref, 'No image selected for price estimation.');
       return;
     }
 
@@ -143,8 +141,10 @@ class _PostItemDialogState extends ConsumerState<PostItemDialog> {
       setState(() {
         _isLoadingPrice = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to generate price: $e')),
+      showToast(
+        ref,
+        'Failed to generate price: $e',
+        type: ToastificationType.error,
       );
     }
   }

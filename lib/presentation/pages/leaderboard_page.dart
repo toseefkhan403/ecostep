@@ -50,8 +50,6 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                 Container(
                   margin: const EdgeInsets.only(top: 20),
                   padding: const EdgeInsets.all(20),
-                  decoration:
-                      roundedContainerDecoration(color: AppColors.accentColor),
                   child: Expanded(
                     child: StreamBuilder<QuerySnapshot>(
                       stream: FirebaseFirestore.instance
@@ -197,11 +195,11 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                     radius: 25,
                     backgroundImage: user.profilePicture != null
                         ? NetworkImage(user.profilePicture!)
-                        : null,
+                        : const AssetImage('images/eco-earth.png'),
                   ),
                 ),
                 Text(
-                  user.name ?? 'Gest User',
+                  user.name ?? 'Guest User',
                   style: const TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,

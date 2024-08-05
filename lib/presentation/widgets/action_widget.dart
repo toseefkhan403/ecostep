@@ -5,6 +5,7 @@ import 'package:ecostep/domain/date.dart';
 import 'package:ecostep/presentation/controllers/week_state_controller.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/presentation/utils/utils.dart';
+import 'package:ecostep/presentation/widgets/action_completed_dialog.dart';
 import 'package:ecostep/presentation/widgets/async_value_widget.dart';
 import 'package:ecostep/presentation/widgets/expired_overlay.dart';
 import 'package:ecostep/presentation/widgets/fade_in_widget.dart';
@@ -194,7 +195,7 @@ class ActionWidget extends ConsumerWidget {
                           ),
                         ),
                         child: InkWell(
-                          onTap: () {
+                          onTap: () async {
                             if (action == null) return;
                             if (selectedDate.isAfter(
                               Date.today().add(const Duration(days: 7)),
@@ -206,7 +207,7 @@ class ActionWidget extends ConsumerWidget {
                               return;
                             }
 
-                            showDialog<void>(
+                            final isSuccess = await showDialog<bool>(
                               context: context,
                               barrierDismissible: false,
                               builder: (c) => VerifyImageDialog(
@@ -214,6 +215,19 @@ class ActionWidget extends ConsumerWidget {
                                 hasVerified: isActionCompleted,
                               ),
                             );
+
+                            if (isSuccess ?? false) {
+                              // show streak and coin update
+                              await showDialog<void>(
+                                // ignore: use_build_context_synchronously
+                                context: context,
+                                builder: (c) => ActionCompletedDialog(
+                                  user.ecoBucksBalance,
+                                  user.streak ?? 0,
+                                  action.action,
+                                ),
+                              );
+                            }
                           },
                           child: Text(
                             isActionCompleted ? 'Verified' : 'Verify',

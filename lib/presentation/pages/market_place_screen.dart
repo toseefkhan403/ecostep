@@ -176,7 +176,7 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
                       LayoutBuilder(
                         builder: (context, constraints) {
                           if (constraints.maxWidth < 600) {
-                            return marketplaceitems.isEmpty
+                            return filteredItems.isEmpty
                                 ? const Center(
                                     child: LottieIconWidget(
                                       autoPlay: true,
@@ -199,7 +199,7 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
                                     },
                                   );
                           } else {
-                            return marketplaceitems.isEmpty
+                            return filteredItems.isEmpty
                                 ? const Center(
                                     child: LottieIconWidget(
                                       autoPlay: true,

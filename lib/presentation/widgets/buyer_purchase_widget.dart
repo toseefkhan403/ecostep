@@ -254,11 +254,6 @@ class _BuyerPurchaseRequestWidgetState
             'Purchase confirmed by seller',
             type: ToastificationType.success,
           );
-          // ScaffoldMessenger.of(context).showSnackBar(
-          //   const SnackBar(
-          //     content: Text('Purchase confirmed by seller'),
-          //   ),
-          // );
           setState(() {});
         },
         icon: const Icon(
