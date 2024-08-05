@@ -50,31 +50,31 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                 Container(
                   margin: const EdgeInsets.only(top: 20),
                   padding: const EdgeInsets.all(20),
-                  child: Expanded(
-                    child: StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection('users')
-                          .orderBy('joinedOn', descending: true)
-                          .snapshots(),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                        final users = snapshot.data!.docs
-                            .map(
-                              (doc) => User.fromJson(
-                                doc.data()! as Map<String, dynamic>,
-                              ),
-                            )
-                            .toList();
-                        return _buildUserList(users);
-                      },
-                    ),
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection('users')
+                        .orderBy('joinedOn', descending: true)
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      final users = snapshot.data!.docs
+                          .map(
+                            (doc) => User.fromJson(
+                              doc.data()! as Map<String, dynamic>,
+                            ),
+                          )
+                          .toList();
+                      return _buildUserList(users);
+                    },
                   ),
                 ),
-                Expanded(
+                Container(
+                  margin: const EdgeInsets.only(top: 20),
+                  padding: const EdgeInsets.all(20),
                   child: StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance
                         .collection('users')
@@ -191,12 +191,15 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8),
-                  child: CircleAvatar(
-                    radius: 25,
-                    backgroundImage: user.profilePicture != null
-                        ? NetworkImage(user.profilePicture!)
-                        : const AssetImage('images/eco-earth.png'),
-                  ),
+                  child: user.profilePicture != null
+                      ? CircleAvatar(
+                          radius: 25,
+                          backgroundImage: NetworkImage(user.profilePicture!),
+                        )
+                      : Image.asset(
+                          'assets/images/eco-earth.png',
+                          height: 25 * 2,
+                        ),
                 ),
                 Text(
                   user.name ?? 'Guest User',

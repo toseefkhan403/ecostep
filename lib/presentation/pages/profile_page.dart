@@ -89,15 +89,18 @@ class UserProfileSection extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.only(bottom: 30),
-              child: CircleAvatar(
-                radius: 100,
-                backgroundImage: user.profilePicture != null
-                    ? NetworkImage(user.profilePicture!)
-                    : const AssetImage('images/eco-earth.png'),
-              ),
+              child: user.profilePicture != null
+                  ? CircleAvatar(
+                      radius: 100,
+                      backgroundImage: NetworkImage(user.profilePicture!),
+                    )
+                  : Image.asset(
+                      'assets/images/eco-earth.png',
+                      height: 100 * 2,
+                    ),
             ),
             Positioned(
-              bottom: 0,
+              bottom: 25,
               left: 0,
               right: 0,
               child: Align(
@@ -138,35 +141,44 @@ class UserProfileSection extends StatelessWidget {
           ),
         ),
         _cityCountryRankRow(pagecontroller: pageController),
-        Expanded(
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.5,
-            padding: const EdgeInsets.all(20),
-            margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
-            decoration: roundedContainerDecoration(),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  _heading('Your actions'),
-                  SizedBox(
-                    height: 150,
-                    child: ListView.builder(
-                      itemCount: 10,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, index) => _actionCard(),
-                    ),
-                  ),
-                  _heading('Your recycles'),
-                  SizedBox(
-                    height: 150,
-                    child: ListView.builder(
-                      itemCount: 20,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, index) => _actionCard(),
-                    ),
-                  ),
-                ],
-              ),
+        Container(
+          // width: MediaQuery.of(context).size.width * 0.5,
+          padding: const EdgeInsets.all(20),
+          margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
+          decoration: roundedContainerDecoration(),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _heading('Your actions'),
+                const LottieIconWidget(
+                  iconName: 'not-found',
+                  autoPlay: true,
+                  height: 100,
+                ),
+                // SizedBox(
+                //   height: 150,
+                //   child: ListView.builder(
+                //     itemCount: 10,
+                //     scrollDirection: Axis.horizontal,
+                //     itemBuilder: (context, index) => _actionCard(),
+                //   ),
+                // ),
+                _heading('Your recycles'),
+                const LottieIconWidget(
+                  iconName: 'not-found',
+                  autoPlay: true,
+                  height: 100,
+                ),
+                // SizedBox(
+                //   height: 150,
+                //   child: ListView.builder(
+                //     itemCount: 20,
+                //     scrollDirection: Axis.horizontal,
+                //     itemBuilder: (context, index) => _actionCard(),
+                //   ),
+                // ),
+              ],
             ),
           ),
         ),
