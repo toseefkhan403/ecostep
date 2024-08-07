@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:ecostep/data/user_repository.dart';
 import 'package:ecostep/domain/action.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -8,7 +9,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'gemini_repository.g.dart';
 
 class GeminiRepository {
-  GeminiRepository() {
+  GeminiRepository(this.ref) {
     final apiKey = dotenv.env['gemini_api_key'] ??
         const String.fromEnvironment('gemini_api_key');
     model = GenerativeModel(
@@ -18,21 +19,28 @@ class GeminiRepository {
         responseMimeType: 'application/json',
         temperature: 2,
       ),
-      systemInstruction: Content.system(
-        '''You are a task master. You give unique tasks every time.''',
-      ),
     );
+    _chat = model.startChat();
   }
 
   late final GenerativeModel model;
+  late final ChatSession _chat;
+  final GeminiRepositoryRef ref;
 
-  // TODOsend chat history in a file in each call
   Future<List<Action>> generateActions() async {
     debugPrint('generating actions with AI');
-    const prompt =
-        r'''Generate one actionable sustainable task per day for a person for 7 days which is good for the environment, wildlife, nature, humanity, etc. Some examples include: feeding a stray animal, keeping a water bowl for birds, recycling a plastic bottle, etc. Give the difficulty as well based on the effort required to complete that task as easy, moderate, hard. Progressively increase the difficulty of the tasks. These tasks should be verifiable by analyzing an image provided by the user. Return the output in json using the following structure: {[ "action" : "$action", "description" : "$description", "difficulty" : "$difficulty", "impact" : "$impact", "impactIfNotDone" : "$impactIfNotDone", "verifiableImage" : "$verifiableImage",]}''';
+    var pPrompt = '';
+    final pString =
+        ref.watch(firestoreUserProvider).value?.personalizationString;
+    if (pString != null) {
+      pPrompt = 'Personalization info of the user is: $pString';
+    }
+    debugPrint(pString);
 
-    final output = await model.generateContent([Content.text(prompt)]);
+    final prompt =
+        '''Generate one actionable sustainable task per day for a user for 7 days which is good for the environment, wildlife, nature, humanity, etc. Give different tasks from the ones you provided before. Some examples include: feeding a stray animal, keeping a water bowl for birds, recycling a plastic bottle, etc. Give the difficulty as well based on the effort required to complete that task as easy, moderate, hard. Progressively increase the difficulty of the tasks. These tasks should be verifiable by analyzing an image provided by the user. The tasks should be personalized. $pPrompt. Return the output in json using the following structure: {[ "action" : "action", "description" : "description", "difficulty" : "difficulty", "impact" : "impact", "impactIfNotDone" : "impactIfNotDone", "verifiableImage" : "verifiableImage"]}''';
+
+    final output = await _chat.sendMessage(Content.text(prompt));
     final jsonResponse = jsonDecode(output.text!) as List<dynamic>;
     return jsonResponse
         .map((e) => Action.fromJson(e as Map<String, dynamic>))
@@ -91,4 +99,4 @@ class GeminiRepository {
 
 @riverpod
 GeminiRepository geminiRepository(GeminiRepositoryRef ref) =>
-    GeminiRepository();
+    GeminiRepository(ref);

@@ -1,4 +1,5 @@
 // ignore_for_file: avoid_manual_providers_as_generated_provider_dependency
+import 'dart:async';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -139,6 +140,39 @@ class UserRepository {
       });
     }
   }
+
+  void updatePersonalization(String personalizationString) {
+    final userDocRef =
+        firestoreService.firestore.collection('users').doc(currentUser?.uid);
+    firestoreService.updateDocument(
+      userDocRef,
+      {'personalizationString': personalizationString},
+    );
+  }
+
+  Future<int?> findRank() async {
+    final currentUid = currentUser?.uid;
+    if (currentUid == null) return null;
+
+    try {
+      final querySnapshot = await firestoreService.firestore
+          .collection('users')
+          .orderBy('ecoBucksBalance', descending: true)
+          .get();
+
+      for (var index = 0; index < querySnapshot.docs.length; index++) {
+        final doc = querySnapshot.docs[index];
+
+        if (doc.data()['id'] == currentUid) {
+          return index + 1;
+        }
+      }
+    } catch (e) {
+      debugPrint('Error fetching user rank: $e');
+    }
+
+    return null;
+  }
 }
 
 @riverpod
@@ -152,4 +186,10 @@ UserRepository userRepository(UserRepositoryRef ref) {
 Stream<User?> firestoreUser(FirestoreUserRef ref) {
   final userRepository = ref.watch(userRepositoryProvider);
   return userRepository.firestoreUser();
+}
+
+@riverpod
+Future<int?> rankUser(RankUserRef ref) {
+  final userRepository = ref.watch(userRepositoryProvider);
+  return userRepository.findRank();
 }

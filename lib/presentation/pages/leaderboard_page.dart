@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ecostep/domain/date.dart';
 import 'package:ecostep/domain/user.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/presentation/utils/utils.dart';
@@ -6,6 +7,7 @@ import 'package:ecostep/presentation/widgets/center_content_padding.dart';
 import 'package:ecostep/presentation/widgets/circular_elevated_button.dart';
 import 'package:ecostep/presentation/widgets/lottie_icon_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class LeaderBoardPage extends StatefulWidget {
   const LeaderBoardPage({super.key});
@@ -53,14 +55,18 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                   child: StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance
                         .collection('users')
-                        .orderBy('joinedOn', descending: true)
                         .snapshots(),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
                         return const Center(
-                          child: CircularProgressIndicator(),
+                          child: LottieIconWidget(
+                            iconName: 'recycle',
+                            autoPlay: true,
+                            height: 100,
+                          ),
                         );
                       }
+
                       final users = snapshot.data!.docs
                           .map(
                             (doc) => User.fromJson(
@@ -68,6 +74,15 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                             ),
                           )
                           .toList();
+
+                      final formatter = DateFormat('dd-MM-yyyy');
+
+                      users.sort((a, b) {
+                        final aJoinedOn = formatter.parse(a.joinedOn);
+                        final bJoinedOn = formatter.parse(b.joinedOn);
+                        return bJoinedOn.compareTo(aJoinedOn);
+                      });
+
                       return _buildUserList(users);
                     },
                   ),
@@ -82,7 +97,13 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                         .snapshots(),
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
-                        return const Center(child: CircularProgressIndicator());
+                        return const Center(
+                          child: LottieIconWidget(
+                            iconName: 'recycle',
+                            autoPlay: true,
+                            height: 100,
+                          ),
+                        );
                       }
                       final users = snapshot.data!.docs
                           .map(
@@ -224,11 +245,22 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                 ),
               ],
             ),
-            Text(
-              'Joined On: ${user.joinedOn}',
-              style: const TextStyle(
-                color: Colors.black,
-              ),
+            Column(
+              children: [
+                const Text(
+                  'Joined On',
+                  style: TextStyle(
+                    color: Colors.black,
+                  ),
+                ),
+                Text(
+                  Date.formatDateString(user.joinedOn),
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
           ],
         ),

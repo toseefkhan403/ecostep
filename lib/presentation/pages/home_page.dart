@@ -1,5 +1,6 @@
 import 'package:ecostep/data/user_repository.dart';
 import 'package:ecostep/domain/date.dart';
+import 'package:ecostep/domain/user.dart';
 import 'package:ecostep/presentation/controllers/action_refs_controller.dart';
 import 'package:ecostep/presentation/controllers/week_state_controller.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
@@ -8,7 +9,6 @@ import 'package:ecostep/presentation/widgets/action_widget_container.dart';
 import 'package:ecostep/presentation/widgets/async_value_widget.dart';
 import 'package:ecostep/presentation/widgets/center_content_padding.dart';
 import 'package:ecostep/presentation/widgets/circular_elevated_button.dart';
-import 'package:ecostep/presentation/widgets/error_message_widget.dart';
 import 'package:ecostep/presentation/widgets/lottie_icon_widget.dart';
 import 'package:ecostep/presentation/widgets/personalization_form_dialog.dart';
 import 'package:ecostep/presentation/widgets/week_widget.dart';
@@ -26,6 +26,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     final actionsValue = ref.watch(actionRefsControllerProvider);
+    final userValue = ref.watch(firestoreUserProvider);
     final weekState = ref.watch(weekStateControllerProvider);
 
     return SingleChildScrollView(
@@ -42,32 +43,38 @@ class _HomePageState extends ConsumerState<HomePage> {
                     children: [
                       _dateHeading(),
                       const Spacer(),
-                      _iconsRow(),
+                      _iconsRow(userValue),
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 30),
-                  child: CircularElevatedButton(
-                    onPressed: () {
-                      showDialog<void>(
-                        context: context,
-                        builder: (context) {
-                          return const PersonalizationFormDialog();
-                        },
-                      );
-                    },
-                    width: double.infinity,
-                    color: AppColors.backgroundColor,
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8),
-                      child: Text(
-                        '''Your Gemini AI generated sustainable actions are not currently personalized. Click here to fill more information about your lifestyle to enable personalized actions.''',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontWeight: FontWeight.w500),
-                      ),
-                    ),
-                  ),
+                AsyncValueWidget(
+                  value: userValue,
+                  data: (user) => user.personalizationString != null
+                      ? const SizedBox(height: 10)
+                      : Padding(
+                          padding: const EdgeInsets.only(bottom: 20),
+                          child: CircularElevatedButton(
+                            onPressed: () {
+                              showDialog<void>(
+                                context: context,
+                                builder: (context) {
+                                  return const PersonalizationFormDialog();
+                                },
+                              );
+                            },
+                            width: double.infinity,
+                            color: AppColors.backgroundColor,
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 8),
+                              child: Text(
+                                '''Your Gemini AI generated sustainable actions are not currently personalized. Click here to fill more information about your lifestyle to enable personalized actions.''',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ),
+                        ),
+                  loading: () => const SizedBox(height: 10),
                 ),
                 WeekWidget(Date.today()),
                 AsyncValueWidget(
@@ -86,16 +93,16 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  Widget _iconsRow() {
-    final userValue = ref.watch(firestoreUserProvider);
-    return userValue.when(
+  Widget _iconsRow(AsyncValue<User?> userValue) {
+    return AsyncValueWidget(
+      value: userValue,
       data: (user) => Row(
         children: [
           const LottieIconWidget(
             iconName: 'coin',
           ),
           Text(
-            '${user?.ecoBucksBalance ?? 100}',
+            '${user.ecoBucksBalance}',
             style: const TextStyle(
               color: AppColors.textColor,
               fontSize: 22,
@@ -109,7 +116,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             iconName: 'passion',
           ),
           Text(
-            '${user?.streak ?? 0}',
+            '${user.streak ?? 0}',
             style: const TextStyle(
               color: AppColors.textColor,
               fontSize: 22,
@@ -118,7 +125,6 @@ class _HomePageState extends ConsumerState<HomePage> {
           ),
         ],
       ),
-      error: (e, st) => Center(child: ErrorMessageWidget(e.toString())),
       loading: () => const SizedBox.shrink(),
     );
   }

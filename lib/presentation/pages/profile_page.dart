@@ -142,7 +142,7 @@ class UserProfileSection extends StatelessWidget {
         ),
         _cityCountryRankRow(pagecontroller: pageController),
         Container(
-          // width: MediaQuery.of(context).size.width * 0.5,
+          width: MediaQuery.of(context).size.width * 0.5,
           padding: const EdgeInsets.all(20),
           margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
           decoration: roundedContainerDecoration(),
@@ -185,50 +185,56 @@ class UserProfileSection extends StatelessWidget {
       ],
     );
   }
-}
 
-Widget _heading(String title) => Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
+  Widget _heading(String title) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        const Divider(),
-      ],
-    );
+          const Divider(),
+        ],
+      );
 
-Widget _actionCard() => Container(
-      padding: const EdgeInsets.all(10),
-      margin: const EdgeInsets.all(10),
-      decoration: roundedContainerDecoration(),
-      child: const Text('hi'),
-    );
-
-Widget _cityCountryRankRow({required PageController pagecontroller}) => Padding(
+  Widget _cityCountryRankRow({required PageController pagecontroller}) {
+    return Padding(
       padding: const EdgeInsets.all(8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Expanded(
-            child: CircularElevatedButton(
-              color: AppColors.secondaryColor,
-              blurRadius: 1,
-              darkShadow: true,
-              onPressed: () {},
-              child: const Padding(
-                padding: EdgeInsets.symmetric(vertical: 15),
-                child: Text(
-                  '#1 in New Delhi',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
+            child: Consumer(
+              builder: (context, ref, child) {
+                final rankValue = ref.watch(rankUserProvider);
+                return CircularElevatedButton(
+                  color: AppColors.secondaryColor,
+                  blurRadius: 1,
+                  darkShadow: true,
+                  onPressed: () {
+                    showToast(
+                      ref,
+                      'Your rank in the leaderboards based on your EcoBucks',
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    child: AsyncValueWidget(
+                      value: rankValue,
+                      data: (rank) => Text(
+                        '#$rank in Leaderboards',
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
           ),
           const SizedBox(
@@ -261,3 +267,5 @@ Widget _cityCountryRankRow({required PageController pagecontroller}) => Padding(
         ],
       ),
     );
+  }
+}

@@ -1,5 +1,4 @@
 import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'audio_player_service.g.dart';
@@ -17,7 +16,7 @@ class AudioPlayerService {
     try {
       await _audioPlayer.play(AssetSource('sounds/$asset.$extension'));
     } catch (e) {
-      debugPrint(e.toString());
+      // debugPrint(e.toString());
     }
   }
 
@@ -25,7 +24,7 @@ class AudioPlayerService {
     try {
       await _audioPlayer.play(AssetSource('sounds/Abstract2.wav'));
     } catch (e) {
-      debugPrint(e.toString());
+      // debugPrint(e.toString());
     }
   }
 

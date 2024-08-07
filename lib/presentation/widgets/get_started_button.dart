@@ -1,5 +1,6 @@
 import 'package:ecostep/application/audio_player_service.dart';
 import 'package:ecostep/application/firebase_auth_service.dart';
+import 'package:ecostep/application/username_generator.dart';
 import 'package:ecostep/data/user_repository.dart';
 import 'package:ecostep/domain/date.dart';
 import 'package:ecostep/domain/user.dart';
@@ -116,8 +117,7 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
                   User(
                     id: user.uid,
                     ecoBucksBalance: 100,
-                    personalization: false,
-                    name: user.displayName,
+                    name: user.displayName ?? _randomUsername(),
                     profilePicture: user.photoURL,
                     streak: 0,
                     joinedOn: Date.today().toString(),
@@ -152,8 +152,7 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
                   User(
                     id: user.uid,
                     ecoBucksBalance: 100,
-                    personalization: false,
-                    name: user.displayName,
+                    name: user.displayName ?? _randomUsername(),
                     profilePicture: user.photoURL,
                     streak: 0,
                     joinedOn: Date.today().toString(),
@@ -178,4 +177,6 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
       ],
     );
   }
+
+  String _randomUsername() => UsernameGenerator().generateUsername();
 }

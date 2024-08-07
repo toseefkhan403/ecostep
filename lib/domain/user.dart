@@ -11,12 +11,12 @@ class User with _$User {
   const factory User({
     required String id,
     required int ecoBucksBalance,
-    required bool personalization,
     required String joinedOn,
     String? name,
     String? profilePicture,
     int? streak,
     String? lastActionDate,
+    String? personalizationString,
     List<String>? completedActionsDates,
     @DocumentReferenceMapConverter()
     Map<String, DocumentReference>? userActions,

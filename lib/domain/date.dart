@@ -12,6 +12,7 @@ class Date {
   static final DateFormat _formatter = DateFormat('E, MMMM d');
   static final DateFormat _formatterD = DateFormat('dd');
   static final DateFormat _weekdayFormatter = DateFormat('E');
+  static final DateFormat _showFormat = DateFormat('dd MMM yyyy');
 
   Date add(Duration duration) {
     return Date(dateTime.add(duration));
@@ -61,6 +62,11 @@ class Date {
     final minutes = difference.inMinutes % 60;
 
     return '''${hours.toString().padLeft(2, '0')} hr ${minutes.toString().padLeft(2, '0')} min left''';
+  }
+
+  static String formatDateString(String dateStr) {
+    final dateTime = _dateFormat.parse(dateStr);
+    return _showFormat.format(dateTime);
   }
 
   @override
