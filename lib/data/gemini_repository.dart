@@ -35,7 +35,6 @@ class GeminiRepository {
     if (pString != null) {
       pPrompt = 'Personalization info of the user is: $pString';
     }
-    debugPrint(pString);
 
     final prompt =
         '''Generate one actionable sustainable task per day for a user for 7 days which is good for the environment, wildlife, nature, humanity, etc. Give different tasks from the ones you provided before. Some examples include: feeding a stray animal, keeping a water bowl for birds, recycling a plastic bottle, etc. Give the difficulty as well based on the effort required to complete that task as easy, moderate, hard. Progressively increase the difficulty of the tasks. These tasks should be verifiable by analyzing an image provided by the user. The tasks should be personalized. $pPrompt. Return the output in json using the following structure: {[ "action" : "action", "description" : "description", "difficulty" : "difficulty", "impact" : "impact", "impactIfNotDone" : "impactIfNotDone", "verifiableImage" : "verifiableImage"]}''';

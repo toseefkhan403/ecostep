@@ -19,6 +19,22 @@ import 'package:toastification/toastification.dart';
 // week 4(15 July) - marketplace feature - upload stuff, list it, buy it, your orders in profile
 // week 5(22 July) - transactions, slick video, sound fx and apple account setup(if needed)
 // week 6(29 July) - responsiveness and release
+
+// finalize video
+// fix post image issue - done
+// sounds not working in web - done
+// add spam protection on login buttons - done
+// fix fragile leaderboard page
+// profile page changes
+// add camera option with warning for gallery option
+// fix android sign in issue - done
+// fix select image showing in verified dialog
+// show profile page on leaderboard card tap
+// responsiveness in android
+// build for web, windows, android, ios, linux
+// try storing chat history in a file for gemini
+// update github
+// update web metadata on index.html
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   configureApp();

@@ -5,7 +5,7 @@ import 'package:ecostep/presentation/widgets/lottie_icon_widget.dart';
 import 'package:flutter/material.dart';
 
 class PurchaseCompletedDialog extends StatelessWidget {
-  const PurchaseCompletedDialog( { required this.isSuccess,super.key});
+  const PurchaseCompletedDialog({required this.isSuccess, super.key});
   final bool isSuccess;
 
   @override

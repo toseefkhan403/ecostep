@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
 class FirestoreService {
   FirestoreService(this.firestore);
 
@@ -20,7 +19,7 @@ class FirestoreService {
     Map<String, dynamic> data, {
     SetOptions? options,
   }) async {
-    await ref.set(data, options);
+    await ref.set(data, options ?? SetOptions(merge: false));
   }
 
   Future<DocumentSnapshot> getDocument(DocumentReference ref) async {

@@ -1,17 +1,17 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:typed_data';
+import 'dart:io' as io;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecostep/data/gemini_repository.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/presentation/utils/utils.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:toastification/toastification.dart';
 
 class PostItemDialog extends ConsumerStatefulWidget {
@@ -59,51 +59,51 @@ class _PostItemDialogState extends ConsumerState<PostItemDialog> {
   }
 
   Future<void> pickAndUploadImage() async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.image,
-    );
+    // Pick an image file
+    final file = await ImagePicker().pickImage(source: ImageSource.gallery);
 
-    if (result != null) {
+    if (file != null) {
       setState(() {
         _isLoadingImage = true;
       });
 
-      final fileBytes = result.files.first.bytes;
-      final fileName = result.files.first.name;
+      try {
+        UploadTask uploadTask;
 
-      if (fileBytes != null) {
-        final uniqueFileName =
-            DateTime.now().millisecondsSinceEpoch.toString() + fileName;
-        final metadata =
-            SettableMetadata(contentType: 'image/${fileName.split('.').last}');
+        final uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
+        final metadata = SettableMetadata(
+          contentType: 'image/jpeg',
+          customMetadata: {'picked-file-path': file.path},
+        );
 
-        try {
-          final ref =
-              FirebaseStorage.instance.ref().child('uploads/$uniqueFileName');
-          uploadTask = ref.putData(fileBytes, metadata);
+        final ref =
+            FirebaseStorage.instance.ref().child('uploads/$uniqueFileName');
 
-          uploadTask?.snapshotEvents.listen((event) {
-            setState(() {});
-          });
-
-          final snapshot = await uploadTask?.whenComplete(() {});
-          downloadURL = await snapshot?.ref.getDownloadURL();
-
-          setState(() {
-            _isLoadingImage = false;
-            _imageBytes = fileBytes;
-            _imageUrl = downloadURL;
-          });
-        } catch (e) {
-          setState(() {
-            _isLoadingImage = false;
-          });
-          showToast(
-            ref,
-            'Failed to upload image: $e',
-            type: ToastificationType.error,
-          );
+        debugPrint('starting upload');
+        if (kIsWeb) {
+          uploadTask = ref.putData(await file.readAsBytes(), metadata);
+        } else {
+          uploadTask = ref.putFile(io.File(file.path), metadata);
         }
+
+        final snapshot = await uploadTask;
+        final downloadURL = await snapshot.ref.getDownloadURL();
+        debugPrint('uploaded successfully');
+
+        _imageBytes = await file.readAsBytes();
+        setState(() {
+          _isLoadingImage = false;
+          _imageUrl = downloadURL;
+        });
+      } catch (e) {
+        setState(() {
+          _isLoadingImage = false;
+        });
+        showToast(
+          ref,
+          'Failed to upload image: $e',
+          type: ToastificationType.error,
+        );
       }
     }
   }
@@ -196,10 +196,10 @@ class _PostItemDialogState extends ConsumerState<PostItemDialog> {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: AppColors.primaryColor,
-              width: 2,
-            ),
+            // border: Border.all(
+            //   color: AppColors.primaryColor,
+            //   width: 2,
+            // ),
           ),
           child: Padding(
             padding: const EdgeInsets.all(16),

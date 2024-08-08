@@ -31,6 +31,7 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
   );
   bool _isVisible = false;
   bool _showLoginButtons = false;
+  bool _isProcessing = false;
 
   @override
   void initState() {
@@ -62,7 +63,6 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
                   : NeoPopButton(
                       color: AppColors.primaryColor,
                       onTapUp: () {
-                        ref.read(audioPlayerServiceProvider).playClickSound();
                         _controller.reverse().then((_) {
                           controller.getStarted();
                           setState(() {
@@ -72,6 +72,7 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
                             ..reset()
                             ..forward();
                         });
+                        ref.read(audioPlayerServiceProvider).playClickSound();
                       },
                       child: const Padding(
                         padding: EdgeInsets.symmetric(
@@ -107,23 +108,7 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
       children: [
         NeoPopButton(
           color: AppColors.primaryColor,
-          onTapUp: () async {
-            await ref.read(audioPlayerServiceProvider).playClickSound();
-            final user =
-                await ref.read(firebaseAuthServiceProvider).signInWithGoogle();
-            if (user == null) return;
-
-            await ref.read(userRepositoryProvider).createUserIfDoesntExist(
-                  User(
-                    id: user.uid,
-                    ecoBucksBalance: 100,
-                    name: user.displayName ?? _randomUsername(),
-                    profilePicture: user.photoURL,
-                    streak: 0,
-                    joinedOn: Date.today().toString(),
-                  ),
-                );
-          },
+          onTapUp: _isProcessing ? null : _handleSignInWithGoogle,
           child: const Padding(
             padding: EdgeInsets.symmetric(
               horizontal: 80,
@@ -142,23 +127,7 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
         const SizedBox(height: 20),
         NeoPopButton(
           color: AppColors.primaryColor,
-          onTapUp: () async {
-            await ref.read(audioPlayerServiceProvider).playClickSound();
-            final user =
-                await ref.read(firebaseAuthServiceProvider).signInAnonymously();
-            if (user == null) return;
-
-            await ref.read(userRepositoryProvider).createUserIfDoesntExist(
-                  User(
-                    id: user.uid,
-                    ecoBucksBalance: 100,
-                    name: user.displayName ?? _randomUsername(),
-                    profilePicture: user.photoURL,
-                    streak: 0,
-                    joinedOn: Date.today().toString(),
-                  ),
-                );
-          },
+          onTapUp: _isProcessing ? null : _handleSignInAnonymously,
           child: const Padding(
             padding: EdgeInsets.symmetric(
               horizontal: 80,
@@ -176,6 +145,71 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
         ),
       ],
     );
+  }
+
+  Future<void> _handleSignInWithGoogle() async {
+    if (_isProcessing) return;
+    setState(() {
+      _isProcessing = true;
+    });
+
+    try {
+      final user =
+          await ref.read(firebaseAuthServiceProvider).signInWithGoogle();
+      if (user == null) {
+        setState(() {
+          _isProcessing = false;
+        });
+        return;
+      }
+
+      await ref.read(userRepositoryProvider).createUserIfDoesntExist(
+            User(
+              id: user.uid,
+              ecoBucksBalance: 100,
+              name: user.displayName ?? _randomUsername(),
+              profilePicture: user.photoURL,
+              streak: 0,
+              joinedOn: Date.today().toString(),
+            ),
+          );
+      await ref.read(audioPlayerServiceProvider).playClickSound();
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  Future<void> _handleSignInAnonymously() async {
+    if (_isProcessing) return; // Prevent multiple taps
+    setState(() {
+      _isProcessing = true;
+    });
+
+    try {
+      final user =
+          await ref.read(firebaseAuthServiceProvider).signInAnonymously();
+      if (user == null) {
+        setState(() {
+          _isProcessing = false;
+        });
+        return;
+      }
+
+      debugPrint('user authenticated ${user.uid}');
+      await ref.read(userRepositoryProvider).createUserIfDoesntExist(
+            User(
+              id: user.uid,
+              ecoBucksBalance: 100,
+              name: user.displayName ?? _randomUsername(),
+              profilePicture: user.photoURL,
+              streak: 0,
+              joinedOn: Date.today().toString(),
+            ),
+          );
+      await ref.read(audioPlayerServiceProvider).playClickSound();
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   String _randomUsername() => UsernameGenerator().generateUsername();

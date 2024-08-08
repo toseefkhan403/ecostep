@@ -89,9 +89,9 @@ class _WeekWidgetState extends ConsumerState<WeekWidget>
     final provider = ref.read(weekStateControllerProvider.notifier);
     final weekday = date.getWeekday();
     final isSelected = provider.isSelected(date);
-    var textOpacity = date.isBefore(widget.today) ? 1 : 0.5;
+    var textOpacity = date.isBefore(widget.today) ? 1.0 : 0.5;
     if (isSelected) {
-      textOpacity = 1;
+      textOpacity = 1.0;
     }
     return Expanded(
       child: InkWell(
@@ -114,7 +114,7 @@ class _WeekWidgetState extends ConsumerState<WeekWidget>
               AutoSizeText(
                 weekday[0],
                 style: TextStyle(
-                  color: AppColors.textColor.withOpacity(textOpacity as double),
+                  color: AppColors.textColor.withOpacity(textOpacity),
                   fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                 ),
               ),
