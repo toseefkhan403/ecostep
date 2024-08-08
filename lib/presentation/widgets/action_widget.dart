@@ -177,6 +177,7 @@ class ActionWidget extends ConsumerWidget {
             final userValue = ref.watch(firestoreUserProvider);
             return AsyncValueWidget(
               value: userValue,
+              loading: SizedBox.shrink,
               data: (user) {
                 final isActionCompleted = user.completedActionsDates
                         ?.contains(selectedDate.toString()) ??

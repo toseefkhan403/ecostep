@@ -75,19 +75,32 @@ class VerifyImageDialog extends ConsumerWidget {
                 ),
         ),
         actions: [
-          if (!state.isLoadingImage)
-            FilledButton(
-              onPressed: () =>
-                  Navigator.of(context).pop(state.verificationSuccess),
-              child: const Text('Exit'),
-            ),
-          if (state.verificationSuccess == null && !state.isLoadingImage)
+          if (state.verificationSuccess == null &&
+              !state.isLoadingImage &&
+              !hasVerified)
             FilledButton(
               onPressed: () => controller.pickImage(
                 action.verifiableImage,
                 reward,
               ),
-              child: const Text('Select Image'),
+              child: const Text('Camera'),
+            ),
+          if (state.verificationSuccess == null &&
+              !state.isLoadingImage &&
+              !hasVerified)
+            FilledButton(
+              onPressed: () => controller.pickImage(
+                action.verifiableImage,
+                reward,
+                isCamera: false,
+              ),
+              child: const Text('Gallery'),
+            ),
+          if (!state.isLoadingImage)
+            FilledButton(
+              onPressed: () =>
+                  Navigator.of(context).pop(state.verificationSuccess),
+              child: const Text('Exit'),
             ),
         ],
       ),
@@ -147,6 +160,13 @@ class VerifyImageDialog extends ConsumerWidget {
                 ),
               ),
             ],
+          ),
+          const Text(
+            '''[Note] Gallery option is available for testing purposes only. Image verification should be done via Camera for better accountability.''',
+            style: TextStyle(
+              fontSize: 14,
+              color: AppColors.textColor,
+            ),
           ),
         ],
       );

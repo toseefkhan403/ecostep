@@ -173,6 +173,34 @@ class UserRepository {
 
     return null;
   }
+
+  Future<List<String>> fetchUserCompletedActionTitles(User user) async {
+    try {
+      if (user.completedActionsDates == null || user.userActions == null) {
+        return [];
+      }
+
+      final actions = await Future.wait(
+        user.completedActionsDates!.map((date) async {
+          if (user.userActions!.containsKey(date)) {
+            final actionRef = user.userActions![date]!;
+            final actionSnapshot = await actionRef.get();
+
+            if (actionSnapshot.exists) {
+              final action = actionSnapshot.data()! as Map<String, dynamic>;
+              return action['action'].toString();
+            }
+          }
+          return null;
+        }),
+      );
+
+      return actions.whereType<String>().toList();
+    } catch (e) {
+      debugPrint('Error fetching completed actions: $e');
+      return [];
+    }
+  }
 }
 
 @riverpod
@@ -192,4 +220,13 @@ Stream<User?> firestoreUser(FirestoreUserRef ref) {
 Future<int?> rankUser(RankUserRef ref) {
   final userRepository = ref.watch(userRepositoryProvider);
   return userRepository.findRank();
+}
+
+@riverpod
+Future<List<String>> userCompletedActionTitles(
+  UserCompletedActionTitlesRef ref,
+  User user,
+) {
+  final userRepository = ref.watch(userRepositoryProvider);
+  return userRepository.fetchUserCompletedActionTitles(user);
 }

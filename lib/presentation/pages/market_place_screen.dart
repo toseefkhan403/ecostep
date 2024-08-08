@@ -40,77 +40,65 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
     // }
   }
 
-  List<MarketplaceItem> getFilteredItems(
-    List<MarketplaceItem> items,
-    String? currentUserUid,
-  ) {
-    return items.where((item) {
-      final sellingUserId = (item.sellingUser as DocumentReference).id;
-      return sellingUserId == currentUserUid;
-    }).toList();
-  }
-
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final marketplaceItemsvalue = ref.watch(marketplaceControllerProvider);
     final currentUserUid = FirebaseAuth.instance.currentUser!.uid;
 
-    return AsyncValueWidget(
-      value: marketplaceItemsvalue,
-      data: (marketplaceitems) {
-        final filteredItems =
-            getFilteredItems(marketplaceitems, currentUserUid);
-        return Scaffold(
-          backgroundColor: Colors.transparent,
-          floatingActionButton: Padding(
-            padding:
-                EdgeInsets.only(bottom: isMobileScreen(context) ? 55.0 : 0),
-            child: CircularElevatedButton(
-              color: AppColors.secondaryColor,
-              height: isMobileScreen(context) ? 45 : 60,
-              width: isMobileScreen(context) ? 130 : 150,
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return const PostItemDialog();
-                  },
-                );
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      floatingActionButton: Padding(
+        padding: EdgeInsets.only(bottom: isMobileScreen(context) ? 55.0 : 0),
+        child: CircularElevatedButton(
+          color: AppColors.secondaryColor,
+          height: isMobileScreen(context) ? 45 : 60,
+          width: isMobileScreen(context) ? 130 : 150,
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return const PostItemDialog();
               },
-              child: const Text(
-                'Post Item',
-                style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            );
+          },
+          child: const Text(
+            'Post Item',
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          ),
+        ),
+      ),
+      body: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: !isMobileScreen(context) ? width * 0.25 : 10,
+        ),
+        child: Column(
+          children: [
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Marketplace',
+                    style: TextStyle(
+                      color: AppColors.textColor,
+                      fontSize: 26,
+                      height: 1,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-          body: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: !isMobileScreen(context) ? width * 0.25 : 10,
-            ),
-            child: Column(
-              children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Marketplace',
-                        style: TextStyle(
-                          color: AppColors.textColor,
-                          fontSize: 26,
-                          height: 1,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                _buttonRow(),
-                Expanded(
-                  child: PageView(
+            _buttonRow(),
+            Expanded(
+              child: AsyncValueWidget(
+                value: marketplaceItemsvalue,
+                data: (marketplaceitems) {
+                  final filteredItems =
+                      getUserSellerItems(marketplaceitems, currentUserUid);
+                  return PageView(
                     controller: _pageController,
                     physics: const NeverScrollableScrollPhysics(),
                     children: [
@@ -235,13 +223,13 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
                         },
                       ),
                     ],
-                  ),
-                ),
-              ],
+                  );
+                },
+              ),
             ),
-          ),
-        );
-      },
+          ],
+        ),
+      ),
     );
   }
 

@@ -14,8 +14,13 @@ class VerifyImageController extends _$VerifyImageController {
   @override
   VerifyImageState build() => const VerifyImageState(isLoadingImage: false);
 
-  Future<void> pickImage(String verifiableImage, int reward) async {
-    final result = await ImagePicker().pickImage(source: ImageSource.gallery);
+  Future<void> pickImage(
+    String verifiableImage,
+    int reward, {
+    bool isCamera = true,
+  }) async {
+    final result = await ImagePicker()
+        .pickImage(source: isCamera ? ImageSource.camera : ImageSource.gallery);
 
     if (result != null) {
       final imageBytes = await result.readAsBytes();

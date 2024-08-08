@@ -1,4 +1,5 @@
 import 'package:ecostep/presentation/widgets/error_message_widget.dart';
+import 'package:ecostep/presentation/widgets/lottie_icon_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -34,12 +35,20 @@ class AsyncValueWidget<T> extends StatelessWidget {
         padding: EdgeInsets.only(top: topMargin),
         child: Center(child: ErrorMessageWidget(e.toString())),
       ),
-      loading: loading ?? () {
-        return Padding(
-          padding: EdgeInsets.only(top: topMargin),
-          child: const Center(child: CircularProgressIndicator()),
-        );
-      },
+      loading: loading ??
+          () {
+            return Padding(
+              padding: EdgeInsets.only(top: topMargin),
+              child: const Center(
+                child: LottieIconWidget(
+                  iconName: 'recycle',
+                  autoPlay: true,
+                  repeat: true,
+                  height: 100,
+                ),
+              ),
+            );
+          },
     );
   }
 }

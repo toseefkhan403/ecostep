@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecostep/application/audio_player_service.dart';
+import 'package:ecostep/domain/marketplace_item.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/presentation/widgets/lottie_icon_widget.dart';
 import 'package:flutter/material.dart';
@@ -102,4 +104,14 @@ Widget loadingIconAI(double topMargin) {
       ),
     ),
   );
+}
+
+List<MarketplaceItem> getUserSellerItems(
+  List<MarketplaceItem> items,
+  String? currentUserUid,
+) {
+  return items.where((item) {
+    final sellingUserId = (item.sellingUser as DocumentReference).id;
+    return sellingUserId == currentUserUid;
+  }).toList();
 }

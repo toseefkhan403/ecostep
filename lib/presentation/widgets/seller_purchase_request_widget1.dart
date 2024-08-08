@@ -318,6 +318,7 @@ class _SellerPurchaseRequestWidgetState
               LottieIconWidget(
                 iconName: 'alert',
                 height: 80,
+                autoPlay: true,
               ),
               Text(
                 'Are you sure about the transfer?',

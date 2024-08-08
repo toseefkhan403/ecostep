@@ -62,6 +62,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                           child: LottieIconWidget(
                             iconName: 'recycle',
                             autoPlay: true,
+                            repeat: true,
                             height: 100,
                           ),
                         );
@@ -101,6 +102,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                           child: LottieIconWidget(
                             iconName: 'recycle',
                             autoPlay: true,
+                            repeat: true,
                             height: 100,
                           ),
                         );

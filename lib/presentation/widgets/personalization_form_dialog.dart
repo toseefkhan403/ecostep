@@ -57,172 +57,163 @@ class _PersonalizationFormDialogState
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: AppColors.primaryColor,
-              width: 2,
-            ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: SingleChildScrollView(
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Center(
-                      child: Text(
-                        'Personalization Form',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primaryColor,
-                        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Center(
+                    child: Text(
+                      'Personalization Form',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primaryColor,
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _locationController,
-                      decoration: const InputDecoration(
-                        labelText: 'Where do you live?',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                        labelStyle: TextStyle(color: Colors.blueGrey),
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _locationController,
+                    decoration: const InputDecoration(
+                      labelText: 'Where do you live?',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your location';
-                        }
-                        return null;
-                      },
+                      filled: true,
+                      fillColor: Colors.white,
+                      labelStyle: TextStyle(color: Colors.blueGrey),
                     ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _occupationController,
-                      decoration: const InputDecoration(
-                        labelText: 'What do you do for a living?',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                        labelStyle: TextStyle(color: Colors.blueGrey),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your location';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _occupationController,
+                    decoration: const InputDecoration(
+                      labelText: 'What do you do for a living?',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your occupation';
-                        }
-                        return null;
-                      },
+                      filled: true,
+                      fillColor: Colors.white,
+                      labelStyle: TextStyle(color: Colors.blueGrey),
                     ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _sustainabilityController,
-                      decoration: const InputDecoration(
-                        labelText:
-                            '''What would you rate yourself on sustainability? (on a scale of 5)''',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                        labelStyle: TextStyle(color: Colors.blueGrey),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your occupation';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _sustainabilityController,
+                    decoration: const InputDecoration(
+                      labelText:
+                          '''What would you rate yourself on sustainability? (on a scale of 5)''',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please rate your sustainability';
-                        }
-                        return null;
-                      },
+                      filled: true,
+                      fillColor: Colors.white,
+                      labelStyle: TextStyle(color: Colors.blueGrey),
                     ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _cityController,
-                      decoration: const InputDecoration(
-                        labelText: 'Do you live in a city?',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                        labelStyle: TextStyle(color: Colors.blueGrey),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please rate your sustainability';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _cityController,
+                    decoration: const InputDecoration(
+                      labelText: 'Do you live in a city?',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please specify if you live in a city';
-                        }
-                        return null;
-                      },
+                      filled: true,
+                      fillColor: Colors.white,
+                      labelStyle: TextStyle(color: Colors.blueGrey),
                     ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _environmentActionController,
-                      decoration: const InputDecoration(
-                        labelText:
-                            '''Have you taken any action to save the environment recently?''',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                        labelStyle: TextStyle(color: Colors.blueGrey),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please specify if you live in a city';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _environmentActionController,
+                    decoration: const InputDecoration(
+                      labelText:
+                          '''Have you taken any action to save the environment recently?''',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '''Please specify your recent environmental actions''';
-                        }
-                        return null;
-                      },
+                      filled: true,
+                      fillColor: Colors.white,
+                      labelStyle: TextStyle(color: Colors.blueGrey),
                     ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _transportController,
-                      decoration: const InputDecoration(
-                        labelText: 'Do you use public transport or a car?',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                        labelStyle: TextStyle(color: Colors.blueGrey),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return '''Please specify your recent environmental actions''';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: _transportController,
+                    decoration: const InputDecoration(
+                      labelText: 'Do you use public transport or a car?',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please specify your mode of transport';
-                        }
-                        return null;
-                      },
+                      filled: true,
+                      fillColor: Colors.white,
+                      labelStyle: TextStyle(color: Colors.blueGrey),
                     ),
-                    const SizedBox(height: 32),
-                    Center(
-                      child: ElevatedButton(
-                        onPressed: _submitForm,
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 40,
-                            vertical: 15,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          backgroundColor: AppColors.primaryColor,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please specify your mode of transport';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 32),
+                  Center(
+                    child: ElevatedButton(
+                      onPressed: _submitForm,
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 40,
+                          vertical: 15,
                         ),
-                        child: const Text(
-                          'Submit',
-                          style: TextStyle(fontSize: 18, color: Colors.white),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
                         ),
+                        backgroundColor: AppColors.primaryColor,
+                      ),
+                      child: const Text(
+                        'Submit',
+                        style: TextStyle(fontSize: 18, color: Colors.white),
                       ),
                     ),
-                    const SizedBox(height: 25),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 25),
+                ],
               ),
             ),
           ),

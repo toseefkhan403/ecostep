@@ -14,7 +14,7 @@ import 'package:toastification/toastification.dart';
 
 // 6 weeks to finish - lead with web
 // week 1(24 June) - complete onboarding - rive design, animation, text, coding - done
-// week 2(1 July) - !questionnaire, user auth, firebase setup, leaderboard and profile page --done
+// week 2(1 July) - questionnaire, user auth, firebase setup, leaderboard and profile page --done
 // week 3(8 July) - daily tasks feature - ai gen, parse and display, scoring system, and verification feature, store user in firestore
 // week 4(15 July) - marketplace feature - upload stuff, list it, buy it, your orders in profile
 // week 5(22 July) - transactions, slick video, sound fx and apple account setup(if needed)
@@ -24,17 +24,19 @@ import 'package:toastification/toastification.dart';
 // fix post image issue - done
 // sounds not working in web - done
 // add spam protection on login buttons - done
-// fix fragile leaderboard page
-// profile page changes
-// add camera option with warning for gallery option
 // fix android sign in issue - done
-// fix select image showing in verified dialog
-// show profile page on leaderboard card tap
+// update web metadata in index.html, favicon - done
+// fix select image showing in verified dialog - done
+// add camera option with warning for gallery option - done
+// profile page changes - done
 // responsiveness in android
+// responsiveness in starting rive animation
+// add download from play store button in profile page
+// fix fragile leaderboard page
+// show profile page on leaderboard card tap
 // build for web, windows, android, ios, linux
 // try storing chat history in a file for gemini
 // update github
-// update web metadata on index.html
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   configureApp();

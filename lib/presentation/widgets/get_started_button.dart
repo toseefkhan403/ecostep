@@ -149,9 +149,6 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
 
   Future<void> _handleSignInWithGoogle() async {
     if (_isProcessing) return;
-    setState(() {
-      _isProcessing = true;
-    });
 
     try {
       final user =
@@ -180,7 +177,7 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
   }
 
   Future<void> _handleSignInAnonymously() async {
-    if (_isProcessing) return; // Prevent multiple taps
+    if (_isProcessing) return;
     setState(() {
       _isProcessing = true;
     });
