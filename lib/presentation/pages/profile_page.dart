@@ -26,15 +26,19 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      floatingActionButton: CircularElevatedButton(
-        color: AppColors.secondaryColor,
-        height: 60,
-        onPressed: () {
-          ref.read(firebaseAuthServiceProvider).signOut();
-        },
-        child: const Text(
-          'Logout',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      floatingActionButton: Padding(
+        padding: EdgeInsets.only(bottom: isMobileScreen(context) ? 55.0 : 0),
+        child: CircularElevatedButton(
+          color: AppColors.secondaryColor,
+          height: isMobileScreen(context) ? 45 : 60,
+          width: isMobileScreen(context) ? 130 : 150,
+          onPressed: () {
+            ref.read(firebaseAuthServiceProvider).signOut();
+          },
+          child: const Text(
+            'Logout',
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          ),
         ),
       ),
       body: CenterContentPadding(
@@ -83,106 +87,108 @@ class UserProfileSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 30),
-              child: user.profilePicture != null
-                  ? CircleAvatar(
-                      radius: 100,
-                      backgroundImage: NetworkImage(user.profilePicture!),
-                    )
-                  : Image.asset(
-                      'assets/images/eco-earth.png',
-                      height: 100 * 2,
-                    ),
-            ),
-            Positioned(
-              bottom: 25,
-              left: 0,
-              right: 0,
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: CircularElevatedButton(
-                  onPressed: () {},
-                  color: AppColors.secondaryColor,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const LottieIconWidget(
-                        iconName: 'coin',
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 30),
+                child: user.profilePicture != null
+                    ? CircleAvatar(
+                        radius: 100,
+                        backgroundImage: NetworkImage(user.profilePicture!),
+                      )
+                    : Image.asset(
+                        'assets/images/eco-earth.png',
+                        height: 100 * 2,
                       ),
-                      Text(
-                        '${user.ecoBucksBalance}',
-                        style: const TextStyle(
-                          color: AppColors.textColor,
-                          fontSize: 22,
-                          fontWeight: FontWeight.w700,
+              ),
+              Positioned(
+                bottom: 25,
+                left: 0,
+                right: 0,
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: CircularElevatedButton(
+                    onPressed: () {},
+                    color: AppColors.secondaryColor,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const LottieIconWidget(
+                          iconName: 'coin',
                         ),
-                      ),
-                    ],
+                        Text(
+                          '${user.ecoBucksBalance}',
+                          style: const TextStyle(
+                            color: AppColors.textColor,
+                            fontSize: 22,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 10, bottom: 15),
-          child: Text(
-            user.name ?? 'Guest User',
-            style: const TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 10, bottom: 15),
+            child: Text(
+              user.name ?? 'Guest User',
+              style: const TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
-        _cityCountryRankRow(pagecontroller: pageController),
-        Container(
-          width: MediaQuery.of(context).size.width * 0.5,
-          padding: const EdgeInsets.all(20),
-          margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
-          decoration: roundedContainerDecoration(),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _heading('Your actions'),
-                const LottieIconWidget(
-                  iconName: 'not-found',
-                  autoPlay: true,
-                  height: 100,
-                ),
-                // SizedBox(
-                //   height: 150,
-                //   child: ListView.builder(
-                //     itemCount: 10,
-                //     scrollDirection: Axis.horizontal,
-                //     itemBuilder: (context, index) => _actionCard(),
-                //   ),
-                // ),
-                _heading('Your recycles'),
-                const LottieIconWidget(
-                  iconName: 'not-found',
-                  autoPlay: true,
-                  height: 100,
-                ),
-                // SizedBox(
-                //   height: 150,
-                //   child: ListView.builder(
-                //     itemCount: 20,
-                //     scrollDirection: Axis.horizontal,
-                //     itemBuilder: (context, index) => _actionCard(),
-                //   ),
-                // ),
-              ],
+          _cityCountryRankRow(pagecontroller: pageController),
+          Container(
+            width: MediaQuery.of(context).size.width * 0.5,
+            padding: const EdgeInsets.all(20),
+            margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
+            decoration: roundedContainerDecoration(),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _heading('Your actions'),
+                  const LottieIconWidget(
+                    iconName: 'not-found',
+                    autoPlay: true,
+                    height: 100,
+                  ),
+                  // SizedBox(
+                  //   height: 150,
+                  //   child: ListView.builder(
+                  //     itemCount: 10,
+                  //     scrollDirection: Axis.horizontal,
+                  //     itemBuilder: (context, index) => _actionCard(),
+                  //   ),
+                  // ),
+                  _heading('Your recycles'),
+                  const LottieIconWidget(
+                    iconName: 'not-found',
+                    autoPlay: true,
+                    height: 100,
+                  ),
+                  // SizedBox(
+                  //   height: 150,
+                  //   child: ListView.builder(
+                  //     itemCount: 20,
+                  //     scrollDirection: Axis.horizontal,
+                  //     itemBuilder: (context, index) => _actionCard(),
+                  //   ),
+                  // ),
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

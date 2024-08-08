@@ -63,21 +63,26 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
             getFilteredItems(marketplaceitems, currentUserUid);
         return Scaffold(
           backgroundColor: Colors.transparent,
-          floatingActionButton: CircularElevatedButton(
-            color: AppColors.secondaryColor,
-            height: 60,
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return const PostItemDialog();
-                },
-              );
-            },
-            child: const Text(
-              'Post Item',
-              style:
-                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          floatingActionButton: Padding(
+            padding:
+                EdgeInsets.only(bottom: isMobileScreen(context) ? 55.0 : 0),
+            child: CircularElevatedButton(
+              color: AppColors.secondaryColor,
+              height: isMobileScreen(context) ? 45 : 60,
+              width: isMobileScreen(context) ? 130 : 150,
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return const PostItemDialog();
+                  },
+                );
+              },
+              child: const Text(
+                'Post Item',
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              ),
             ),
           ),
           body: Padding(
@@ -253,11 +258,13 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
                 blurRadius: _selectedIndex == 0 ? 1 : 5,
                 darkShadow: _selectedIndex == 0,
                 onPressed: () => _onItemTapped(0),
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 15),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 15),
                   child: Text(
-                    'Items For Recycle',
-                    style: TextStyle(
+                    isMobileScreen(context)
+                        ? 'For Recycle'
+                        : 'Items For Recycle',
+                    style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
                     ),

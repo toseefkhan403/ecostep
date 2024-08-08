@@ -127,85 +127,109 @@ class _SellerPurchaseRequestWidgetState
         final seller = snapshot.data!['seller'] as User;
         final item = snapshot.data!['item'] as MarketplaceItem;
 
-        return SizedBox(
-          child: Card(
-            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-            elevation: 5,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Purchase Request',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: AppColors.textColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
-                  Row(
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            final isSmallScreen = constraints.maxWidth < 600;
+            return SizedBox(
+              child: Card(
+                margin:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
                     children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 10),
-                            _buildDetailRow(
-                              icon: Icons.person,
-                              title: 'Seller Name:',
-                              value: seller.name ?? 'N/A',
+                      Text(
+                        'Purchase Request',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              color: AppColors.textColor,
+                              fontWeight: FontWeight.bold,
                             ),
-                            const SizedBox(height: 10),
-                            _buildDetailRow(
-                              icon: Icons.money,
-                              title: 'Buyer Price:',
-                              value: widget.request.buyerPrice,
-                            ),
-                            const SizedBox(height: 10),
-                            _buildDetailRow(
-                              icon: Icons.store,
-                              title: 'Item Name:',
-                              value: item.name,
-                            ),
-                            const SizedBox(height: 10),
-                            _buildDetailRow(
-                              icon: Icons.description,
-                              title: 'Item Description:',
-                              value: item.description,
-                            ),
-                            const SizedBox(height: 10),
-                            _buildDetailRow(
-                              icon: Icons.calendar_today,
-                              title: 'Requested At:',
-                              value: _formatTimestamp(
-                                widget.request.timestamp as Timestamp,
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            _buildConfirmButton(),
-                          ],
-                        ),
                       ),
-                      Expanded(
-                        child: Padding(
+                      if (isSmallScreen)
+                        Padding(
                           padding: const EdgeInsets.all(8),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: Image.network(
                               item.imageUrl,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                              height: 250,
                             ),
                           ),
                         ),
+                      if (isSmallScreen) const SizedBox(height: 10),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (!isSmallScreen) const SizedBox(height: 10),
+                                _buildDetailRow(
+                                  icon: Icons.person,
+                                  title: 'Seller Name:',
+                                  value: seller.name ?? 'N/A',
+                                ),
+                                const SizedBox(height: 10),
+                                _buildDetailRow(
+                                  icon: Icons.money,
+                                  title: 'Buyer Price:',
+                                  value: widget.request.buyerPrice,
+                                ),
+                                const SizedBox(height: 10),
+                                _buildDetailRow(
+                                  icon: Icons.store,
+                                  title: 'Item Name:',
+                                  value: item.name,
+                                ),
+                                const SizedBox(height: 10),
+                                _buildDetailRow(
+                                  icon: Icons.description,
+                                  title: 'Item Description:',
+                                  value: item.description,
+                                ),
+                                const SizedBox(height: 10),
+                                _buildDetailRow(
+                                  icon: Icons.calendar_today,
+                                  title: 'Requested At:',
+                                  value: _formatTimestamp(
+                                    widget.request.timestamp as Timestamp,
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                                _buildConfirmButton(),
+                              ],
+                            ),
+                          ),
+                          if (!isSmallScreen)
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Image.network(
+                                    item.imageUrl,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                    height: 250,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
         );
       },
     );
