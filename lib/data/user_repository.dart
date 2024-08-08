@@ -28,7 +28,7 @@ class UserRepository {
     await firestoreService.setDocument(userDocRef, user.toJson());
   }
 
-  Future<bool> doesUserExist(String? uid) async {
+  Future<bool> doesUserExist(String uid) async {
     final userDocRef = firestoreService.firestore.collection('users').doc(uid);
     final querySnapshot = await firestoreService.getDocument(userDocRef);
     return querySnapshot.exists;

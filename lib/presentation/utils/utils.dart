@@ -55,7 +55,6 @@ void showToast(
   String title, {
   ToastificationType type = ToastificationType.info,
 }) {
-  ref.read(audioPlayerServiceProvider).playSound('error', extension: 'mp3');
   toastification.show(
     title: Text(
       title,
@@ -78,6 +77,7 @@ void showToast(
       );
     },
   );
+  ref.read(audioPlayerServiceProvider).playSound('error', extension: 'mp3');
 }
 
 int coinsFromDifficulty(String difficulty) {

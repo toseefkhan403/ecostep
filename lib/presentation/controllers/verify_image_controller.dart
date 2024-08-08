@@ -1,12 +1,10 @@
-import 'dart:io';
-
 import 'package:ecostep/application/audio_player_service.dart';
 import 'package:ecostep/data/gemini_repository.dart';
 import 'package:ecostep/data/user_repository.dart';
 import 'package:ecostep/domain/verify_image_state.dart';
 import 'package:ecostep/presentation/controllers/week_state_controller.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'verify_image_controller.g.dart';
@@ -17,17 +15,15 @@ class VerifyImageController extends _$VerifyImageController {
   VerifyImageState build() => const VerifyImageState(isLoadingImage: false);
 
   Future<void> pickImage(String verifiableImage, int reward) async {
-    final result = await FilePicker.platform.pickFiles(type: FileType.image);
+    final result = await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (result != null) {
-      final imageBytes = kIsWeb
-          ? result.files.single.bytes
-          : File(result.files.single.path!).readAsBytesSync();
+      final imageBytes = await result.readAsBytes();
       state = state.copyWith(
         isLoadingImage: true,
         imageBytes: imageBytes,
       );
-      await verifyImage(imageBytes!, verifiableImage, reward);
+      await verifyImage(imageBytes, verifiableImage, reward);
     } else {
       state = state.copyWith(isLoadingImage: false);
     }
@@ -54,12 +50,12 @@ class VerifyImageController extends _$VerifyImageController {
         final selectedDate =
             ref.watch(weekStateControllerProvider).selectedDate;
         final userProvider = ref.read(userRepositoryProvider);
-        await ref
-            .read(audioPlayerServiceProvider)
-            .playSound('success', extension: 'mp3');
         await userProvider.addEcoBucks(reward);
         await userProvider.completeUserAction(selectedDate);
         await userProvider.updateStreak();
+        await ref
+            .read(audioPlayerServiceProvider)
+            .playSound('success', extension: 'mp3');
       } else {
         await ref
             .read(audioPlayerServiceProvider)

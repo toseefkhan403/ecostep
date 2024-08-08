@@ -339,14 +339,13 @@ class _SellerPurchaseRequestWidgetState
             ElevatedButton(
               onPressed: () async {
                 final sucess = await _confirmPurchase();
-                Navigator.of(context).pop();
-
                 await showDialog<void>(
                   context: context,
                   builder: (c) {
-                    return PurchaseCompletedDialog(isSuccess: sucess);
+                    return const PurchaseCompletedDialog(isSuccess: true);
                   },
                 );
+                Navigator.of(context).pop();
 
                 await ref
                     .read(audioPlayerServiceProvider)
