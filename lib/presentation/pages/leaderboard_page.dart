@@ -194,75 +194,154 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
         ),
       );
 
-  Widget userCard(User user, int index) => Container(
-        padding: const EdgeInsets.all(20),
-        margin: const EdgeInsets.symmetric(vertical: 20),
-        decoration: roundedContainerDecoration(),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Text(
-                  '#${index + 1}',
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: user.profilePicture != null
-                      ? CircleAvatar(
-                          radius: 25,
-                          backgroundImage: NetworkImage(user.profilePicture!),
-                        )
-                      : Image.asset(
-                          'assets/images/eco-earth.png',
-                          height: 25 * 2,
+  Widget userCard(User user, int index) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isSmallScreen = constraints.maxWidth < 600;
+        return Container(
+          padding: const EdgeInsets.all(20),
+          margin: const EdgeInsets.symmetric(vertical: 20),
+          decoration: roundedContainerDecoration(),
+          child: isSmallScreen
+              ? Column(
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          '#${index + 1}',
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
+                        Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: user.profilePicture != null
+                              ? CircleAvatar(
+                                  radius: 25,
+                                  backgroundImage:
+                                      NetworkImage(user.profilePicture!),
+                                )
+                              : Image.asset(
+                                  'assets/images/eco-earth.png',
+                                  height: 50,
+                                ),
+                        ),
+                        Text(
+                          user.name ?? 'Guest User',
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const LottieIconWidget(
+                          iconName: 'coin',
+                        ),
+                        Text(
+                          ' ${user.ecoBucksBalance}',
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Joined On',
+                          style: TextStyle(
+                            color: Colors.black,
+                          ),
+                        ),
+                        Text(
+                          Date.formatDateString(user.joinedOn),
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                )
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          '#${index + 1}',
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: user.profilePicture != null
+                              ? CircleAvatar(
+                                  radius: 25,
+                                  backgroundImage:
+                                      NetworkImage(user.profilePicture!),
+                                )
+                              : Image.asset(
+                                  'assets/images/eco-earth.png',
+                                  height: 50,
+                                ),
+                        ),
+                        Text(
+                          user.name ?? 'Guest User',
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        const LottieIconWidget(
+                          iconName: 'coin',
+                        ),
+                        Text(
+                          ' ${user.ecoBucksBalance}',
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        const Text(
+                          'Joined On',
+                          style: TextStyle(
+                            color: Colors.black,
+                          ),
+                        ),
+                        Text(
+                          Date.formatDateString(user.joinedOn),
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-                Text(
-                  user.name ?? 'Guest User',
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                const LottieIconWidget(
-                  iconName: 'coin',
-                ),
-                Text(
-                  ' ${user.ecoBucksBalance}',
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-            Column(
-              children: [
-                const Text(
-                  'Joined On',
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
-                ),
-                Text(
-                  Date.formatDateString(user.joinedOn),
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
+        );
+      },
+    );
+  }
 }
