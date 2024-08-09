@@ -18,6 +18,9 @@ class ImpactDialog extends StatelessWidget {
 
     return CenterContentPadding(
       child: AlertDialog(
+        insetPadding: isMobileScreen(context)
+            ? const EdgeInsets.all(10)
+            : const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
         title: const Text(
           'Action Impact',
           style: TextStyle(

@@ -54,7 +54,7 @@ class ActionWidgetContainer extends ConsumerWidget {
     }
 
     return Padding(
-      padding: EdgeInsets.only(top: topMargin),
+      padding: EdgeInsets.only(top: topMargin, left: 8, right: 8),
       child: Center(
         child: CircularElevatedButton(
           color: AppColors.secondaryColor,
@@ -70,6 +70,8 @@ class ActionWidgetContainer extends ConsumerWidget {
           },
           child: const Text(
             '''AI actions have not been generated for this week yet. Click to generate!''',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontWeight: FontWeight.w500),
           ),
         ),
       ),

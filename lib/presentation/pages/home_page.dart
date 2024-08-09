@@ -85,6 +85,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                   ),
                   loading: () => loadingIconAI(100),
                 ),
+                if (isMobileScreen(context)) const SizedBox(height: 50),
               ],
             ),
           ),

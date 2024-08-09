@@ -23,6 +23,9 @@ class ModifyConfirmationDialog extends StatelessWidget {
 
     return CenterContentPadding(
       child: AlertDialog(
+        insetPadding: isMobileScreen(context)
+            ? const EdgeInsets.all(10)
+            : const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
         title: const Text(
           "Modify Today's Action",
           style: TextStyle(
@@ -84,11 +87,13 @@ class ModifyConfirmationDialog extends StatelessWidget {
                   showToast(
                     ref,
                     'Action modified successfully!',
+                    type: ToastificationType.success,
                   );
                 } else {
                   showToast(
                     ref,
                     "Could not modify today's action. Please try again later!",
+                    type: ToastificationType.error,
                   );
                 }
                 // ignore: use_build_context_synchronously

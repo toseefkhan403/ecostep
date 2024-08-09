@@ -1,6 +1,7 @@
 import 'package:ecostep/data/user_repository.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/presentation/utils/utils.dart';
+import 'package:ecostep/presentation/widgets/circular_elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toastification/toastification.dart';
@@ -48,18 +49,21 @@ class _PersonalizationFormDialogState
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    return Container(
+    return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: !isMobileScreen(context) ? width * 0.25 : 10,
+        horizontal: !isMobileScreen(context) ? width * 0.25 : 0,
       ),
       child: Dialog(
+        insetPadding: isMobileScreen(context)
+            ? const EdgeInsets.all(20)
+            : const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: SingleChildScrollView(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
             child: Form(
               key: _formKey,
               child: Column(
@@ -117,15 +121,16 @@ class _PersonalizationFormDialogState
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: _sustainabilityController,
-                    decoration: const InputDecoration(
-                      labelText:
-                          '''What would you rate yourself on sustainability? (on a scale of 5)''',
-                      border: OutlineInputBorder(
+                    decoration: InputDecoration(
+                      labelText: isMobileScreen(context)
+                          ? 'Rate yourself on sustainability (out of 5)'
+                          : '''What would you rate yourself on sustainability (on a scale of 5)''',
+                      border: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10)),
                       ),
                       filled: true,
                       fillColor: Colors.white,
-                      labelStyle: TextStyle(color: Colors.blueGrey),
+                      labelStyle: const TextStyle(color: Colors.blueGrey),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -156,15 +161,16 @@ class _PersonalizationFormDialogState
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: _environmentActionController,
-                    decoration: const InputDecoration(
-                      labelText:
-                          '''Have you taken any action to save the environment recently?''',
-                      border: OutlineInputBorder(
+                    decoration: InputDecoration(
+                      labelText: isMobileScreen(context)
+                          ? 'Mention any recent sustainable action'
+                          : '''Have you taken any action to save the environment recently?''',
+                      border: const OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10)),
                       ),
                       filled: true,
                       fillColor: Colors.white,
-                      labelStyle: TextStyle(color: Colors.blueGrey),
+                      labelStyle: const TextStyle(color: Colors.blueGrey),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -194,21 +200,13 @@ class _PersonalizationFormDialogState
                   ),
                   const SizedBox(height: 32),
                   Center(
-                    child: ElevatedButton(
+                    child: CircularElevatedButton(
                       onPressed: _submitForm,
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 40,
-                          vertical: 15,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        backgroundColor: AppColors.primaryColor,
-                      ),
+                      height: 40,
+                      color: AppColors.primaryColor,
                       child: const Text(
                         'Submit',
-                        style: TextStyle(fontSize: 18, color: Colors.white),
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
                   ),

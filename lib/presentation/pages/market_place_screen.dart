@@ -1,6 +1,4 @@
 // ignore_for_file: inference_failure_on_function_invocation
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ecostep/domain/marketplace_item.dart';
 import 'package:ecostep/presentation/controllers/market_place_controller.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/presentation/utils/utils.dart';

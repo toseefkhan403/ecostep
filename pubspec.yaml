@@ -42,6 +42,7 @@ dev_dependencies:
   build_runner: ^2.4.11
   change_app_package_name: ^1.1.0
   custom_lint: ^0.6.4
+  flutter_launcher_icons: ^0.13.1
   flutter_lints: ^3.0.0
   flutter_test:
     sdk: flutter
@@ -49,6 +50,21 @@ dev_dependencies:
   riverpod_generator: ^2.4.0
   riverpod_lint: ^2.3.10
   very_good_analysis: ^5.1.0
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/eco-earth.png"
+  min_sdk_android: 23
+  web:
+    generate: true
+    image_path: "assets/images/eco-earth.png"
+  windows:
+    generate: true
+    image_path: "assets/images/eco-earth.png"
+  macos:
+    generate: true
+    image_path: "assets/images/eco-earth.png"
 
 flutter:
   uses-material-design: true

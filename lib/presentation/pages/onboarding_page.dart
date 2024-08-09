@@ -16,7 +16,7 @@ class OnboardingPage extends ConsumerStatefulWidget {
 class _OnboardingPageState extends ConsumerState<OnboardingPage>
     with TickerProviderStateMixin {
   // spam click protection
-  bool inTransition = false;
+  bool inTransition = true;
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -25,6 +25,11 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage>
     ref
         .read(onboardingArtboardControllerProvider.notifier)
         .loadRiveFile(isSmallScreen: AdaptivePolicy.isMobile());
+
+    // enable the tap after 3 seconds initially
+    Future.delayed(const Duration(seconds: 3), () {
+      inTransition = false;
+    });
 
     _controller = AnimationController(
       duration: const Duration(milliseconds: 600),
@@ -61,7 +66,6 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage>
                       controller.loadRiveFile(isSmallScreen: true);
                     } else if (!isMobileScreen(context) &&
                         artboard.name.contains('Small')) {
-                      // isSmallScreen: false by default
                       controller.loadRiveFile();
                     }
                     return GestureDetector(
@@ -80,9 +84,7 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage>
                         children: [
                           Rive(
                             artboard: artboard,
-                            fit: artboard.name.contains('Small')
-                                ? BoxFit.fill
-                                : BoxFit.cover,
+                            fit: _decideFit(constraints),
                           ),
                           if (controller.pageNo == 3) const GetStartedButton(),
                         ],
@@ -93,5 +95,17 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage>
         ),
       ),
     );
+  }
+
+  BoxFit _decideFit(BoxConstraints constraints) {
+    if (constraints.maxWidth > 980) {
+      return BoxFit.cover;
+    }
+
+    if (constraints.maxWidth > 600) {
+      return BoxFit.contain;
+    }
+
+    return BoxFit.fill;
   }
 }

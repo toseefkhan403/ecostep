@@ -113,6 +113,7 @@ class _WeekWidgetState extends ConsumerState<WeekWidget>
             children: [
               AutoSizeText(
                 weekday[0],
+                softWrap: false,
                 style: TextStyle(
                   color: AppColors.textColor.withOpacity(textOpacity),
                   fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
@@ -120,6 +121,7 @@ class _WeekWidgetState extends ConsumerState<WeekWidget>
               ),
               AutoSizeText(
                 weekday[1],
+                softWrap: false,
                 style: TextStyle(
                   color: AppColors.textColor.withOpacity(textOpacity),
                   fontWeight: FontWeight.w700,

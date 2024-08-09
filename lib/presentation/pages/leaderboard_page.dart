@@ -49,8 +49,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
               controller: _pageController,
               physics: const NeverScrollableScrollPhysics(),
               children: [
-                Container(
-                  margin: const EdgeInsets.only(top: 20),
+                Padding(
                   padding: const EdgeInsets.all(20),
                   child: StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance
@@ -88,8 +87,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                     },
                   ),
                 ),
-                Container(
-                  margin: const EdgeInsets.only(top: 20),
+                Padding(
                   padding: const EdgeInsets.all(20),
                   child: StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance

@@ -61,7 +61,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         'assets/images/mountains.png',
                         fit: BoxFit.cover,
                         height: MediaQuery.of(context).size.height,
-                        width: MediaQuery.of(context).size.width * 4,
+                        width: MediaQuery.of(context).size.width * 6,
                       ),
                     ),
                     PageView(

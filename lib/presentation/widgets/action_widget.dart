@@ -88,25 +88,34 @@ class ActionWidget extends ConsumerWidget {
                         action?.difficulty.capitalizeFirstLetter() ?? 'Easy',
                   ),
                   if (weekState.selectedDate == Date.today())
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8),
-                      child: Text(
-                        Date.getTimeUntilEod(),
-                        style: const TextStyle(
-                          color: AppColors.primaryColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const LottieIconWidget(
+                          iconName: 'hourglass',
+                          height: 40,
                         ),
-                        textAlign: TextAlign.center,
-                      ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: Text(
+                            Date.getTimeUntilEod(),
+                            style: const TextStyle(
+                              color: AppColors.primaryColor,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
                     ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(8, 8, 8, 12),
                     child: Text(
                       action?.description ?? 'Sustainable action description',
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: AppColors.primaryColor,
-                        fontSize: 18,
+                        fontSize: isMobileScreen(context) ? 14 : 18,
                       ),
                       textAlign: TextAlign.center,
                     ),

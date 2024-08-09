@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:ecostep/domain/action.dart';
 import 'package:ecostep/presentation/controllers/verify_image_controller.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
@@ -25,6 +26,9 @@ class VerifyImageDialog extends ConsumerWidget {
 
     return CenterContentPadding(
       child: AlertDialog(
+        insetPadding: isMobileScreen(context)
+            ? const EdgeInsets.all(10)
+            : const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
         title: const Text(
           'Image Verification',
           style: TextStyle(
@@ -66,6 +70,7 @@ class VerifyImageDialog extends ConsumerWidget {
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 8),
                                   child: _imageDescription(
+                                    context,
                                     action.difficulty,
                                     reward,
                                   ),
@@ -107,7 +112,12 @@ class VerifyImageDialog extends ConsumerWidget {
     );
   }
 
-  Widget _imageDescription(String difficulty, int reward) => Column(
+  Widget _imageDescription(
+    BuildContext context,
+    String difficulty,
+    int reward,
+  ) =>
+      Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -140,31 +150,47 @@ class VerifyImageDialog extends ConsumerWidget {
           const SizedBox(
             height: 5,
           ),
-          Row(
-            children: [
-              const Text(
-                "EcoBucks you'll get after verification: ",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Row(
+              children: [
+                Expanded(
+                  child: AutoSizeText(
+                    "EcoBucks you'll get after verification: ",
+                    minFontSize: isMobileScreen(context) ? 14 : 18,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.start,
+                  ),
                 ),
-                textAlign: TextAlign.center,
-              ),
-              const LottieIconWidget(iconName: 'coin'),
-              Text(
-                '$reward',
-                style: const TextStyle(
-                  color: AppColors.textColor,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Align(
+                    alignment: isMobileScreen(context)
+                        ? Alignment.centerRight
+                        : Alignment.centerLeft,
+                    child: Row(
+                      children: [
+                        const LottieIconWidget(iconName: 'coin'),
+                        Text(
+                          '$reward',
+                          style: const TextStyle(
+                            color: AppColors.textColor,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-          const Text(
+          Text(
             '''[Note] Gallery option is available for testing purposes only. Image verification should be done via Camera for better accountability.''',
             style: TextStyle(
-              fontSize: 14,
+              fontSize: isMobileScreen(context) ? 12 : 14,
               color: AppColors.textColor,
             ),
           ),
