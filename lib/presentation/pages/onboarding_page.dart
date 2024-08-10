@@ -1,5 +1,6 @@
 import 'package:ecostep/presentation/controllers/onboarding_artboard_controller.dart';
 import 'package:ecostep/presentation/utils/adaptive_policy.dart';
+import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/presentation/utils/utils.dart';
 import 'package:ecostep/presentation/widgets/get_started_button.dart';
 import 'package:flutter/material.dart';
@@ -56,7 +57,7 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage>
       opacity: _animation,
       child: SafeArea(
         child: Scaffold(
-          backgroundColor: Colors.white,
+          backgroundColor: _bgColor(controller.pageNo),
           body: artboard == null
               ? const SizedBox()
               : LayoutBuilder(
@@ -107,5 +108,11 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage>
     }
 
     return BoxFit.fill;
+  }
+
+  Color _bgColor(int pageNo) {
+    if (pageNo == 2) return AppColors.treeBarkColor;
+    if (pageNo == 3) return AppColors.backgroundColor;
+    return Colors.white;
   }
 }

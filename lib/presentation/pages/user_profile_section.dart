@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:ecostep/application/firebase_auth_service.dart';
 import 'package:ecostep/data/user_repository.dart';
 import 'package:ecostep/domain/user.dart';
 import 'package:ecostep/presentation/controllers/market_place_controller.dart';
@@ -26,53 +27,82 @@ class UserProfileSection extends ConsumerWidget {
 
     return Column(
       children: [
-        Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 30),
-              child: user.profilePicture != null
-                  ? CircleAvatar(
-                      radius: 100,
-                      backgroundImage: NetworkImage(user.profilePicture!),
-                    )
-                  : Image.asset(
-                      'assets/images/eco-earth.png',
-                      height: 100 * 2,
-                    ),
-            ),
-            Positioned(
-              bottom: 25,
-              left: 0,
-              right: 0,
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: CircularElevatedButton(
-                  onPressed: () {},
-                  color: AppColors.secondaryColor,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const LottieIconWidget(
-                        iconName: 'coin',
-                      ),
-                      Text(
-                        '${user.ecoBucksBalance}',
-                        style: const TextStyle(
-                          color: AppColors.textColor,
-                          fontSize: 22,
-                          fontWeight: FontWeight.w700,
+        SizedBox(
+          width: double.infinity,
+          child: Stack(
+            children: [
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 30),
+                  child: user.profilePicture != null
+                      ? CircleAvatar(
+                          radius: isMobileScreen(context) ? 60 : 100,
+                          backgroundImage: NetworkImage(user.profilePicture!),
+                        )
+                      : Image.asset(
+                          'assets/images/eco-earth.png',
+                          height: (isMobileScreen(context) ? 60 : 100) * 2,
                         ),
-                      ),
-                    ],
+                ),
+              ),
+              Positioned(
+                bottom: isMobileScreen(context) ? 20 : 30,
+                left: 0,
+                right: 0,
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    decoration: roundedContainerDecoration(
+                      color: AppColors.secondaryColor,
+                    ),
+                    width: 150,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const LottieIconWidget(
+                          iconName: 'coin',
+                          height: 40,
+                        ),
+                        Text(
+                          '${user.ecoBucksBalance}',
+                          style: const TextStyle(
+                            color: AppColors.textColor,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700,
+                          ),
+                          maxLines: 1,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+              if (isMobileScreen(context))
+                Positioned(
+                  top: 5,
+                  right: 5,
+                  child: IconButton.filled(
+                    onPressed: () =>
+                        ref.read(firebaseAuthServiceProvider).signOut(),
+                    style: IconButton.styleFrom(
+                      backgroundColor: AppColors.secondaryColor,
+                      foregroundColor: AppColors.primaryColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: const BorderSide(),
+                      ),
+                    ),
+                    icon: const Icon(Icons.logout),
+                  ),
+                ),
+            ],
+          ),
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 10, bottom: 15),
+          padding: const EdgeInsets.only(bottom: 15),
           child: Text(
             user.name ?? 'Guest User',
             style: const TextStyle(
@@ -84,7 +114,6 @@ class UserProfileSection extends ConsumerWidget {
         _cityCountryRankRow(pagecontroller: pageController),
         Expanded(
           child: Container(
-            width: MediaQuery.of(context).size.width * 0.5,
             margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
             decoration: roundedContainerDecoration(),
             child: SingleChildScrollView(
@@ -245,16 +274,14 @@ class UserProfileSection extends ConsumerWidget {
         padding: const EdgeInsets.all(10),
         margin: const EdgeInsets.all(10),
         decoration: roundedContainerDecoration(color: AppColors.primaryColor),
-        child: Expanded(
-          child: Center(
-            child: AutoSizeText(
-              title,
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-              ),
-              textAlign: TextAlign.center,
+        child: Center(
+          child: AutoSizeText(
+            title,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
             ),
+            textAlign: TextAlign.center,
           ),
         ),
       );

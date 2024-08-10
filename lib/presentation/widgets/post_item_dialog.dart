@@ -6,6 +6,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecostep/data/gemini_repository.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/presentation/utils/utils.dart';
+import 'package:ecostep/presentation/widgets/center_content_padding.dart';
+import 'package:ecostep/presentation/widgets/circular_elevated_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
@@ -183,12 +185,11 @@ class _PostItemDialogState extends ConsumerState<PostItemDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: !isMobileScreen(context) ? width * 0.25 : 10,
-      ),
+    return CenterContentPadding(
       child: Dialog(
+        insetPadding: isMobileScreen(context)
+            ? const EdgeInsets.all(10)
+            : const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
@@ -196,14 +197,10 @@ class _PostItemDialogState extends ConsumerState<PostItemDialog> {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            // border: Border.all(
-            //   color: AppColors.primaryColor,
-            //   width: 2,
-            // ),
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: SingleChildScrollView(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -251,11 +248,11 @@ class _PostItemDialogState extends ConsumerState<PostItemDialog> {
                                   ),
                                 ),
                     ),
-                    const SizedBox(height: 25),
+                    const SizedBox(height: 20),
                     const Text(
                       'Post an Item',
                       style: TextStyle(
-                        fontSize: 28,
+                        fontSize: 26,
                         fontWeight: FontWeight.bold,
                         color: Colors.blueGrey,
                       ),
@@ -301,26 +298,24 @@ class _PostItemDialogState extends ConsumerState<PostItemDialog> {
                     const SizedBox(height: 16),
                     Row(
                       children: [
-                        ElevatedButton(
+                        CircularElevatedButton(
                           onPressed: generatePrice,
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 40,
-                              vertical: 15,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            backgroundColor: AppColors.primaryColor,
-                          ),
+                          width: 200,
+                          height: 45,
+                          color: AppColors.primaryColor,
                           child: _isLoadingPrice
-                              ? const CircularProgressIndicator(
-                                  color: Colors.white,
+                              ? const SizedBox(
+                                  height: 25,
+                                  width: 25,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2,
+                                  ),
                                 )
                               : const Text(
                                   'Gemini AI Price',
                                   style: TextStyle(
-                                    fontSize: 18,
+                                    fontSize: 16,
                                     color: Colors.white,
                                   ),
                                 ),
@@ -385,6 +380,10 @@ class _PostItemDialogState extends ConsumerState<PostItemDialog> {
                         if (value == null || value.isEmpty) {
                           return 'Please enter the used months';
                         }
+                        if (int.tryParse(value) == null) {
+                          return 'Please enter a number';
+                        }
+
                         return null;
                       },
                     ),
@@ -417,25 +416,19 @@ class _PostItemDialogState extends ConsumerState<PostItemDialog> {
                     ),
                     const SizedBox(height: 32),
                     Center(
-                      child: ElevatedButton(
+                      child: CircularElevatedButton(
                         onPressed: _postItem,
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 40,
-                            vertical: 15,
+                        color: AppColors.primaryColor,
+                        child: const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 7),
+                          child: Text(
+                            'Post Item',
+                            style: TextStyle(fontSize: 18, color: Colors.white),
                           ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          backgroundColor: AppColors.primaryColor,
-                        ),
-                        child: const Text(
-                          'Post Item',
-                          style: TextStyle(fontSize: 18, color: Colors.white),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 25),
+                    const SizedBox(height: 20),
                   ],
                 ),
               ),

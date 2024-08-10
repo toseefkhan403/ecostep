@@ -83,29 +83,38 @@ class VerifyImageDialog extends ConsumerWidget {
           if (state.verificationSuccess == null &&
               !state.isLoadingImage &&
               !hasVerified)
-            FilledButton(
-              onPressed: () => controller.pickImage(
-                action.verifiableImage,
-                reward,
+            Padding(
+              padding: const EdgeInsets.all(2),
+              child: FilledButton(
+                onPressed: () => controller.pickImage(
+                  action.verifiableImage,
+                  reward,
+                ),
+                child: const Text('Camera'),
               ),
-              child: const Text('Camera'),
             ),
           if (state.verificationSuccess == null &&
               !state.isLoadingImage &&
               !hasVerified)
-            FilledButton(
-              onPressed: () => controller.pickImage(
-                action.verifiableImage,
-                reward,
-                isCamera: false,
+            Padding(
+              padding: const EdgeInsets.all(2),
+              child: FilledButton(
+                onPressed: () => controller.pickImage(
+                  action.verifiableImage,
+                  reward,
+                  isCamera: false,
+                ),
+                child: const Text('Gallery'),
               ),
-              child: const Text('Gallery'),
             ),
           if (!state.isLoadingImage)
-            FilledButton(
-              onPressed: () =>
-                  Navigator.of(context).pop(state.verificationSuccess),
-              child: const Text('Exit'),
+            Padding(
+              padding: const EdgeInsets.all(2),
+              child: FilledButton(
+                onPressed: () =>
+                    Navigator.of(context).pop(state.verificationSuccess),
+                child: const Text('Exit'),
+              ),
             ),
         ],
       ),

@@ -21,7 +21,7 @@ GoRouter goRouter(GoRouterRef ref) {
       final isLoggedIn = authState.asData?.value != null;
       final isLoggingIn = state.matchedLocation == '/';
       if (!isLoggedIn && !isLoggingIn) return '/';
-      if (isLoggedIn && isLoggingIn) return '/home';
+      if (isLoggedIn && isLoggingIn) return '/app';
       return null;
     },
     routes: <GoRoute>[
@@ -33,7 +33,7 @@ GoRouter goRouter(GoRouterRef ref) {
         },
       ),
       GoRoute(
-        path: '/home',
+        path: '/app',
         name: AppRoute.home.name,
         pageBuilder: (context, state) {
           return CustomTransitionPage(

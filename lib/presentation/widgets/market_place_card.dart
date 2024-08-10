@@ -1,5 +1,5 @@
-// ignore_for_file: avoid_dynamic_calls, use_build_context_synchronously
-
+// ignore_for_file: avoid_dynamic_calls, use_build_context_synchronously, lines_longer_than_80_chars
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecostep/application/audio_player_service.dart';
 import 'package:ecostep/data/user_repository.dart';
@@ -8,6 +8,8 @@ import 'package:ecostep/presentation/controllers/purchase_request_controller.dar
 import 'package:ecostep/presentation/utils/app_colors.dart';
 import 'package:ecostep/presentation/utils/utils.dart';
 import 'package:ecostep/presentation/widgets/async_value_widget.dart';
+import 'package:ecostep/presentation/widgets/center_content_padding.dart';
+import 'package:ecostep/presentation/widgets/circular_elevated_button.dart';
 import 'package:ecostep/presentation/widgets/expired_overlay.dart';
 import 'package:ecostep/presentation/widgets/lottie_icon_widget.dart';
 import 'package:ecostep/presentation/widgets/request_confirm_dialog.dart';
@@ -30,7 +32,6 @@ class MarketplaceCard extends StatefulWidget {
 
 class _MarketplaceCardState extends State<MarketplaceCard> {
   void showDetailDialog(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
     final priceController = TextEditingController();
     final formKey = GlobalKey<FormState>();
     var isRequestButtonEnabled = true;
@@ -40,11 +41,11 @@ class _MarketplaceCardState extends State<MarketplaceCard> {
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setState) {
-            return Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: !isMobileScreen(context) ? width * 0.25 : 10,
-              ),
+            return CenterContentPadding(
               child: Dialog(
+                insetPadding: isMobileScreen(context)
+                    ? const EdgeInsets.symmetric(horizontal: 20, vertical: 24)
+                    : const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
@@ -52,9 +53,9 @@ class _MarketplaceCardState extends State<MarketplaceCard> {
                   builder: (context, ref, child) {
                     final purchaseRequestController =
                         ref.read(purchaseRequestControllerProvider.notifier);
-                    return Container(
-                      padding: const EdgeInsets.all(16),
-                      child: SingleChildScrollView(
+                    return SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
                         child: Form(
                           key: formKey,
                           child: Column(
@@ -64,7 +65,7 @@ class _MarketplaceCardState extends State<MarketplaceCard> {
                                 borderRadius: BorderRadius.circular(10),
                                 child: Image.network(
                                   widget.item.imageUrl,
-                                  height: 350,
+                                  height: isMobileScreen(context) ? 250 : 350,
                                   width: double.infinity,
                                   fit: BoxFit.cover,
                                 ),
@@ -72,12 +73,10 @@ class _MarketplaceCardState extends State<MarketplaceCard> {
                               const SizedBox(height: 16),
                               Row(
                                 children: [
-                                  const Icon(
-                                    Icons.location_on,
-                                    size: 24,
-                                    color: Colors.red,
+                                  const LottieIconWidget(
+                                    iconName: 'pin',
+                                    height: 40,
                                   ),
-                                  const SizedBox(width: 8),
                                   Text(
                                     widget.item.location,
                                     style: const TextStyle(
@@ -87,11 +86,11 @@ class _MarketplaceCardState extends State<MarketplaceCard> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 10),
                               Text(
                                 widget.item.name,
                                 style: const TextStyle(
-                                  fontSize: 24,
+                                  fontSize: 22,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -101,7 +100,7 @@ class _MarketplaceCardState extends State<MarketplaceCard> {
                                   Text(
                                     'Price: ${widget.item.price}',
                                     style: const TextStyle(
-                                      fontSize: 20,
+                                      fontSize: 18,
                                       fontWeight: FontWeight.bold,
                                       color: AppColors.primaryColor,
                                     ),
@@ -116,27 +115,27 @@ class _MarketplaceCardState extends State<MarketplaceCard> {
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                'Used for: ${widget.item.usedForMonths} months',
+                                '''Used for: ${formatMonths(widget.item.usedForMonths)}''',
                                 style: const TextStyle(
-                                  fontSize: 20,
+                                  fontSize: 16,
                                 ),
                               ),
                               const SizedBox(height: 8),
                               Text(
                                 '''Contact Information: ${widget.item.contactInfo}''',
                                 style: const TextStyle(
-                                  fontSize: 18,
+                                  fontSize: 16,
                                 ),
                               ),
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 10),
                               Text(
                                 widget.item.description,
                                 style: TextStyle(
-                                  fontSize: 18,
+                                  fontSize: 16,
                                   color: Colors.grey[700],
                                 ),
                               ),
-                              const SizedBox(height: 32),
+                              const SizedBox(height: 20),
                               if (widget.isShowDetails)
                                 Column(
                                   children: [
@@ -201,125 +200,107 @@ class _MarketplaceCardState extends State<MarketplaceCard> {
 
                                           return AsyncValueWidget(
                                             value: uservalue,
-                                            data: (user) => ElevatedButton(
-                                              onPressed: isRequestButtonEnabled
-                                                  ? () async {
-                                                      if (formKey.currentState
-                                                              ?.validate() ??
-                                                          false) {
-                                                        final userSnapshot =
-                                                            await widget.item
-                                                                    .sellingUser
-                                                                    .get()
-                                                                // ignore: lines_longer_than_80_chars
-                                                                as DocumentSnapshot;
+                                            loading: () => const Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            ),
+                                            data: (user) =>
+                                                CircularElevatedButton(
+                                              color: AppColors.primaryColor,
+                                              width: 200,
+                                              onPressed: () async {
+                                                if (!isRequestButtonEnabled) {
+                                                  return;
+                                                }
 
-                                                        final itemUserId =
-                                                            userSnapshot
-                                                                .get('id');
+                                                if (formKey.currentState
+                                                        ?.validate() ??
+                                                    false) {
+                                                  final userSnapshot =
+                                                      await widget
+                                                              .item.sellingUser
+                                                              .get()
+                                                          as DocumentSnapshot;
 
-                                                        if (itemUserId ==
-                                                            user.id) {
-                                                          showToast(
-                                                            ref,
-                                                            '''you can't buy your own item''',
-                                                            type:
-                                                                // ignore: lines_longer_than_80_chars
-                                                                ToastificationType
-                                                                    .error,
-                                                          );
+                                                  final itemUserId =
+                                                      userSnapshot.get('id');
 
-                                                          return;
-                                                        }
-                                                        final itemPrice =
-                                                            int.parse(
-                                                          widget.item.price,
-                                                        );
+                                                  if (itemUserId == user.id) {
+                                                    showToast(
+                                                      ref,
+                                                      '''You can't buy your own item''',
+                                                      type: ToastificationType
+                                                          .error,
+                                                    );
 
-                                                        // ignore: lines_longer_than_80_chars
-                                                        if (user.ecoBucksBalance <
-                                                            itemPrice) {
-                                                          showToast(
-                                                            ref,
-                                                            '''Insufficient balance''',
-                                                            type:
-                                                                // ignore: lines_longer_than_80_chars
-                                                                ToastificationType
-                                                                    .error,
-                                                          );
+                                                    return;
+                                                  }
+                                                  final itemPrice = int.parse(
+                                                    widget.item.price,
+                                                  );
 
-                                                          return;
-                                                        }
-                                                        setState(() {
-                                                          // ignore: lines_longer_than_80_chars
-                                                          isRequestButtonEnabled =
-                                                              false;
-                                                        });
+                                                  if (user.ecoBucksBalance <
+                                                      itemPrice) {
+                                                    showToast(
+                                                      ref,
+                                                      '''Insufficient balance''',
+                                                      type: ToastificationType
+                                                          .error,
+                                                    );
 
-                                                        final isSucess =
-                                                            // ignore: lines_longer_than_80_chars
-                                                            await purchaseRequestController
-                                                                // ignore: lines_longer_than_80_chars
-                                                                .sendPurchaseRequest(
-                                                          item: widget.item,
-                                                          context: context,
-                                                          enteredprice:
-                                                              priceController
-                                                                  .text,
-                                                        );
+                                                    return;
+                                                  }
+                                                  setState(() {
+                                                    isRequestButtonEnabled =
+                                                        false;
+                                                  });
 
-                                                        await showDialog<void>(
-                                                          context: context,
-                                                          builder: (c) {
-                                                            // ignore: lines_longer_than_80_chars
-                                                            return RequestConfirmPurchase(
-                                                              isSuccess:
-                                                                  isSucess,
-                                                            );
-                                                          },
-                                                        );
+                                                  final isSucess =
+                                                      await purchaseRequestController
+                                                          .sendPurchaseRequest(
+                                                    item: widget.item,
+                                                    context: context,
+                                                    enteredprice:
+                                                        priceController.text,
+                                                  );
 
-                                                        await ref
-                                                            .read(
-                                                              // ignore: lines_longer_than_80_chars
-                                                              audioPlayerServiceProvider,
-                                                            )
-                                                            .playSound(
-                                                              'success',
-                                                              extension: 'mp3',
-                                                            );
-                                                      } else {
-                                                        showToast(
-                                                          ref,
-                                                          '''Please enter a valid price''',
-                                                          type:
-                                                              ToastificationType
-                                                                  .error,
-                                                        );
-                                                        
-                                                      }
-                                                    }
-                                                  : null,
-                                              style: ElevatedButton.styleFrom(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                  horizontal: 40,
-                                                  vertical: 15,
+                                                  await ref
+                                                      .read(
+                                                        audioPlayerServiceProvider,
+                                                      )
+                                                      .playSound(
+                                                        'success',
+                                                        extension: 'mp3',
+                                                      );
+                                                  await showDialog<void>(
+                                                    context: context,
+                                                    builder: (c) {
+                                                      return RequestConfirmPurchase(
+                                                        isSuccess: isSucess,
+                                                      );
+                                                    },
+                                                  );
+                                                  Navigator.pop(context);
+                                                } else {
+                                                  showToast(
+                                                    ref,
+                                                    '''Please enter a valid price''',
+                                                    type: ToastificationType
+                                                        .error,
+                                                  );
+                                                }
+                                              },
+                                              child: const Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                  vertical: 7,
                                                 ),
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(30),
-                                                ),
-                                                backgroundColor:
-                                                    isRequestButtonEnabled
-                                                        ? AppColors.primaryColor
-                                                        : Colors.grey,
-                                              ),
-                                              child: const Text(
-                                                'Request to buy',
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                  color: Colors.white,
+                                                child: Text(
+                                                  'Request to buy',
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
                                                 ),
                                               ),
                                             ),
@@ -348,32 +329,30 @@ class _MarketplaceCardState extends State<MarketplaceCard> {
 
   @override
   Widget build(BuildContext context) {
-   
-
     return GestureDetector(
       onTap: widget.item.hasSold
           ? null
           : () {
               showDetailDialog(context);
             },
-      child: SizedBox(
-        child: Card(
-          margin: const EdgeInsets.all(10),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: ExpiredOverlay(
-              expiredMessage: 'SOLD OUT',
-              messageColor: Colors.red.withOpacity(0.7),
-              isExpired: widget.item.hasSold,
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ClipRRect(
+      child: Card(
+        margin: const EdgeInsets.all(10),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: ExpiredOverlay(
+            expiredMessage: 'SOLD OUT',
+            messageColor: Colors.red.withOpacity(0.7),
+            isExpired: widget.item.hasSold,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: ClipRRect(
                         borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(10),
                           topRight: Radius.circular(10),
@@ -381,97 +360,96 @@ class _MarketplaceCardState extends State<MarketplaceCard> {
                         child: Image.network(
                           widget.item.imageUrl,
                           width: double.infinity,
-                          height: constraints.maxWidth * 0.5,
                           fit: BoxFit.cover,
                         ),
                       ),
-                      Flexible(
-                        child: SingleChildScrollView(
-                          child: Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
                               children: [
-                                Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.location_on,
-                                      size: 16,
-                                      color: Colors.red,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Flexible(
-                                      child: Text(
-                                        widget.item.location,
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                  ],
+                                const LottieIconWidget(
+                                  iconName: 'pin',
+                                  height: 40,
                                 ),
-                                const SizedBox(height: 10),
                                 Text(
-                                  widget.item.name,
+                                  widget.item.location,
                                   style: const TextStyle(
-                                    fontSize: 18,
+                                    fontSize: 16,
                                     fontWeight: FontWeight.bold,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(height: 5),
-                                Row(
-                                  children: [
-                                    Text(
-                                      'Price: ${widget.item.price}',
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: AppColors.primaryColor,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    const LottieIconWidget(
-                                      iconName: 'coin',
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 5),
-                                Text(
-                                  '''Used for: ${widget.item.usedForMonths} months''',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  '''Contact Information: ${widget.item.contactInfo}''',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                Text(
-                                  widget.item.description,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey[700],
                                   ),
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ],
                             ),
-                          ),
+                            const SizedBox(height: 10),
+                            Text(
+                              widget.item.name,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  'Price: ${widget.item.price}',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.primaryColor,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(width: 2),
+                                const LottieIconWidget(
+                                  iconName: 'coin',
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 5),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Expanded(
+                                    child: AutoSizeText(
+                                      '''Used for: ${formatMonths(widget.item.usedForMonths)}''',
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontStyle: FontStyle.italic,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: AutoSizeText(
+                                      widget.item.description,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey[700],
+                                      ),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  );
-                },
-              ),
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ),

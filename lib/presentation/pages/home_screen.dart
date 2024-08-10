@@ -24,13 +24,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   void initState() {
-    super.initState();
     _pageController.addListener(() {
       if (AdaptivePolicy.isMobile()) {
         _scrollController
             .jumpTo(_pageController.page! * MediaQuery.of(context).size.width);
       }
     });
+    super.initState();
   }
 
   @override

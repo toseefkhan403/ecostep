@@ -115,3 +115,22 @@ List<MarketplaceItem> getUserSellerItems(
     return sellingUserId == currentUserUid;
   }).toList();
 }
+
+String formatMonths(int noOfMonths) {
+  if (noOfMonths <= 0) return '0 months';
+
+  final years = noOfMonths ~/ 12;
+  final months = noOfMonths % 12;
+
+  final yearsString = years > 0 ? '$years year${years > 1 ? 's' : ''}' : '';
+  final monthsString =
+      months > 0 ? '$months month${months > 1 ? 's' : ''}' : '';
+
+  if (yearsString.isNotEmpty && monthsString.isNotEmpty) {
+    return '$yearsString $monthsString';
+  } else if (yearsString.isNotEmpty) {
+    return yearsString;
+  } else {
+    return monthsString;
+  }
+}

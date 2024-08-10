@@ -203,14 +203,14 @@ class UserRepository {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 UserRepository userRepository(UserRepositoryRef ref) {
   final firestoreService = ref.watch(firestoreServiceProvider);
   final loggedInUser = ref.watch(authStateProvider).value;
   return UserRepository(firestoreService, loggedInUser);
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 Stream<User?> firestoreUser(FirestoreUserRef ref) {
   final userRepository = ref.watch(userRepositoryProvider);
   return userRepository.firestoreUser();

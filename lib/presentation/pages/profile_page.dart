@@ -32,35 +32,35 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      floatingActionButton: Padding(
-        padding: EdgeInsets.only(bottom: isMobileScreen(context) ? 55.0 : 0),
-        child: CircularElevatedButton(
-          color: AppColors.secondaryColor,
-          height: isMobileScreen(context) ? 45 : 60,
-          width: isMobileScreen(context) ? 130 : 150,
-          onPressed: () {
-            ref.read(firebaseAuthServiceProvider).signOut();
-          },
-          child: const Text(
-            'Logout',
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-          ),
-        ),
-      ),
+      floatingActionButton: isMobileScreen(context)
+          ? null
+          : Padding(
+              padding:
+                  EdgeInsets.only(bottom: isMobileScreen(context) ? 55.0 : 0),
+              child: CircularElevatedButton(
+                color: AppColors.secondaryColor,
+                height: isMobileScreen(context) ? 45 : 60,
+                width: isMobileScreen(context) ? 130 : 150,
+                onPressed: () =>
+                    ref.read(firebaseAuthServiceProvider).signOut(),
+                child: const Text(
+                  'Logout',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
       body: CenterContentPadding(
         child: Column(
           children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-              ),
-            ),
             Expanded(
               child: AsyncValueWidget(
                 value: userValue,
                 data: (user) => PageView(
                   controller: _pageController,
+                  physics: const NeverScrollableScrollPhysics(),
                   children: [
                     UserProfileSection(
                       pageController: _pageController,
@@ -74,6 +74,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                 ),
               ),
             ),
+            if (isMobileScreen(context)) const SizedBox(height: 50),
           ],
         ),
       ),

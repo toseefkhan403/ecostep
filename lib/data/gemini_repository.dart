@@ -3,13 +3,19 @@ import 'package:ecostep/data/user_repository.dart';
 import 'package:ecostep/domain/action.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'gemini_repository.g.dart';
 
 class GeminiRepository {
-  GeminiRepository(this.ref) {
+  factory GeminiRepository(GeminiRepositoryRef ref) {
+    _instance ??= GeminiRepository._internal(ref);
+    return _instance!;
+  }
+
+  GeminiRepository._internal(this.ref) {
     final apiKey = dotenv.env['gemini_api_key'] ??
         const String.fromEnvironment('gemini_api_key');
     model = GenerativeModel(
@@ -23,9 +29,11 @@ class GeminiRepository {
     _chat = model.startChat();
   }
 
+  static GeminiRepository? _instance;
+
   late final GenerativeModel model;
   late final ChatSession _chat;
-  final GeminiRepositoryRef ref;
+  final Ref ref;
 
   Future<List<Action>> generateActions() async {
     debugPrint('generating actions with AI');
@@ -96,6 +104,6 @@ class GeminiRepository {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 GeminiRepository geminiRepository(GeminiRepositoryRef ref) =>
     GeminiRepository(ref);

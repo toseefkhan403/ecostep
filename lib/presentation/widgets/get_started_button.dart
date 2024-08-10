@@ -172,7 +172,7 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
           );
       await ref.read(audioPlayerServiceProvider).playClickSound();
     } catch (e) {
-      debugPrint(e.toString());
+      // debugPrint(e.toString());
     }
   }
 
@@ -205,7 +205,7 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
           );
       await ref.read(audioPlayerServiceProvider).playClickSound();
     } catch (e) {
-      debugPrint(e.toString());
+      // debugPrint(e.toString());
     }
   }
 

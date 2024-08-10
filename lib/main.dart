@@ -29,14 +29,15 @@ import 'package:toastification/toastification.dart';
 // fix select image showing in verified dialog - done
 // add camera option with warning for gallery option - done
 // profile page changes - done
-// responsiveness in android
+// responsiveness in android - done
 // responsiveness in starting rive animation - done
-// try storing chat history in a file for gemini - should get smart responses
+// try storing chat history in a file for gemini - should get smart responses - done
 // add download from play store button in profile page
 // fix fragile leaderboard page
 // show profile page on leaderboard card tap
 // build for web, windows, android, ios, linux
 // add accessibility
+// update personalization form
 // update github
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

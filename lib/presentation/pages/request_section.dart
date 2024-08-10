@@ -1,7 +1,9 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecostep/domain/purchase_request.dart';
 import 'package:ecostep/domain/user.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
+import 'package:ecostep/presentation/utils/utils.dart';
 import 'package:ecostep/presentation/widgets/buyer_purchase_widget.dart';
 import 'package:ecostep/presentation/widgets/circular_elevated_button.dart';
 import 'package:ecostep/presentation/widgets/lottie_icon_widget.dart';
@@ -58,7 +60,6 @@ class _RequestSectionState extends ConsumerState<RequestSection> {
 
   @override
   Widget build(BuildContext context) {
-
     return SizedBox(
       child: Column(
         children: [
@@ -88,6 +89,7 @@ class _RequestSectionState extends ConsumerState<RequestSection> {
                     ),
                   ),
                 ),
+                if (isMobileScreen(context)) const SizedBox(width: 10),
               ],
             ),
           ),
@@ -164,19 +166,19 @@ class _RequestSectionState extends ConsumerState<RequestSection> {
                 onPressed: () => _onItemTapped(0),
                 child: const Padding(
                   padding: EdgeInsets.symmetric(vertical: 15),
-                  child: Text(
+                  child: AutoSizeText(
                     'Incoming Requests',
                     style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
                     ),
+                    maxLines: 1,
+                    minFontSize: 10,
                   ),
                 ),
               ),
             ),
-            const SizedBox(
-              width: 30,
-            ),
+            SizedBox(width: isMobileScreen(context) ? 20 : 30),
             Expanded(
               child: CircularElevatedButton(
                 color: _selectedIndex == 1
@@ -187,12 +189,13 @@ class _RequestSectionState extends ConsumerState<RequestSection> {
                 darkShadow: _selectedIndex == 1,
                 child: const Padding(
                   padding: EdgeInsets.symmetric(vertical: 15),
-                  child: Text(
-                    'My Requests',
+                  child: AutoSizeText(
+                    'Sent Requests',
                     style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
                     ),
+                    maxLines: 1,
                   ),
                 ),
               ),

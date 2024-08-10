@@ -51,5 +51,5 @@ class OnboardingArtboardController extends StateNotifier<Artboard?> {
 
 final onboardingArtboardControllerProvider =
     StateNotifierProvider.autoDispose<OnboardingArtboardController, Artboard?>(
-  (ref) => OnboardingArtboardController(3),
+  (ref) => OnboardingArtboardController(1),
 );

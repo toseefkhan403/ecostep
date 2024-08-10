@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecostep/domain/date.dart';
 import 'package:ecostep/domain/user.dart';
@@ -50,7 +51,12 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
               physics: const NeverScrollableScrollPhysics(),
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: EdgeInsets.fromLTRB(
+                    20,
+                    10,
+                    20,
+                    isMobileScreen(context) ? 50 : 20,
+                  ),
                   child: StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance
                         .collection('users')
@@ -88,7 +94,12 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: EdgeInsets.fromLTRB(
+                    20,
+                    10,
+                    20,
+                    isMobileScreen(context) ? 50 : 20,
+                  ),
                   child: StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance
                         .collection('users')
@@ -199,7 +210,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
       builder: (context, constraints) {
         final isSmallScreen = constraints.maxWidth < 600;
         return Container(
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.fromLTRB(20, isSmallScreen ? 10 : 20, 20, 20),
           margin: const EdgeInsets.symmetric(vertical: 20),
           decoration: roundedContainerDecoration(),
           child: isSmallScreen
@@ -207,136 +218,148 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                   children: [
                     Row(
                       children: [
-                        Text(
-                          '#${index + 1}',
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: user.profilePicture != null
-                              ? CircleAvatar(
-                                  radius: 25,
-                                  backgroundImage:
-                                      NetworkImage(user.profilePicture!),
-                                )
-                              : Image.asset(
-                                  'assets/images/eco-earth.png',
-                                  height: 50,
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Text(
+                                '#${index + 1}',
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                        ),
-                        Text(
-                          user.name ?? 'Guest User',
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: user.profilePicture != null
+                                    ? CircleAvatar(
+                                        radius: 25,
+                                        backgroundImage:
+                                            NetworkImage(user.profilePicture!),
+                                      )
+                                    : Image.asset(
+                                        'assets/images/eco-earth.png',
+                                        height: 50,
+                                      ),
+                              ),
+                              Expanded(
+                                child: AutoSizeText(
+                                  user.name ?? 'Guest User',
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            const LottieIconWidget(
+                              iconName: 'coin',
+                            ),
+                            Text(
+                              '${user.ecoBucksBalance}',
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                    const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const LottieIconWidget(
-                          iconName: 'coin',
-                        ),
-                        Text(
-                          ' ${user.ecoBucksBalance}',
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+                    const SizedBox(height: 4),
+                    const Text(
+                      'Joined On',
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
                     ),
-                    const SizedBox(height: 10),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Joined On',
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
-                        ),
-                        Text(
-                          Date.formatDateString(user.joinedOn),
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+                    Text(
+                      Date.formatDateString(user.joinedOn),
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 )
               : Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: [
-                        Text(
-                          '#${index + 1}',
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
+                    Expanded(
+                      flex: 2,
+                      child: Row(
+                        children: [
+                          Text(
+                            '#${index + 1}',
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: user.profilePicture != null
-                              ? CircleAvatar(
-                                  radius: 25,
-                                  backgroundImage:
-                                      NetworkImage(user.profilePicture!),
-                                )
-                              : Image.asset(
-                                  'assets/images/eco-earth.png',
-                                  height: 50,
-                                ),
-                        ),
-                        Text(
-                          user.name ?? 'Guest User',
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: user.profilePicture != null
+                                ? CircleAvatar(
+                                    radius: 25,
+                                    backgroundImage:
+                                        NetworkImage(user.profilePicture!),
+                                  )
+                                : Image.asset(
+                                    'assets/images/eco-earth.png',
+                                    height: 50,
+                                  ),
                           ),
-                        ),
-                      ],
+                          Text(
+                            user.name ?? 'Guest User',
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    Row(
-                      children: [
-                        const LottieIconWidget(
-                          iconName: 'coin',
-                        ),
-                        Text(
-                          ' ${user.ecoBucksBalance}',
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
+                    Expanded(
+                      child: Row(
+                        children: [
+                          const LottieIconWidget(
+                            iconName: 'coin',
                           ),
-                        ),
-                      ],
+                          Text(
+                            ' ${user.ecoBucksBalance}',
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    Column(
-                      children: [
-                        const Text(
-                          'Joined On',
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Column(
+                          children: [
+                            const Text(
+                              'Joined On',
+                              style: TextStyle(
+                                color: Colors.black,
+                              ),
+                            ),
+                            Text(
+                              Date.formatDateString(user.joinedOn),
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
-                        Text(
-                          Date.formatDateString(user.joinedOn),
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ],
                 ),

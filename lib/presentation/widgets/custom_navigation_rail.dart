@@ -15,6 +15,12 @@ class _CustomNavigationRailState extends State<CustomNavigationRail>
     with TickerProviderStateMixin {
   int _selectedIndex = 0;
 
+  @override
+  void initState() {
+    _selectedIndex = widget.pageController.page?.round() ?? 0;
+    super.initState();
+  }
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;

@@ -23,22 +23,6 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
   int _selectedIndex = 0;
 
   @override
-  void initState() {
-    super.initState();
-    // WidgetsBinding.instance.addPostFrameCallback(
-    //   (_) {
-    //     ref
-    //         .read(marketplaceControllerProvider.notifier)
-    //         .fetchMarketplaceItems();
-    //   },
-    // );
-
-    // for (var i = 0; i < 10; i++) {
-    //   marketplaceItems.add(marketplaceItems.first);
-    // }
-  }
-
-  @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final marketplaceItemsvalue = ref.watch(marketplaceControllerProvider);
@@ -120,7 +104,7 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
                                         final item = marketplaceitems[index];
 
                                         return SizedBox(
-                                          height: 400,
+                                          height: 500,
                                           child: MarketplaceCard(
                                             isShowDetails: true,
                                             item: item,
@@ -181,7 +165,7 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
                                     itemBuilder: (context, index) {
                                       final item = filteredItems[index];
                                       return SizedBox(
-                                        height: 400,
+                                        height: 500,
                                         child: MarketplaceCard(
                                           item: item,
                                           isShowDetails: false,
@@ -225,6 +209,7 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
                 },
               ),
             ),
+            if (isMobileScreen(context)) const SizedBox(height: 50),
           ],
         ),
       ),
@@ -258,9 +243,7 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
                 ),
               ),
             ),
-            const SizedBox(
-              width: 30,
-            ),
+            const SizedBox(width: 30),
             Expanded(
               child: CircularElevatedButton(
                 color: _selectedIndex == 1
