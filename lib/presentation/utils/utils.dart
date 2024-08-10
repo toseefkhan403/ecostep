@@ -9,7 +9,7 @@ import 'package:toastification/toastification.dart';
 
 bool isMobileScreen(BuildContext context) {
   final size = MediaQuery.of(context).size;
-  return size.width < 600;
+  return size.width < 800;
   // final aspectRatio = size.width / size.height;
   // final isSmallDevice = size.shortestSide < 600;
 
@@ -49,6 +49,21 @@ String iconFromNavigationIndex(int i) {
       return 'boy';
     default:
       return 'recycle';
+  }
+}
+
+String labelFromNavigationIndex(int i) {
+  switch (i) {
+    case 0:
+      return 'Home';
+    case 1:
+      return 'Leaderboard';
+    case 2:
+      return 'Marketplace';
+    case 3:
+      return 'Profile';
+    default:
+      return 'Home';
   }
 }
 

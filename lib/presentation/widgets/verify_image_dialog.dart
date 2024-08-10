@@ -33,7 +33,7 @@ class VerifyImageDialog extends ConsumerWidget {
           'Image Verification',
           style: TextStyle(
             color: AppColors.primaryColor,
-            fontSize: 32,
+            fontSize: 26,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -62,7 +62,7 @@ class VerifyImageDialog extends ConsumerWidget {
                                 const Text(
                                   '''Verify your action image with Gemini AI ✨''',
                                   style: TextStyle(
-                                    fontSize: 20,
+                                    fontSize: 19,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -85,12 +85,15 @@ class VerifyImageDialog extends ConsumerWidget {
               !hasVerified)
             Padding(
               padding: const EdgeInsets.all(2),
-              child: FilledButton(
-                onPressed: () => controller.pickImage(
-                  action.verifiableImage,
-                  reward,
+              child: Semantics(
+                label: 'Open camera',
+                child: FilledButton(
+                  onPressed: () => controller.pickImage(
+                    action.verifiableImage,
+                    reward,
+                  ),
+                  child: const Text('Camera'),
                 ),
-                child: const Text('Camera'),
               ),
             ),
           if (state.verificationSuccess == null &&
@@ -98,22 +101,28 @@ class VerifyImageDialog extends ConsumerWidget {
               !hasVerified)
             Padding(
               padding: const EdgeInsets.all(2),
-              child: FilledButton(
-                onPressed: () => controller.pickImage(
-                  action.verifiableImage,
-                  reward,
-                  isCamera: false,
+              child: Semantics(
+                label: 'Open gallery',
+                child: FilledButton(
+                  onPressed: () => controller.pickImage(
+                    action.verifiableImage,
+                    reward,
+                    isCamera: false,
+                  ),
+                  child: const Text('Gallery'),
                 ),
-                child: const Text('Gallery'),
               ),
             ),
           if (!state.isLoadingImage)
             Padding(
               padding: const EdgeInsets.all(2),
-              child: FilledButton(
-                onPressed: () =>
-                    Navigator.of(context).pop(state.verificationSuccess),
-                child: const Text('Exit'),
+              child: Semantics(
+                label: 'Exit',
+                child: FilledButton(
+                  onPressed: () =>
+                      Navigator.of(context).pop(state.verificationSuccess),
+                  child: const Text('Exit'),
+                ),
               ),
             ),
         ],

@@ -5,7 +5,7 @@ import 'package:ecostep/presentation/widgets/lottie_icon_widget.dart';
 import 'package:flutter/material.dart';
 
 class RequestConfirmPurchase extends StatelessWidget {
-  const RequestConfirmPurchase( { required this.isSuccess,super.key});
+  const RequestConfirmPurchase({required this.isSuccess, super.key});
   final bool isSuccess;
 
   @override
@@ -20,7 +20,7 @@ class RequestConfirmPurchase extends StatelessWidget {
           isSuccess ? 'Request Sent' : 'Request Failed',
           style: const TextStyle(
             color: AppColors.primaryColor,
-            fontSize: 32,
+            fontSize: 26,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -45,9 +45,12 @@ class RequestConfirmPurchase extends StatelessWidget {
           ),
         ),
         actions: [
-          FilledButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Exit'),
+          Semantics(
+            label: 'Exit',
+            child: FilledButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Exit'),
+            ),
           ),
         ],
       ),

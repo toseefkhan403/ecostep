@@ -51,7 +51,7 @@ class _ActionCompletedDialogState extends State<ActionCompletedDialog> {
         title: const Text(
           'Action Completed Successfully!',
           style: TextStyle(
-            fontSize: 32,
+            fontSize: 26,
             color: AppColors.primaryColor,
             fontWeight: FontWeight.bold,
           ),
@@ -126,18 +126,21 @@ class _ActionCompletedDialogState extends State<ActionCompletedDialog> {
                   textAlign: TextAlign.center,
                 ),
               ),
-              FilledButton(
-                onPressed: () async {
-                  final shareMessage =
-                      "I just completed a sustainable action and got rewarded for it! GreenLoop gives you rewards for completing daily sustainable actions, which you can use to buy/sell recycled goods on their marketplace! It's awesome! My action was: ${widget.actionTitle}";
-                  const url = 'https://greenloop-a67da.web.app/';
-                  await launchUrl(
-                    Uri.parse(
-                      'https://x.com/intent/tweet?text=$shareMessage&url=$url',
-                    ),
-                  );
-                },
-                child: const Text('Share on Twitter/X'),
+              Semantics(
+                label: 'Share your action on social media',
+                child: FilledButton(
+                  onPressed: () async {
+                    final shareMessage =
+                        "I just completed a sustainable action and got rewarded for it! GreenLoop gives you rewards for completing daily sustainable actions, which you can use to buy/sell recycled goods on their marketplace! It's awesome! My action was: ${widget.actionTitle}";
+                    const url = 'https://greenloop-a67da.web.app/';
+                    await launchUrl(
+                      Uri.parse(
+                        'https://x.com/intent/tweet?text=$shareMessage&url=$url',
+                      ),
+                    );
+                  },
+                  child: const Text('Share on Twitter/X'),
+                ),
               ),
             ],
           ),

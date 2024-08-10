@@ -25,7 +25,7 @@ class ImpactDialog extends StatelessWidget {
           'Action Impact',
           style: TextStyle(
             color: AppColors.primaryColor,
-            fontSize: 32,
+            fontSize: 26,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -41,9 +41,12 @@ class ImpactDialog extends StatelessWidget {
           ),
         ),
         actions: [
-          FilledButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Exit'),
+          Semantics(
+            label: 'Exit',
+            child: FilledButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Exit'),
+            ),
           ),
         ],
       ),

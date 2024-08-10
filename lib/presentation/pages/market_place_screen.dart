@@ -32,21 +32,25 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
       backgroundColor: Colors.transparent,
       floatingActionButton: Padding(
         padding: EdgeInsets.only(bottom: isMobileScreen(context) ? 55.0 : 0),
-        child: CircularElevatedButton(
-          color: AppColors.secondaryColor,
-          height: isMobileScreen(context) ? 45 : 60,
-          width: isMobileScreen(context) ? 130 : 150,
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (context) {
-                return const PostItemDialog();
-              },
-            );
-          },
-          child: const Text(
-            'Post Item',
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        child: Semantics(
+          label: 'Post item to recycle',
+          child: CircularElevatedButton(
+            color: AppColors.secondaryColor,
+            height: isMobileScreen(context) ? 45 : 60,
+            width: isMobileScreen(context) ? 130 : 150,
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return const PostItemDialog();
+                },
+              );
+            },
+            child: const Text(
+              'Post Item',
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            ),
           ),
         ),
       ),
@@ -222,22 +226,25 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Expanded(
-              child: CircularElevatedButton(
-                color: _selectedIndex == 0
-                    ? AppColors.secondaryColor
-                    : AppColors.backgroundColor,
-                blurRadius: _selectedIndex == 0 ? 1 : 5,
-                darkShadow: _selectedIndex == 0,
-                onPressed: () => _onItemTapped(0),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  child: Text(
-                    isMobileScreen(context)
-                        ? 'For Recycle'
-                        : 'Items For Recycle',
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
+              child: Semantics(
+                label: 'Items for recycle',
+                child: CircularElevatedButton(
+                  color: _selectedIndex == 0
+                      ? AppColors.secondaryColor
+                      : AppColors.backgroundColor,
+                  blurRadius: _selectedIndex == 0 ? 1 : 5,
+                  darkShadow: _selectedIndex == 0,
+                  onPressed: () => _onItemTapped(0),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    child: Text(
+                      isMobileScreen(context)
+                          ? 'For Recycle'
+                          : 'Items For Recycle',
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
@@ -245,20 +252,23 @@ class _MarketplaceScreenState extends ConsumerState<MarketplaceScreen> {
             ),
             const SizedBox(width: 30),
             Expanded(
-              child: CircularElevatedButton(
-                color: _selectedIndex == 1
-                    ? AppColors.secondaryColor
-                    : AppColors.backgroundColor,
-                onPressed: () => _onItemTapped(1),
-                blurRadius: _selectedIndex == 1 ? 1 : 5,
-                darkShadow: _selectedIndex == 1,
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 15),
-                  child: Text(
-                    'Your Recycles',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
+              child: Semantics(
+                label: 'Your recycles',
+                child: CircularElevatedButton(
+                  color: _selectedIndex == 1
+                      ? AppColors.secondaryColor
+                      : AppColors.backgroundColor,
+                  onPressed: () => _onItemTapped(1),
+                  blurRadius: _selectedIndex == 1 ? 1 : 5,
+                  darkShadow: _selectedIndex == 1,
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 15),
+                    child: Text(
+                      'Your Recycles',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),

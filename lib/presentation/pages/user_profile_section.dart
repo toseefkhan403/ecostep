@@ -42,6 +42,7 @@ class UserProfileSection extends ConsumerWidget {
                       : Image.asset(
                           'assets/images/eco-earth.png',
                           height: (isMobileScreen(context) ? 60 : 100) * 2,
+                          semanticLabel: 'Profile picture',
                         ),
                 ),
               ),
@@ -84,18 +85,21 @@ class UserProfileSection extends ConsumerWidget {
                 Positioned(
                   top: 5,
                   right: 5,
-                  child: IconButton.filled(
-                    onPressed: () =>
-                        ref.read(firebaseAuthServiceProvider).signOut(),
-                    style: IconButton.styleFrom(
-                      backgroundColor: AppColors.secondaryColor,
-                      foregroundColor: AppColors.primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        side: const BorderSide(),
+                  child: Semantics(
+                    label: 'Logout',
+                    child: IconButton.filled(
+                      onPressed: () =>
+                          ref.read(firebaseAuthServiceProvider).signOut(),
+                      style: IconButton.styleFrom(
+                        backgroundColor: AppColors.secondaryColor,
+                        foregroundColor: AppColors.primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          side: const BorderSide(),
+                        ),
                       ),
+                      icon: const Icon(Icons.logout),
                     ),
-                    icon: const Icon(Icons.logout),
                   ),
                 ),
             ],
@@ -111,7 +115,7 @@ class UserProfileSection extends ConsumerWidget {
             ),
           ),
         ),
-        _cityCountryRankRow(pagecontroller: pageController),
+        _buttonsRow(pagecontroller: pageController),
         Expanded(
           child: Container(
             margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
@@ -191,7 +195,7 @@ class UserProfileSection extends ConsumerWidget {
         ],
       );
 
-  Widget _cityCountryRankRow({required PageController pagecontroller}) {
+  Widget _buttonsRow({required PageController pagecontroller}) {
     return Padding(
       padding: const EdgeInsets.all(8),
       child: Row(
@@ -201,33 +205,36 @@ class UserProfileSection extends ConsumerWidget {
             child: Consumer(
               builder: (context, ref, child) {
                 final rankValue = ref.watch(rankUserProvider);
-                return CircularElevatedButton(
-                  color: AppColors.secondaryColor,
-                  blurRadius: 1,
-                  darkShadow: true,
-                  onPressed: () {
-                    showToast(
-                      ref,
-                      'Your rank in the leaderboards based on your EcoBucks',
-                    );
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                    child: AsyncValueWidget(
-                      value: rankValue,
-                      data: (rank) => Text(
-                        '#$rank in Leaderboards',
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      loading: () => const Center(
-                        child: Text(
-                          '. . .',
-                          style: TextStyle(
+                return Semantics(
+                  label: 'Leaderboard rank',
+                  child: CircularElevatedButton(
+                    color: AppColors.secondaryColor,
+                    blurRadius: 1,
+                    darkShadow: true,
+                    onPressed: () {
+                      showToast(
+                        ref,
+                        'Your rank in the leaderboards based on your EcoBucks',
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      child: AsyncValueWidget(
+                        value: rankValue,
+                        data: (rank) => Text(
+                          '#$rank in Leaderboards',
+                          style: const TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        loading: () => const Center(
+                          child: Text(
+                            '. . .',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
@@ -241,24 +248,27 @@ class UserProfileSection extends ConsumerWidget {
             width: 30,
           ),
           Expanded(
-            child: CircularElevatedButton(
-              color: AppColors.secondaryColor,
-              blurRadius: 1,
-              darkShadow: true,
-              onPressed: () {
-                pagecontroller.animateToPage(
-                  1,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                );
-              },
-              child: const Padding(
-                padding: EdgeInsets.symmetric(vertical: 15),
-                child: Text(
-                  'See Pending Requests',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
+            child: Semantics(
+              label: 'See pending requests',
+              child: CircularElevatedButton(
+                color: AppColors.secondaryColor,
+                blurRadius: 1,
+                darkShadow: true,
+                onPressed: () {
+                  pagecontroller.animateToPage(
+                    1,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                },
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 15),
+                  child: Text(
+                    'See Pending Requests',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
@@ -305,6 +315,7 @@ class UserProfileSection extends ConsumerWidget {
             child: Image.network(
               imageUrl,
               fit: BoxFit.cover,
+              semanticLabel: 'Your recycled item image',
             ),
           ),
         ),

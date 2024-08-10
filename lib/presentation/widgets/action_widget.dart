@@ -76,7 +76,7 @@ class ActionWidget extends ConsumerWidget {
                         key: ValueKey(action?.action),
                         style: const TextStyle(
                           color: AppColors.primaryColor,
-                          fontSize: 21,
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
                         textAlign: TextAlign.center,
@@ -90,6 +90,7 @@ class ActionWidget extends ConsumerWidget {
                   if (weekState.selectedDate == Date.today())
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const LottieIconWidget(
                           iconName: 'hourglass',
@@ -162,7 +163,7 @@ class ActionWidget extends ConsumerWidget {
             coinsFromDifficulty(difficulty.toLowerCase()).toString(),
             style: const TextStyle(
               color: AppColors.textColor,
-              fontSize: 20,
+              fontSize: 18,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -204,73 +205,79 @@ class ActionWidget extends ConsumerWidget {
                             ),
                           ),
                         ),
-                        child: InkWell(
-                          onTap: () async {
-                            if (action == null) return;
-                            if (selectedDate.isAfter(
-                              Date.today().add(const Duration(days: 7)),
-                            )) {
-                              showToast(
-                                ref,
-                                '''You can complete tasks up to 7 days in advance only''',
-                              );
-                              return;
-                            }
+                        child: Semantics(
+                          label: 'Verify action',
+                          child: InkWell(
+                            onTap: () async {
+                              if (action == null) return;
+                              if (selectedDate.isAfter(
+                                Date.today().add(const Duration(days: 7)),
+                              )) {
+                                showToast(
+                                  ref,
+                                  '''You can complete tasks up to 7 days in advance only''',
+                                );
+                                return;
+                              }
 
-                            final isSuccess = await showDialog<bool>(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (c) => VerifyImageDialog(
-                                action,
-                                hasVerified: isActionCompleted,
-                              ),
-                            );
-
-                            if (isSuccess ?? false) {
-                              // show streak and coin update
-                              await showDialog<void>(
-                                // ignore: use_build_context_synchronously
+                              final isSuccess = await showDialog<bool>(
                                 context: context,
-                                builder: (c) => ActionCompletedDialog(
-                                  user.ecoBucksBalance,
-                                  user.streak ?? 0,
-                                  action.action,
+                                barrierDismissible: false,
+                                builder: (c) => VerifyImageDialog(
+                                  action,
+                                  hasVerified: isActionCompleted,
                                 ),
                               );
-                            }
-                          },
-                          child: Text(
-                            isActionCompleted ? 'Verified' : 'Verify',
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                              color: AppColors.black,
+
+                              if (isSuccess ?? false) {
+                                // show streak and coin update
+                                await showDialog<void>(
+                                  // ignore: use_build_context_synchronously
+                                  context: context,
+                                  builder: (c) => ActionCompletedDialog(
+                                    user.ecoBucksBalance,
+                                    user.streak ?? 0,
+                                    action.action,
+                                  ),
+                                );
+                              }
+                            },
+                            child: Text(
+                              isActionCompleted ? 'Verified' : 'Verify',
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 17,
+                                color: AppColors.black,
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
                     Expanded(
-                      child: InkWell(
-                        onTap: () {
-                          if (action == null) return;
+                      child: Semantics(
+                        label: 'View action impact',
+                        child: InkWell(
+                          onTap: () {
+                            if (action == null) return;
 
-                          showDialog<void>(
-                            context: context,
-                            builder: (c) => ImpactDialog(
-                              action.impact,
-                              action.impactIfNotDone,
+                            showDialog<void>(
+                              context: context,
+                              builder: (c) => ImpactDialog(
+                                action.impact,
+                                action.impactIfNotDone,
+                              ),
+                            );
+                          },
+                          child: const Text(
+                            'Impact',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 17,
+                              color: AppColors.black,
                             ),
-                          );
-                        },
-                        child: const Text(
-                          'Impact',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                            color: AppColors.black,
                           ),
                         ),
                       ),
@@ -286,38 +293,41 @@ class ActionWidget extends ConsumerWidget {
                             ),
                           ),
                         ),
-                        child: InkWell(
-                          onTap: () {
-                            if (action == null) return;
-                            if (selectedDate != Date.today()) {
-                              showToast(
-                                ref,
-                                "You can only modify today's action",
-                              );
-                              return;
-                            }
-                            if (isActionCompleted) {
-                              showToast(
-                                ref,
-                                'Action has been completed already',
-                              );
-                              return;
-                            }
+                        child: Semantics(
+                          label: 'Modify action',
+                          child: InkWell(
+                            onTap: () {
+                              if (action == null) return;
+                              if (selectedDate != Date.today()) {
+                                showToast(
+                                  ref,
+                                  "You can only modify today's action",
+                                );
+                                return;
+                              }
+                              if (isActionCompleted) {
+                                showToast(
+                                  ref,
+                                  'Action has been completed already',
+                                );
+                                return;
+                              }
 
-                            showDialog<void>(
-                              context: context,
-                              builder: (c) => ModifyConfirmationDialog(
-                                user.ecoBucksBalance,
+                              showDialog<void>(
+                                context: context,
+                                builder: (c) => ModifyConfirmationDialog(
+                                  user.ecoBucksBalance,
+                                ),
+                              );
+                            },
+                            child: const Text(
+                              'Modify',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 17,
+                                color: AppColors.black,
                               ),
-                            );
-                          },
-                          child: const Text(
-                            'Modify',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                              color: AppColors.black,
                             ),
                           ),
                         ),

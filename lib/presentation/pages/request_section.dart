@@ -67,15 +67,22 @@ class _RequestSectionState extends ConsumerState<RequestSection> {
             padding: const EdgeInsets.symmetric(vertical: 20),
             child: Row(
               children: [
-                IconButton(
-                  onPressed: () {
-                    widget.profilePageController.animateToPage(
-                      0,
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                    );
-                  },
-                  icon: const Icon(CupertinoIcons.back),
+                Semantics(
+                  label: 'Back to profile',
+                  child: IconButton(
+                    tooltip: 'Back to profile',
+                    onPressed: () {
+                      widget.profilePageController.animateToPage(
+                        0,
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                      );
+                    },
+                    icon: const Icon(
+                      CupertinoIcons.back,
+                      color: Colors.black,
+                    ),
+                  ),
                 ),
                 const Expanded(
                   child: Text(
@@ -157,45 +164,51 @@ class _RequestSectionState extends ConsumerState<RequestSection> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Expanded(
-              child: CircularElevatedButton(
-                color: _selectedIndex == 0
-                    ? AppColors.secondaryColor
-                    : AppColors.backgroundColor,
-                blurRadius: _selectedIndex == 0 ? 1 : 5,
-                darkShadow: _selectedIndex == 0,
-                onPressed: () => _onItemTapped(0),
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 15),
-                  child: AutoSizeText(
-                    'Incoming Requests',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
+              child: Semantics(
+                label: 'Incoming requests',
+                child: CircularElevatedButton(
+                  color: _selectedIndex == 0
+                      ? AppColors.secondaryColor
+                      : AppColors.backgroundColor,
+                  blurRadius: _selectedIndex == 0 ? 1 : 5,
+                  darkShadow: _selectedIndex == 0,
+                  onPressed: () => _onItemTapped(0),
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 15),
+                    child: AutoSizeText(
+                      'Incoming Requests',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 1,
+                      minFontSize: 10,
                     ),
-                    maxLines: 1,
-                    minFontSize: 10,
                   ),
                 ),
               ),
             ),
             SizedBox(width: isMobileScreen(context) ? 20 : 30),
             Expanded(
-              child: CircularElevatedButton(
-                color: _selectedIndex == 1
-                    ? AppColors.secondaryColor
-                    : AppColors.backgroundColor,
-                onPressed: () => _onItemTapped(1),
-                blurRadius: _selectedIndex == 1 ? 1 : 5,
-                darkShadow: _selectedIndex == 1,
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 15),
-                  child: AutoSizeText(
-                    'Sent Requests',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
+              child: Semantics(
+                label: 'Sent requests',
+                child: CircularElevatedButton(
+                  color: _selectedIndex == 1
+                      ? AppColors.secondaryColor
+                      : AppColors.backgroundColor,
+                  onPressed: () => _onItemTapped(1),
+                  blurRadius: _selectedIndex == 1 ? 1 : 5,
+                  darkShadow: _selectedIndex == 1,
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 15),
+                    child: AutoSizeText(
+                      'Sent Requests',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 1,
                     ),
-                    maxLines: 1,
                   ),
                 ),
               ),

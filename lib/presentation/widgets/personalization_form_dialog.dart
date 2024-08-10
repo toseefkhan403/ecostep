@@ -200,13 +200,16 @@ class _PersonalizationFormDialogState
                   ),
                   const SizedBox(height: 32),
                   Center(
-                    child: CircularElevatedButton(
-                      onPressed: _submitForm,
-                      height: 40,
-                      color: AppColors.primaryColor,
-                      child: const Text(
-                        'Submit',
-                        style: TextStyle(color: Colors.white),
+                    child: Semantics(
+                      label: 'Submit form',
+                      child: CircularElevatedButton(
+                        onPressed: _submitForm,
+                        height: 40,
+                        color: AppColors.primaryColor,
+                        child: const Text(
+                          'Submit',
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ),
                   ),

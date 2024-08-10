@@ -159,20 +159,23 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Expanded(
-              child: CircularElevatedButton(
-                color: _selectedIndex == 0
-                    ? AppColors.secondaryColor
-                    : AppColors.backgroundColor,
-                blurRadius: _selectedIndex == 0 ? 1 : 5,
-                darkShadow: _selectedIndex == 0,
-                onPressed: () => _onItemTapped(0),
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 15),
-                  child: Text(
-                    'Most Recent',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
+              child: Semantics(
+                label: 'Most recent',
+                child: CircularElevatedButton(
+                  color: _selectedIndex == 0
+                      ? AppColors.secondaryColor
+                      : AppColors.backgroundColor,
+                  blurRadius: _selectedIndex == 0 ? 1 : 5,
+                  darkShadow: _selectedIndex == 0,
+                  onPressed: () => _onItemTapped(0),
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 15),
+                    child: Text(
+                      'Most Recent',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
@@ -182,20 +185,23 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
               width: 30,
             ),
             Expanded(
-              child: CircularElevatedButton(
-                color: _selectedIndex == 1
-                    ? AppColors.secondaryColor
-                    : AppColors.backgroundColor,
-                onPressed: () => _onItemTapped(1),
-                blurRadius: _selectedIndex == 1 ? 1 : 5,
-                darkShadow: _selectedIndex == 1,
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 15),
-                  child: Text(
-                    'Most Impact',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
+              child: Semantics(
+                label: 'Most impact',
+                child: CircularElevatedButton(
+                  color: _selectedIndex == 1
+                      ? AppColors.secondaryColor
+                      : AppColors.backgroundColor,
+                  onPressed: () => _onItemTapped(1),
+                  blurRadius: _selectedIndex == 1 ? 1 : 5,
+                  darkShadow: _selectedIndex == 1,
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 15),
+                    child: Text(
+                      'Most Impact',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
@@ -239,6 +245,7 @@ class _LeaderBoardPageState extends State<LeaderBoardPage> {
                                     : Image.asset(
                                         'assets/images/eco-earth.png',
                                         height: 50,
+                                        semanticLabel: 'Profile picture',
                                       ),
                               ),
                               Expanded(

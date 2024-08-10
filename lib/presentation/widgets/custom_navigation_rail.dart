@@ -62,26 +62,30 @@ class _CustomNavigationRailState extends State<CustomNavigationRail>
 
   Widget _bottomNavigationItem(int i) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 25),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            LottieIconWidget(
-              iconName: iconFromNavigationIndex(i),
-              onTap: () => _onItemTapped(i),
-            ),
-            AnimatedContainer(
-              height: 6,
-              width: 6,
-              duration: const Duration(
-                milliseconds: 500,
+        child: Semantics(
+          label: labelFromNavigationIndex(i),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              LottieIconWidget(
+                iconName: iconFromNavigationIndex(i),
+                onTap: () => _onItemTapped(i),
               ),
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(Radius.circular(6)),
-                color:
-                    _selectedIndex == i ? Colors.white : AppColors.primaryColor,
+              AnimatedContainer(
+                height: 6,
+                width: 6,
+                duration: const Duration(
+                  milliseconds: 500,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(6)),
+                  color: _selectedIndex == i
+                      ? Colors.white
+                      : AppColors.primaryColor,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
 }

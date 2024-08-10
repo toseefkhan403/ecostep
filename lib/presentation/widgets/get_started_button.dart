@@ -60,31 +60,34 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
             child: Center(
               child: _showLoginButtons
                   ? loginButtons()
-                  : NeoPopButton(
-                      color: AppColors.primaryColor,
-                      onTapUp: () {
-                        _controller.reverse().then((_) {
-                          controller.getStarted();
-                          setState(() {
-                            _showLoginButtons = true;
+                  : Semantics(
+                      label: 'Get Started',
+                      child: NeoPopButton(
+                        color: AppColors.primaryColor,
+                        onTapUp: () {
+                          _controller.reverse().then((_) {
+                            controller.getStarted();
+                            setState(() {
+                              _showLoginButtons = true;
+                            });
+                            _controller
+                              ..reset()
+                              ..forward();
                           });
-                          _controller
-                            ..reset()
-                            ..forward();
-                        });
-                        ref.read(audioPlayerServiceProvider).playClickSound();
-                      },
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 80,
-                          vertical: 15,
-                        ),
-                        child: Text(
-                          'Get Started',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
+                          ref.read(audioPlayerServiceProvider).playClickSound();
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 80,
+                            vertical: 15,
+                          ),
+                          child: Text(
+                            'Get Started',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
                           ),
                         ),
                       ),
@@ -106,39 +109,45 @@ class _GetStartedButtonState extends ConsumerState<GetStartedButton>
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        NeoPopButton(
-          color: AppColors.primaryColor,
-          onTapUp: _isProcessing ? null : _handleSignInWithGoogle,
-          child: const Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: 80,
-              vertical: 15,
-            ),
-            child: Text(
-              'Sign in with Google',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
+        Semantics(
+          label: 'Google sign in',
+          child: NeoPopButton(
+            color: AppColors.primaryColor,
+            onTapUp: _isProcessing ? null : _handleSignInWithGoogle,
+            child: const Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 80,
+                vertical: 15,
+              ),
+              child: Text(
+                'Sign in with Google',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
               ),
             ),
           ),
         ),
         const SizedBox(height: 20),
-        NeoPopButton(
-          color: AppColors.primaryColor,
-          onTapUp: _isProcessing ? null : _handleSignInAnonymously,
-          child: const Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: 80,
-              vertical: 15,
-            ),
-            child: Text(
-              ' Sign in as a Guest  ',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
+        Semantics(
+          label: 'Sign in as a Guest',
+          child: NeoPopButton(
+            color: AppColors.primaryColor,
+            onTapUp: _isProcessing ? null : _handleSignInAnonymously,
+            child: const Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 80,
+                vertical: 15,
+              ),
+              child: Text(
+                ' Sign in as a Guest  ',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
               ),
             ),
           ),

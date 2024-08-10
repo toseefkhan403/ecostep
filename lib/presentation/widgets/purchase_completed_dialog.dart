@@ -20,7 +20,7 @@ class PurchaseCompletedDialog extends StatelessWidget {
           isSuccess ? 'Purchase Completed' : 'Purchase Failed',
           style: const TextStyle(
             color: AppColors.primaryColor,
-            fontSize: 32,
+            fontSize: 26,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -40,14 +40,18 @@ class PurchaseCompletedDialog extends StatelessWidget {
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
+                textAlign: TextAlign.center,
               ),
             ],
           ),
         ),
         actions: [
-          FilledButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Exit'),
+          Semantics(
+            label: 'Exit',
+            child: FilledButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Exit'),
+            ),
           ),
         ],
       ),

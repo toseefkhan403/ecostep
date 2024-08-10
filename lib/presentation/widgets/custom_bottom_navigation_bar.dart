@@ -65,27 +65,31 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
 
   Widget _bottomNavigationItem(int i) => Padding(
         padding: const EdgeInsets.all(8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            LottieIconWidget(
-              iconName: iconFromNavigationIndex(i),
-              onTap: () => _onItemTapped(i),
-              height: 35,
-            ),
-            AnimatedContainer(
-              height: 6,
-              width: 6,
-              duration: const Duration(
-                milliseconds: 500,
+        child: Semantics(
+          label: labelFromNavigationIndex(i),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              LottieIconWidget(
+                iconName: iconFromNavigationIndex(i),
+                onTap: () => _onItemTapped(i),
+                height: 35,
               ),
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(Radius.circular(6)),
-                color:
-                    _selectedIndex == i ? AppColors.primaryColor : Colors.white,
+              AnimatedContainer(
+                height: 6,
+                width: 6,
+                duration: const Duration(
+                  milliseconds: 500,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(6)),
+                  color: _selectedIndex == i
+                      ? AppColors.primaryColor
+                      : Colors.white,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
 }

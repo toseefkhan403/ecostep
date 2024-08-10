@@ -53,23 +53,26 @@ class _HomePageState extends ConsumerState<HomePage> {
                       ? const SizedBox(height: 10)
                       : Padding(
                           padding: const EdgeInsets.only(bottom: 20),
-                          child: CircularElevatedButton(
-                            onPressed: () {
-                              showDialog<void>(
-                                context: context,
-                                builder: (context) {
-                                  return const PersonalizationFormDialog();
-                                },
-                              );
-                            },
-                            width: double.infinity,
-                            color: AppColors.backgroundColor,
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 8),
-                              child: Text(
-                                '''Your Gemini AI generated sustainable actions are not currently personalized. Click here to fill more information about your lifestyle to enable personalized actions.''',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontWeight: FontWeight.w500),
+                          child: Semantics(
+                            label: 'Open personalization form',
+                            child: CircularElevatedButton(
+                              onPressed: () {
+                                showDialog<void>(
+                                  context: context,
+                                  builder: (context) {
+                                    return const PersonalizationFormDialog();
+                                  },
+                                );
+                              },
+                              width: double.infinity,
+                              color: AppColors.backgroundColor,
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 8),
+                                child: Text(
+                                  '''Your Gemini AI generated sustainable actions are not currently personalized. Click here to fill more information about your lifestyle to enable personalized actions.''',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontWeight: FontWeight.w500),
+                                ),
                               ),
                             ),
                           ),

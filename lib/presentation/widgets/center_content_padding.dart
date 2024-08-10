@@ -12,7 +12,7 @@ class CenterContentPadding extends StatelessWidget {
 
     return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: !isMobileScreen(context) ? width * 0.25 + 30 : 10,
+        horizontal: !isMobileScreen(context) ? width * 0.25 + 20 : 10,
         vertical: 10,
       ),
       child: child,

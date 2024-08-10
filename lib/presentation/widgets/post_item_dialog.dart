@@ -298,27 +298,30 @@ class _PostItemDialogState extends ConsumerState<PostItemDialog> {
                     const SizedBox(height: 16),
                     Row(
                       children: [
-                        CircularElevatedButton(
-                          onPressed: generatePrice,
-                          width: 200,
-                          height: 45,
-                          color: AppColors.primaryColor,
-                          child: _isLoadingPrice
-                              ? const SizedBox(
-                                  height: 25,
-                                  width: 25,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 2,
+                        Semantics(
+                          label: 'Generate price with Gemini AI',
+                          child: CircularElevatedButton(
+                            onPressed: generatePrice,
+                            width: 200,
+                            height: 45,
+                            color: AppColors.primaryColor,
+                            child: _isLoadingPrice
+                                ? const SizedBox(
+                                    height: 25,
+                                    width: 25,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : const Text(
+                                    'Gemini AI Price',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                    ),
                                   ),
-                                )
-                              : const Text(
-                                  'Gemini AI Price',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                  ),
-                                ),
+                          ),
                         ),
                         const SizedBox(width: 16),
                         Expanded(
@@ -416,14 +419,18 @@ class _PostItemDialogState extends ConsumerState<PostItemDialog> {
                     ),
                     const SizedBox(height: 32),
                     Center(
-                      child: CircularElevatedButton(
-                        onPressed: _postItem,
-                        color: AppColors.primaryColor,
-                        child: const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 7),
-                          child: Text(
-                            'Post Item',
-                            style: TextStyle(fontSize: 18, color: Colors.white),
+                      child: Semantics(
+                        label: 'Post item',
+                        child: CircularElevatedButton(
+                          onPressed: _postItem,
+                          color: AppColors.primaryColor,
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 7),
+                            child: Text(
+                              'Post Item',
+                              style:
+                                  TextStyle(fontSize: 18, color: Colors.white),
+                            ),
                           ),
                         ),
                       ),

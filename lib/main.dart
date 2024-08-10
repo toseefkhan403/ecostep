@@ -32,13 +32,12 @@ import 'package:toastification/toastification.dart';
 // responsiveness in android - done
 // responsiveness in starting rive animation - done
 // try storing chat history in a file for gemini - should get smart responses - done
+// add accessibility - done
+// fix purchase - done
+// update github
 // add download from play store button in profile page
-// fix fragile leaderboard page
 // show profile page on leaderboard card tap
 // build for web, windows, android, ios, linux
-// add accessibility
-// update personalization form
-// update github
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   configureApp();

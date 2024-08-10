@@ -1,18 +1,14 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ecostep/application/audio_player_service.dart';
 import 'package:ecostep/domain/marketplace_item.dart';
 import 'package:ecostep/domain/purchase_request.dart';
 import 'package:ecostep/domain/user.dart';
 import 'package:ecostep/presentation/utils/app_colors.dart';
-import 'package:ecostep/presentation/utils/utils.dart';
-import 'package:ecostep/presentation/widgets/lottie_icon_widget.dart';
-import 'package:ecostep/presentation/widgets/purchase_completed_dialog.dart';
+import 'package:ecostep/presentation/widgets/confirm_transaction_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:toastification/toastification.dart';
 
 class SellerPurchaseRequestWidget extends ConsumerStatefulWidget {
   const SellerPurchaseRequestWidget({
@@ -66,47 +62,6 @@ class _SellerPurchaseRequestWidgetState
     return dateFormat.format(dateTime);
   }
 
-  Future<bool> _confirmPurchase() async {
-    try {
-      final buyerDoc = await widget.request.buyerId.get();
-
-      final buyerBalance = buyerDoc['ecoBucksBalance'] as int;
-      final price = int.parse(widget.request.buyerPrice);
-
-      if (buyerBalance < price) {
-        showToast(
-          ref,
-          "You don't have sufficient balance.",
-          type: ToastificationType.error,
-        );
-
-        return false;
-      }
-      await widget.requestRefernce.update({'buyerConfirm': true});
-      await widget.request.item.update({'hasSold': true});
-
-      await widget.request.buyerId.update({
-        'ecoBucksBalance': FieldValue.increment(-price),
-      });
-
-      await widget.request.sellerId.update({
-        'ecoBucksBalance': FieldValue.increment(price),
-      });
-
-      showToast(
-        ref,
-        'Funds transferred',
-        type: ToastificationType.success,
-      );
-
-      return true;
-    } catch (e) {
-      debugPrint(e.toString());
-    }
-
-    return false;
-  }
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Map<String, dynamic>>(
@@ -142,12 +97,16 @@ class _SellerPurchaseRequestWidgetState
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     children: [
-                      Text(
-                        'Purchase Request',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              color: AppColors.textColor,
-                              fontWeight: FontWeight.bold,
-                            ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 5),
+                        child: Text(
+                          'Purchase Request',
+                          style:
+                              Theme.of(context).textTheme.titleLarge?.copyWith(
+                                    color: AppColors.textColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                        ),
                       ),
                       if (isSmallScreen)
                         Padding(
@@ -158,6 +117,7 @@ class _SellerPurchaseRequestWidgetState
                               item.imageUrl,
                               width: double.infinity,
                               fit: BoxFit.cover,
+                              semanticLabel: 'Recycled item image',
                               height: 250,
                             ),
                           ),
@@ -217,6 +177,7 @@ class _SellerPurchaseRequestWidgetState
                                     item.imageUrl,
                                     width: double.infinity,
                                     fit: BoxFit.cover,
+                                    semanticLabel: 'Recycled item image',
                                     height: 250,
                                   ),
                                 ),
@@ -296,102 +257,11 @@ class _SellerPurchaseRequestWidgetState
     }
   }
 
-  Future<void> _showConfirmDialog() async {
-    await showDialog<void>(
+  void _showConfirmDialog() {
+    showDialog<void>(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          title: const Text(
-            'Confirm Purchase',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 22,
-              color: AppColors.primaryColor,
-            ),
-          ),
-          content: const Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              LottieIconWidget(
-                iconName: 'alert',
-                height: 80,
-                autoPlay: true,
-              ),
-              Text(
-                'Are you sure about the transfer?',
-                style: TextStyle(fontSize: 16),
-              ),
-              SizedBox(height: 20),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      '''Please verify the details of your purchase before confirming. Once confirmed, this action cannot be undone.''',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 10),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      '''Ensure you have reviewed the seller's information and item details.''',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              style: TextButton.styleFrom(
-                backgroundColor: AppColors.backgroundColor,
-                textStyle: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                final sucess = await _confirmPurchase();
-                await showDialog<void>(
-                  context: context,
-                  builder: (c) {
-                    return const PurchaseCompletedDialog(isSuccess: true);
-                  },
-                );
-                Navigator.of(context).pop();
-
-                await ref
-                    .read(audioPlayerServiceProvider)
-                    .playSound(sucess ? 'success' : 'fail', extension: 'mp3');
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryColor,
-                textStyle: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              child: const Text(
-                'Confirm',
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
+      builder: (c) =>
+          ConfirmTransactionDialog(widget.request, widget.requestRefernce),
     );
   }
 
@@ -401,7 +271,6 @@ class _SellerPurchaseRequestWidgetState
     required String value,
   }) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Icon(
           icon,

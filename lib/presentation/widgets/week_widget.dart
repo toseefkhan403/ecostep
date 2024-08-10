@@ -94,40 +94,45 @@ class _WeekWidgetState extends ConsumerState<WeekWidget>
       textOpacity = 1.0;
     }
     return Expanded(
-      child: InkWell(
-        onTap: () {
-          provider.setSelectedDate(date);
-        },
-        child: Container(
-          padding: const EdgeInsets.all(4),
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(
-              Radius.circular(8),
+      child: Semantics(
+        label: 'Select date',
+        child: InkWell(
+          onTap: () {
+            provider.setSelectedDate(date);
+          },
+          child: Container(
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(
+                Radius.circular(8),
+              ),
+              color: isSelected
+                  ? AppColors.primaryColor.withOpacity(0.2)
+                  : Colors.transparent,
             ),
-            color: isSelected
-                ? AppColors.primaryColor.withOpacity(0.2)
-                : Colors.transparent,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              AutoSizeText(
-                weekday[0],
-                softWrap: false,
-                style: TextStyle(
-                  color: AppColors.textColor.withOpacity(textOpacity),
-                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AutoSizeText(
+                  weekday[0],
+                  softWrap: false,
+                  style: TextStyle(
+                    color: AppColors.textColor.withOpacity(textOpacity),
+                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                  ),
+                  minFontSize: 10,
                 ),
-              ),
-              AutoSizeText(
-                weekday[1],
-                softWrap: false,
-                style: TextStyle(
-                  color: AppColors.textColor.withOpacity(textOpacity),
-                  fontWeight: FontWeight.w700,
+                AutoSizeText(
+                  weekday[1],
+                  softWrap: false,
+                  style: TextStyle(
+                    color: AppColors.textColor.withOpacity(textOpacity),
+                    fontWeight: FontWeight.w700,
+                  ),
+                  minFontSize: 10,
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

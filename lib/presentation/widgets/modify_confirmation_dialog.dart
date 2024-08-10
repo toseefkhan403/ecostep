@@ -30,7 +30,7 @@ class ModifyConfirmationDialog extends StatelessWidget {
           "Modify Today's Action",
           style: TextStyle(
             color: AppColors.primaryColor,
-            fontSize: 32,
+            fontSize: 26,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -64,42 +64,45 @@ class ModifyConfirmationDialog extends StatelessWidget {
         ),
         actions: [
           Consumer(
-            builder: (c, ref, child) => FilledButton(
-              onPressed: () async {
-                if (ecoBucksBalance < fees) {
-                  showToast(
-                    ref,
-                    'Insufficient balance!',
-                    type: ToastificationType.error,
-                  );
-                  return;
-                }
+            builder: (c, ref, child) => Semantics(
+              label: 'Modify action confirmation',
+              child: FilledButton(
+                onPressed: () async {
+                  if (ecoBucksBalance < fees) {
+                    showToast(
+                      ref,
+                      'Insufficient balance!',
+                      type: ToastificationType.error,
+                    );
+                    return;
+                  }
 
-                final success = await ref
-                    .read(userRepositoryProvider)
-                    .modifyAction(Date.today(), fees);
-                if (success) {
-                  await ref
-                      .read(actionRefsControllerProvider.notifier)
-                      .fetchCurrentUserActions(
-                        Date.presentWeek(),
-                      );
-                  showToast(
-                    ref,
-                    'Action modified successfully!',
-                    type: ToastificationType.success,
-                  );
-                } else {
-                  showToast(
-                    ref,
-                    "Could not modify today's action. Please try again later!",
-                    type: ToastificationType.error,
-                  );
-                }
-                // ignore: use_build_context_synchronously
-                Navigator.pop(context);
-              },
-              child: const Text('Proceed'),
+                  final success = await ref
+                      .read(userRepositoryProvider)
+                      .modifyAction(Date.today(), fees);
+                  if (success) {
+                    await ref
+                        .read(actionRefsControllerProvider.notifier)
+                        .fetchCurrentUserActions(
+                          Date.presentWeek(),
+                        );
+                    showToast(
+                      ref,
+                      'Action modified successfully!',
+                      type: ToastificationType.success,
+                    );
+                  } else {
+                    showToast(
+                      ref,
+                      """Could not modify today's action. Please try again later!""",
+                      type: ToastificationType.error,
+                    );
+                  }
+                  // ignore: use_build_context_synchronously
+                  Navigator.pop(context);
+                },
+                child: const Text('Proceed'),
+              ),
             ),
           ),
         ],

@@ -37,17 +37,20 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
           : Padding(
               padding:
                   EdgeInsets.only(bottom: isMobileScreen(context) ? 55.0 : 0),
-              child: CircularElevatedButton(
-                color: AppColors.secondaryColor,
-                height: isMobileScreen(context) ? 45 : 60,
-                width: isMobileScreen(context) ? 130 : 150,
-                onPressed: () =>
-                    ref.read(firebaseAuthServiceProvider).signOut(),
-                child: const Text(
-                  'Logout',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
+              child: Semantics(
+                label: 'Logout',
+                child: CircularElevatedButton(
+                  color: AppColors.secondaryColor,
+                  height: isMobileScreen(context) ? 45 : 60,
+                  width: isMobileScreen(context) ? 130 : 150,
+                  onPressed: () =>
+                      ref.read(firebaseAuthServiceProvider).signOut(),
+                  child: const Text(
+                    'Logout',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),

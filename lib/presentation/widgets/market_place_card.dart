@@ -67,6 +67,7 @@ class _MarketplaceCardState extends State<MarketplaceCard> {
                                   widget.item.imageUrl,
                                   height: isMobileScreen(context) ? 250 : 350,
                                   width: double.infinity,
+                                  semanticLabel: 'Recycled item image',
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -204,103 +205,128 @@ class _MarketplaceCardState extends State<MarketplaceCard> {
                                               child:
                                                   CircularProgressIndicator(),
                                             ),
-                                            data: (user) =>
-                                                CircularElevatedButton(
-                                              color: AppColors.primaryColor,
-                                              width: 200,
-                                              onPressed: () async {
-                                                if (!isRequestButtonEnabled) {
-                                                  return;
-                                                }
+                                            data: (user) => Semantics(
+                                              label: 'Request to buy',
+                                              child: CircularElevatedButton(
+                                                color: AppColors.primaryColor,
+                                                width: 200,
+                                                onPressed: () async {
+                                                  if (!isRequestButtonEnabled) {
+                                                    return;
+                                                  }
 
-                                                if (formKey.currentState
-                                                        ?.validate() ??
-                                                    false) {
-                                                  final userSnapshot =
-                                                      await widget
-                                                              .item.sellingUser
-                                                              .get()
-                                                          as DocumentSnapshot;
+                                                  if (formKey.currentState
+                                                          ?.validate() ??
+                                                      false) {
+                                                    setState(() {
+                                                      isRequestButtonEnabled =
+                                                          false;
+                                                    });
 
-                                                  final itemUserId =
-                                                      userSnapshot.get('id');
+                                                    final userSnapshot =
+                                                        await widget
+                                                                .item.sellingUser
+                                                                .get()
+                                                            as DocumentSnapshot;
 
-                                                  if (itemUserId == user.id) {
+                                                    final itemUserId =
+                                                        userSnapshot.get('id');
+
+                                                    if (itemUserId == user.id) {
+                                                      showToast(
+                                                        ref,
+                                                        '''You can't buy your own item''',
+                                                        type: ToastificationType
+                                                            .error,
+                                                      );
+                                                      setState(() {
+                                                        isRequestButtonEnabled =
+                                                            true;
+                                                      });
+                                                      return;
+                                                    }
+                                                    final itemPrice = int.parse(
+                                                      widget.item.price,
+                                                    );
+
+                                                    if (user.ecoBucksBalance <
+                                                        itemPrice) {
+                                                      showToast(
+                                                        ref,
+                                                        '''Insufficient balance''',
+                                                        type: ToastificationType
+                                                            .error,
+                                                      );
+                                                      setState(() {
+                                                        isRequestButtonEnabled =
+                                                            true;
+                                                      });
+                                                      return;
+                                                    }
+
+                                                    final isSucess =
+                                                        await purchaseRequestController
+                                                            .sendPurchaseRequest(
+                                                      item: widget.item,
+                                                      context: context,
+                                                      enteredprice:
+                                                          priceController.text,
+                                                    );
+
+                                                    await ref
+                                                        .read(
+                                                          audioPlayerServiceProvider,
+                                                        )
+                                                        .playSound(
+                                                          'success',
+                                                          extension: 'mp3',
+                                                        );
+                                                    setState(() {
+                                                      isRequestButtonEnabled =
+                                                          true;
+                                                    });
+                                                    await showDialog<void>(
+                                                      context: context,
+                                                      builder: (c) {
+                                                        return RequestConfirmPurchase(
+                                                          isSuccess: isSucess,
+                                                        );
+                                                      },
+                                                    );
+                                                    Navigator.pop(context);
+                                                  } else {
                                                     showToast(
                                                       ref,
-                                                      '''You can't buy your own item''',
+                                                      '''Please enter a valid price''',
                                                       type: ToastificationType
                                                           .error,
                                                     );
-
-                                                    return;
                                                   }
-                                                  final itemPrice = int.parse(
-                                                    widget.item.price,
-                                                  );
-
-                                                  if (user.ecoBucksBalance <
-                                                      itemPrice) {
-                                                    showToast(
-                                                      ref,
-                                                      '''Insufficient balance''',
-                                                      type: ToastificationType
-                                                          .error,
-                                                    );
-
-                                                    return;
-                                                  }
-                                                  setState(() {
-                                                    isRequestButtonEnabled =
-                                                        false;
-                                                  });
-
-                                                  final isSucess =
-                                                      await purchaseRequestController
-                                                          .sendPurchaseRequest(
-                                                    item: widget.item,
-                                                    context: context,
-                                                    enteredprice:
-                                                        priceController.text,
-                                                  );
-
-                                                  await ref
-                                                      .read(
-                                                        audioPlayerServiceProvider,
-                                                      )
-                                                      .playSound(
-                                                        'success',
-                                                        extension: 'mp3',
-                                                      );
-                                                  await showDialog<void>(
-                                                    context: context,
-                                                    builder: (c) {
-                                                      return RequestConfirmPurchase(
-                                                        isSuccess: isSucess,
-                                                      );
-                                                    },
-                                                  );
-                                                  Navigator.pop(context);
-                                                } else {
-                                                  showToast(
-                                                    ref,
-                                                    '''Please enter a valid price''',
-                                                    type: ToastificationType
-                                                        .error,
-                                                  );
-                                                }
-                                              },
-                                              child: const Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                  vertical: 7,
-                                                ),
-                                                child: Text(
-                                                  'Request to buy',
-                                                  style: TextStyle(
-                                                    fontSize: 16,
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.w500,
+                                                },
+                                                child: Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                    vertical: 7,
                                                   ),
+                                                  child: isRequestButtonEnabled
+                                                      ? const Text(
+                                                          'Request to buy',
+                                                          style: TextStyle(
+                                                            fontSize: 16,
+                                                            color: Colors.white,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                        )
+                                                      : const SizedBox(
+                                                          width: 25,
+                                                          height: 25,
+                                                          child:
+                                                              CircularProgressIndicator(
+                                                            color: Colors.white,
+                                                            strokeWidth: 1.5,
+                                                          ),
+                                                        ),
                                                 ),
                                               ),
                                             ),
@@ -329,127 +355,131 @@ class _MarketplaceCardState extends State<MarketplaceCard> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: widget.item.hasSold
-          ? null
-          : () {
-              showDetailDialog(context);
-            },
-      child: Card(
-        margin: const EdgeInsets.all(10),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: ExpiredOverlay(
-            expiredMessage: 'SOLD OUT',
-            messageColor: Colors.red.withOpacity(0.7),
-            isExpired: widget.item.hasSold,
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: ClipRRect(
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(10),
-                          topRight: Radius.circular(10),
-                        ),
-                        child: Image.network(
-                          widget.item.imageUrl,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
+    return Semantics(
+      label: 'Marketplace item details card',
+      child: GestureDetector(
+        onTap: widget.item.hasSold
+            ? null
+            : () {
+                showDetailDialog(context);
+              },
+        child: Card(
+          margin: const EdgeInsets.all(10),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: ExpiredOverlay(
+              expiredMessage: 'SOLD OUT',
+              messageColor: Colors.red.withOpacity(0.7),
+              isExpired: widget.item.hasSold,
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: ClipRRect(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10),
+                          ),
+                          child: Image.network(
+                            widget.item.imageUrl,
+                            width: double.infinity,
+                            semanticLabel: 'Recycled item image',
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                const LottieIconWidget(
-                                  iconName: 'pin',
-                                  height: 40,
-                                ),
-                                Text(
-                                  widget.item.location,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 10),
-                            Text(
-                              widget.item.name,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  'Price: ${widget.item.price}',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.primaryColor,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(width: 2),
-                                const LottieIconWidget(
-                                  iconName: 'coin',
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 5),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
                                 children: [
-                                  Expanded(
-                                    child: AutoSizeText(
-                                      '''Used for: ${formatMonths(widget.item.usedForMonths)}''',
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        fontStyle: FontStyle.italic,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
+                                  const LottieIconWidget(
+                                    iconName: 'pin',
+                                    height: 40,
                                   ),
-                                  Expanded(
-                                    child: AutoSizeText(
-                                      widget.item.description,
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.grey[700],
-                                      ),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
+                                  Text(
+                                    widget.item.location,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
                                     ),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ],
                               ),
-                            ),
-                          ],
+                              const SizedBox(height: 10),
+                              Text(
+                                widget.item.name,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    'Price: ${widget.item.price}',
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.primaryColor,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(width: 2),
+                                  const LottieIconWidget(
+                                    iconName: 'coin',
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 5),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Expanded(
+                                      child: AutoSizeText(
+                                        '''Used for: ${formatMonths(widget.item.usedForMonths)}''',
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontStyle: FontStyle.italic,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: AutoSizeText(
+                                        widget.item.description,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.grey[700],
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                );
-              },
+                    ],
+                  );
+                },
+              ),
             ),
           ),
         ),
