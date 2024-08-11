@@ -12,32 +12,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:toastification/toastification.dart';
 
-// 6 weeks to finish - lead with web
-// week 1(24 June) - complete onboarding - rive design, animation, text, coding - done
-// week 2(1 July) - questionnaire, user auth, firebase setup, leaderboard and profile page --done
-// week 3(8 July) - daily tasks feature - ai gen, parse and display, scoring system, and verification feature, store user in firestore
-// week 4(15 July) - marketplace feature - upload stuff, list it, buy it, your orders in profile
-// week 5(22 July) - transactions, slick video, sound fx and apple account setup(if needed)
-// week 6(29 July) - responsiveness and release
-
-// finalize video
-// fix post image issue - done
-// sounds not working in web - done
-// add spam protection on login buttons - done
-// fix android sign in issue - done
-// update web metadata in index.html, favicon - done
-// fix select image showing in verified dialog - done
-// add camera option with warning for gallery option - done
-// profile page changes - done
-// responsiveness in android - done
-// responsiveness in starting rive animation - done
-// try storing chat history in a file for gemini - should get smart responses - done
-// add accessibility - done
-// fix purchase - done
-// update github
-// add download from play store button in profile page
-// show profile page on leaderboard card tap
-// build for web, windows, android, ios, linux
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   configureApp();
