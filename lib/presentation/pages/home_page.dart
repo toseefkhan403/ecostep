@@ -11,6 +11,7 @@ import 'package:ecostep/presentation/widgets/center_content_padding.dart';
 import 'package:ecostep/presentation/widgets/circular_elevated_button.dart';
 import 'package:ecostep/presentation/widgets/lottie_icon_widget.dart';
 import 'package:ecostep/presentation/widgets/personalization_form_dialog.dart';
+import 'package:ecostep/presentation/widgets/play_button_widget.dart';
 import 'package:ecostep/presentation/widgets/week_widget.dart';
 import 'package:flutter/material.dart' hide Action;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,70 +30,76 @@ class _HomePageState extends ConsumerState<HomePage> {
     final userValue = ref.watch(firestoreUserProvider);
     final weekState = ref.watch(weekStateControllerProvider);
 
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          CenterContentPadding(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _dateHeading(),
-                      const Spacer(),
-                      _iconsRow(userValue),
-                    ],
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      floatingActionButton:
+          isMobileScreen(context) ? null : const PlayButtonWidget(),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            CenterContentPadding(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _dateHeading(),
+                        const Spacer(),
+                        _iconsRow(userValue),
+                      ],
+                    ),
                   ),
-                ),
-                AsyncValueWidget(
-                  value: userValue,
-                  data: (user) => user.personalizationString != null
-                      ? const SizedBox(height: 10)
-                      : Padding(
-                          padding: const EdgeInsets.only(bottom: 20),
-                          child: Semantics(
-                            label: 'Open personalization form',
-                            child: CircularElevatedButton(
-                              onPressed: () {
-                                showDialog<void>(
-                                  context: context,
-                                  builder: (context) {
-                                    return const PersonalizationFormDialog();
-                                  },
-                                );
-                              },
-                              width: double.infinity,
-                              color: AppColors.backgroundColor,
-                              child: const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 8),
-                                child: Text(
-                                  '''Your Gemini AI generated sustainable actions are not currently personalized. Click here to fill more information about your lifestyle to enable personalized actions.''',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(fontWeight: FontWeight.w500),
+                  AsyncValueWidget(
+                    value: userValue,
+                    data: (user) => user.personalizationString != null
+                        ? const SizedBox(height: 10)
+                        : Padding(
+                            padding: const EdgeInsets.only(bottom: 20),
+                            child: Semantics(
+                              label: 'Open personalization form',
+                              child: CircularElevatedButton(
+                                onPressed: () {
+                                  showDialog<void>(
+                                    context: context,
+                                    builder: (context) {
+                                      return const PersonalizationFormDialog();
+                                    },
+                                  );
+                                },
+                                width: double.infinity,
+                                color: AppColors.backgroundColor,
+                                child: const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 8),
+                                  child: Text(
+                                    '''Your Gemini AI generated sustainable actions are not currently personalized. Click here to fill more information about your lifestyle to enable personalized actions.''',
+                                    textAlign: TextAlign.center,
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w500),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                  loading: () => const SizedBox(height: 10),
-                ),
-                WeekWidget(Date.today()),
-                AsyncValueWidget(
-                  value: actionsValue,
-                  topMargin: 100,
-                  data: (actions) => ActionWidgetContainer(
-                    actionRef: actions[weekState.selectedDate.toString()],
+                    loading: () => const SizedBox(height: 10),
                   ),
-                  loading: () => loadingIconAI(100),
-                ),
-                if (isMobileScreen(context)) const SizedBox(height: 50),
-              ],
+                  WeekWidget(Date.today()),
+                  AsyncValueWidget(
+                    value: actionsValue,
+                    topMargin: 100,
+                    data: (actions) => ActionWidgetContainer(
+                      actionRef: actions[weekState.selectedDate.toString()],
+                    ),
+                    loading: () => loadingIconAI(100),
+                  ),
+                  if (isMobileScreen(context)) const SizedBox(height: 50),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

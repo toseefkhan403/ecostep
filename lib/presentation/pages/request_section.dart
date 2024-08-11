@@ -64,7 +64,7 @@ class _RequestSectionState extends ConsumerState<RequestSection> {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20),
+            padding: const EdgeInsets.only(top: 10, bottom: 20),
             child: Row(
               children: [
                 Semantics(

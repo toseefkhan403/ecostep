@@ -17,21 +17,10 @@ class PurchaseRequestController extends StateNotifier<void> {
     try {
       await provider.sendPurchaseRequest(item: item, buyerprice: enteredprice);
 
-      // showAlertDialog(
-      //   context,
-      //   content: 'Request sent successfully',
-      //   title: 'Success',
-      // );
-
       return true;
     } catch (e) {
       debugPrint('Error sending purchase request: $e');
       return false;
-      // showAlertDialog(
-      //   context,
-      //   content: 'Failed to send request',
-      //   title: 'Error',
-      // );
     }
   }
 }

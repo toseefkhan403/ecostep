@@ -174,7 +174,7 @@ class VerifyImageDialog extends ConsumerWidget {
               children: [
                 Expanded(
                   child: AutoSizeText(
-                    "EcoBucks you'll get after verification: ",
+                    "Ecobucks you'll get after verification: ",
                     minFontSize: isMobileScreen(context) ? 14 : 18,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,

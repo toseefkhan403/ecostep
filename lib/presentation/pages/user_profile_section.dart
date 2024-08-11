@@ -14,16 +14,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class UserProfileSection extends ConsumerWidget {
   const UserProfileSection({
     required this.user,
-    required this.pageController,
+    this.pageController,
+    this.rank,
     super.key,
   });
-  final PageController pageController;
   final User user;
+  final PageController? pageController;
+  // if rank is present, the user is not the currently logged in user
+  final String? rank;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final titlesValue = ref.watch(userCompletedActionTitlesProvider(user));
     final marketplaceItemsValue = ref.watch(marketplaceControllerProvider);
+    final isSelf = rank == null;
 
     return Column(
       children: [
@@ -81,7 +85,7 @@ class UserProfileSection extends ConsumerWidget {
                   ),
                 ),
               ),
-              if (isMobileScreen(context))
+              if (isMobileScreen(context) && isSelf)
                 Positioned(
                   top: 5,
                   right: 5,
@@ -115,10 +119,37 @@ class UserProfileSection extends ConsumerWidget {
             ),
           ),
         ),
-        _buttonsRow(pagecontroller: pageController),
+        if (isSelf)
+          _buttonsRow(pagecontroller: pageController)
+        else
+          Semantics(
+            label: 'Leaderboard rank',
+            child: CircularElevatedButton(
+              width: double.infinity,
+              color: AppColors.secondaryColor,
+              blurRadius: 1,
+              darkShadow: true,
+              onPressed: () {},
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 15),
+                child: Text(
+                  '$rank',
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
         Expanded(
           child: Container(
-            margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
+            margin: EdgeInsets.fromLTRB(
+              isSelf ? 8 : 0,
+              20,
+              isSelf ? 8 : 0,
+              isSelf ? 20 : 10,
+            ),
             decoration: roundedContainerDecoration(),
             child: SingleChildScrollView(
               child: Padding(
@@ -126,7 +157,7 @@ class UserProfileSection extends ConsumerWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    _heading('Your actions'),
+                    _heading(isSelf ? 'Your actions' : 'Actions'),
                     SizedBox(
                       height: 160,
                       child: AsyncValueWidget(
@@ -145,7 +176,7 @@ class UserProfileSection extends ConsumerWidget {
                               ),
                       ),
                     ),
-                    _heading('Your recycles'),
+                    _heading(isSelf ? 'Your recycles' : 'Recycles'),
                     SizedBox(
                       height: 160,
                       child: AsyncValueWidget(
@@ -195,7 +226,7 @@ class UserProfileSection extends ConsumerWidget {
         ],
       );
 
-  Widget _buttonsRow({required PageController pagecontroller}) {
+  Widget _buttonsRow({PageController? pagecontroller}) {
     return Padding(
       padding: const EdgeInsets.all(8),
       child: Row(
@@ -255,6 +286,8 @@ class UserProfileSection extends ConsumerWidget {
                 blurRadius: 1,
                 darkShadow: true,
                 onPressed: () {
+                  if (pagecontroller == null) return;
+
                   pagecontroller.animateToPage(
                     1,
                     duration: const Duration(milliseconds: 300),
