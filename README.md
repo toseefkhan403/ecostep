@@ -87,7 +87,12 @@ You earn rewards in our in-app currency called `Ecobucks`.
     ```bash
    dart run build_runner watch
 
-5. Run the app on chrome or an emulator:
+5. Copy .env file and add your [Gemini API key](https://aistudio.google.com/app/apikey)
+
+    ```bash
+   cp .env.example .env
+
+6. Run the app on chrome or an emulator:
 
     ```bash
    flutter run
